@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PayNShip Competitive & Infrastructure Brief</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans KR', -apple-system, 'Malgun Gothic', sans-serif;
+    font-size: 10pt;
+    line-height: 1.7;
+    color: #1a1a1a;
+    max-width: 210mm;
+    margin: 0 auto;
+    padding: 2cm;
+    background: #fff;
+  }
+
+  @media print {
+    body { padding: 0; }
+    .page-break { page-break-before: always; }
+    @page { size: A4; margin: 2cm; }
+  }
+
+  h1 {
+    font-size: 16pt;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-top: 28pt;
+    margin-bottom: 12pt;
+    padding-bottom: 6pt;
+    border-bottom: 2.5px solid #2c3e50;
+  }
+
+  h2 {
+    font-size: 13pt;
+    font-weight: 700;
+    color: #16213e;
+    margin-top: 20pt;
+    margin-bottom: 10pt;
+  }
+
+  h3 {
+    font-size: 11pt;
+    font-weight: 700;
+    color: #0f3460;
+    margin-top: 14pt;
+    margin-bottom: 8pt;
+  }
+
+  p { margin-bottom: 8pt; text-align: justify; }
+
+  .title-block {
+    text-align: center;
+    padding: 50pt 0 30pt 0;
+    border-bottom: none;
+  }
+  .title-block h1 {
+    font-size: 30pt;
+    border: none;
+    color: #1a1a2e;
+    margin-bottom: 6pt;
+  }
+  .title-block .subtitle {
+    font-size: 16pt;
+    color: #0f3460;
+    font-weight: 500;
+    margin-bottom: 20pt;
+  }
+  .title-block hr {
+    width: 50%;
+    margin: 0 auto 20pt auto;
+    border: none;
+    border-top: 2px solid #dee2e6;
+  }
+  .title-block .meta {
+    font-size: 10pt;
+    color: #666;
+    margin-top: 20pt;
+  }
+
+  .exec-summary {
+    background: #f0f0f5;
+    border-left: 4px solid #2c3e50;
+    padding: 12pt 16pt;
+    margin: 10pt 0;
+    font-size: 10pt;
+    line-height: 1.8;
+  }
+
+  .insight-box {
+    background: #eef2f7;
+    border-left: 4px solid #0f3460;
+    padding: 10pt 14pt;
+    margin: 12pt 0;
+    font-size: 10pt;
+    color: #0f3460;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10pt 0 14pt 0;
+    font-size: 9pt;
+  }
+
+  th {
+    background: #2c3e50;
+    color: white;
+    font-weight: 700;
+    text-align: center;
+    padding: 7pt 8pt;
+    font-size: 9pt;
+  }
+
+  td {
+    padding: 6pt 8pt;
+    border: 1px solid #dee2e6;
+    vertical-align: top;
+    font-size: 9pt;
+    line-height: 1.6;
+  }
+
+  tr:nth-child(even) td { background: #f8f9fa; }
+
+  .severity-critical { color: #e74c3c; font-weight: 700; }
+  .severity-high { color: #e67e22; font-weight: 700; }
+  .severity-medium { color: #f39c12; font-weight: 700; }
+
+  ul { margin: 6pt 0 10pt 20pt; }
+  li { margin-bottom: 6pt; }
+
+  .option-block {
+    margin: 8pt 0 8pt 10pt;
+    font-size: 9.5pt;
+  }
+  .option-block .pro { color: #27ae60; }
+  .option-block .con { color: #c0392b; }
+  .option-block .fit { color: #2c3e50; font-weight: 500; }
+
+  hr {
+    border: none;
+    border-top: 1px solid #dee2e6;
+    margin: 16pt 0;
+  }
+
+  .sources {
+    font-size: 8pt;
+    color: #666;
+    line-height: 1.5;
+    margin-top: 14pt;
+    columns: 2;
+    column-gap: 20pt;
+  }
+  .sources li { margin-bottom: 3pt; }
+  .sources a { color: #2980b9; text-decoration: none; }
+  .sources a:hover { text-decoration: underline; }
+
+  .footer-note {
+    text-align: center;
+    font-size: 8.5pt;
+    color: #999;
+    margin-top: 20pt;
+    font-style: italic;
+  }
+
+  .toc {
+    background: #fafafa;
+    border: 1px solid #eee;
+    padding: 16pt 20pt;
+    margin: 20pt 0;
+    border-radius: 4pt;
+  }
+  .toc h3 { margin-top: 0; color: #2c3e50; }
+  .toc ul { list-style: none; margin-left: 0; }
+  .toc li { margin-bottom: 4pt; }
+  .toc a { color: #0f3460; text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<!-- TITLE PAGE -->
+<div class="title-block">
+  <h1>PayNShip</h1>
+  <div class="subtitle">Competitive &amp; Infrastructure Brief</div>
+  <hr>
+  <div class="meta">
+    <p>Date: 2026-03-06</p>
+    <p>Scope: 한국 쇼핑 프록시 시장 — 결제/인증, 법적 이슈, 결제 인프라, 경쟁사 분석</p>
+  </div>
+
+  <div style="margin-top: 30pt; text-align: left;">
+    <h2 style="text-align: center; border: none;">Executive Summary</h2>
+    <div class="exec-summary">
+      <strong>1.</strong> 외국인이 한국 플랫폼에서 직접 구매하는 것은 사실상 불가능에 가깝다 — 주민등록번호 기반 인증, 한국 전화번호 필수, 연간 갱신 공인인증서 등이 결합된 진입장벽이 존재하며, 이것이 프록시 쇼핑 시장이 존재하는 근본 이유다.
+    </div>
+    <div class="exec-summary">
+      <strong>2.</strong> 한국 법인으로 Stripe 계정 개설은 아직 불가능하고, PayPal은 가능하지만 해외→한국 수취만 지원한다. 현실적 대안은 PayPal 비즈니스 계정 + 해외법인(Delaware C-Corp) Stripe 조합이다.
+    </div>
+    <div class="exec-summary">
+      <strong>3.</strong> 기존 경쟁사 17개+는 전부 수동(human agent) 기반이며, AI 자동화를 도입한 서비스는 아직 없다. PayNShip의 LLM 기반 자동화가 차별점이 될 수 있으나, 결제 인프라와 법적 구조 설계가 선행되어야 한다.
+    </div>
+  </div>
+
+  <div class="toc">
+    <h3>목차</h3>
+    <ul>
+      <li><a href="#s1">1. 한국 플랫폼 결제/인증 — 외국인 Pain Points</a></li>
+      <li><a href="#s2">2. 크로스보더 직구매 시 법적 이슈</a></li>
+      <li><a href="#s3">3. 한국 사업자의 크로스보더 결제 플랫폼 연동</a></li>
+      <li><a href="#s4">4. 유사 사업자 분석</a></li>
+      <li><a href="#s5">5. Strategic Implications</a></li>
+      <li><a href="#s6">6. Next Actions</a></li>
+    </ul>
+  </div>
+</div>
+
+<!-- SECTION 1 -->
+<div class="page-break"></div>
+<h1 id="s1">1. 한국 플랫폼 결제/인증 — 외국인 Pain Points</h1>
+
+<h2>1.1 인증 장벽 구조</h2>
+<table>
+  <tr><th style="width:22%">장벽</th><th style="width:56%">설명</th><th style="width:22%">심각도</th></tr>
+  <tr><td><strong>주민등록번호 / 외국인등록번호</strong></td><td>회원가입 및 결제 시 필수. 외국인은 ARC(외국인등록증) 없이 사용 불가</td><td class="severity-critical">Critical</td></tr>
+  <tr><td><strong>한국 전화번호 인증</strong></td><td>본인인증(PASS 앱, 통신사 인증) 필수. 해외 번호 미지원</td><td class="severity-critical">Critical</td></tr>
+  <tr><td><strong>공인인증서 / 금융인증서</strong></td><td>연간 갱신, 한국 은행 계좌 연동 필수. 스마트폰에서는 더 불편</td><td class="severity-high">High</td></tr>
+  <tr><td><strong>한국 결제수단만 허용</strong></td><td>대부분 플랫폼이 한국 카드(신용/체크)만 지원. 해외 카드 미지원 또는 극히 제한적</td><td class="severity-critical">Critical</td></tr>
+  <tr><td><strong>PCCC (개인통관고유부호)</strong></td><td>한국 수입 통관 시 필수. 외국인은 발급 절차 자체가 복잡</td><td class="severity-medium">Medium</td></tr>
+</table>
+
+<h2>1.2 플랫폼별 외국인 접근성</h2>
+<table>
+  <tr><th>플랫폼</th><th>해외카드 지원</th><th>영어 UI</th><th>외국인 가입</th></tr>
+  <tr><td><strong>Coupang</strong></td><td>X (극히 제한)</td><td>부분적</td><td>ARC 필요</td></tr>
+  <tr><td><strong>Naver Shopping</strong></td><td>X</td><td>X</td><td>한국 번호 필수</td></tr>
+  <tr><td><strong>Gmarket Global</strong></td><td>O (제한적)</td><td>O</td><td>비교적 용이</td></tr>
+  <tr><td><strong>11번가</strong></td><td>X</td><td>X</td><td>한국 번호 필수</td></tr>
+  <tr><td><strong>무신사</strong></td><td>X</td><td>부분적</td><td>한국 번호 필수</td></tr>
+  <tr><td><strong>번개장터 / 당근</strong></td><td>X</td><td>X</td><td>한국 번호 필수</td></tr>
+</table>
+
+<h2>1.3 2026년 변화 전망</h2>
+<ul>
+  <li><strong>Coupang 패스키 도입 예정 (2026 상반기)</strong>: 로그인 시간 2배 단축 예상이나, 근본적인 외국인 접근성 문제(한국 전화번호, 결제수단)는 미해결</li>
+  <li><strong>은행급 데이터 보안 규정 적용</strong>: 2026년 1월부터 대형 리테일 플랫폼에 은행 수준 보안 규제 적용 → 외국인 가입 절차 더 복잡해질 가능성</li>
+  <li><strong>온라인 플랫폼 공정화법</strong>: 플랫폼 의무 강화 → 직접적 외국인 접근성 개선 효과는 미미</li>
+</ul>
+
+<div class="insight-box">
+  <strong>핵심 해석</strong>: 한국의 인증 장벽은 구조적이며, 단기간 내 해소될 가능성이 낮다. 이는 PayNShip 같은 프록시 서비스의 존재 이유가 지속된다는 의미다.
+</div>
+
+<!-- SECTION 2 -->
+<div class="page-break"></div>
+<h1 id="s2">2. 크로스보더 직구매 시 법적 이슈</h1>
+
+<h2>2.1 한국→해외 수출(역직구) 관점</h2>
+<p>PayNShip은 한국 상품을 해외 소비자에게 배송하는 모델이므로, <strong>한국 수출 + 목적국 수입</strong> 양쪽 규제를 모두 충족해야 한다.</p>
+
+<h3>한국 측 요건</h3>
+<table>
+  <tr><th style="width:22%">요건</th><th style="width:48%">내용</th><th style="width:30%">PayNShip 영향</th></tr>
+  <tr><td><strong>통신판매업 신고</strong></td><td>한국에서 온라인 판매 시 필수 (전자상거래법)</td><td>필수</td></tr>
+  <tr><td><strong>수출 신고</strong></td><td>건당 $2,000 초과 시 수출 신고 필요 (간이수출 가능)</td><td>대부분 간이수출 해당</td></tr>
+  <tr><td><strong>지식재산권 침해 금지</strong></td><td>위조품, 모조품 수출 시 형사 처벌</td><td>상품 검수 프로세스 필요</td></tr>
+  <tr><td><strong>수출 금지/제한 품목</strong></td><td>전략물자, 문화재 등</td><td>카테고리 필터링 필요</td></tr>
+  <tr><td><strong>개인정보보호법 (PIPA)</strong></td><td>해외 고객 개인정보 국외 이전 시 동의 필수</td><td>개인정보 처리 방침 필수</td></tr>
+</table>
+
+<h3>목적국 측 요건 (주요국)</h3>
+<table>
+  <tr><th style="width:12%">국가</th><th style="width:16%">De Minimis</th><th style="width:40%">주요 규제</th><th>비고</th></tr>
+  <tr><td><strong>미국</strong></td><td>$800 (면세)</td><td>FDA(식품/화장품), FCC(전자기기)</td><td>KORUS FTA: $200 이하 관세 면제</td></tr>
+  <tr><td><strong>일본</strong></td><td>¥16,666</td><td>식품위생법, 약기법</td><td>화장품 수입 규제 엄격</td></tr>
+  <tr><td><strong>EU</strong></td><td>€150</td><td>CE 마킹, REACH(화학물질), GDPR</td><td>IOSS 등록 필요 (VAT 사전징수)</td></tr>
+  <tr><td><strong>호주</strong></td><td>A$1,000</td><td>GST 10% (A$1,000 이하도 적용)</td><td>ABN 등록 권장</td></tr>
+  <tr><td><strong>동남아</strong></td><td>국가별 상이</td><td>할랄 인증(말레이시아/인도네시아)</td><td>K-Beauty 수요 높음</td></tr>
+</table>
+
+<h2>2.2 PayNShip 비즈니스 모델 관련 법적 리스크</h2>
+<table>
+  <tr><th style="width:25%">리스크</th><th style="width:15%">심각도</th><th style="width:60%">대응 방안</th></tr>
+  <tr><td><strong>대리구매 사업자 자격</strong></td><td class="severity-high">High</td><td>통신판매업 + 구매대행업 신고 (관세법 시행규칙)</td></tr>
+  <tr><td><strong>PG사 없이 고객 결제 수취</strong></td><td class="severity-critical">Critical</td><td>PG사 연동 또는 해외 결제 플랫폼 필수</td></tr>
+  <tr><td><strong>관세 과소신고 리스크</strong></td><td class="severity-high">High</td><td>정확한 상품가격 신고 시스템 (자동화)</td></tr>
+  <tr><td><strong>품목별 인허가</strong></td><td class="severity-medium">Medium</td><td>식품/화장품/의약품 카테고리별 사전 심사</td></tr>
+  <tr><td><strong>환불/소비자보호</strong></td><td class="severity-medium">Medium</td><td>한국 전자상거래법 + 목적국 소비자보호법 이중 적용</td></tr>
+</table>
+
+<!-- SECTION 3 -->
+<div class="page-break"></div>
+<h1 id="s3">3. 한국 사업자의 크로스보더 결제 플랫폼 연동</h1>
+
+<h2>3.1 플랫폼별 한국 사업자 지원 현황</h2>
+<table>
+  <tr><th>플랫폼</th><th>한국 법인 개설</th><th>해외 결제 수취</th><th>수수료</th><th>비고</th></tr>
+  <tr><td><strong>PayPal</strong></td><td><strong>O</strong> (비즈니스)</td><td>O (해외→한국만)</td><td>3.49%+</td><td>한국 내 결제는 불가. 인출 ₩15만 이상 무료</td></tr>
+  <tr><td><strong>Stripe</strong></td><td><strong>X</strong> (한국 불가)</td><td>N/A</td><td>N/A</td><td>한국 법인 Stripe 계정 개설 불가</td></tr>
+  <tr><td><strong>Paddle</strong></td><td>O (MoR)</td><td>O</td><td>5~7%</td><td>Merchant of Record로 세금/VAT 처리 대행</td></tr>
+  <tr><td><strong>Lemon Squeezy</strong></td><td>O (MoR)</td><td>O</td><td>5%+$0.50</td><td>디지털 상품 특화. 물리적 상품 부적합</td></tr>
+  <tr><td><strong>Eximbay</strong></td><td><strong>O</strong></td><td>O</td><td>~3.5%</td><td>한국 PG사. 해외 카드 결제 수취 지원</td></tr>
+  <tr><td><strong>NICE페이먼츠</strong></td><td><strong>O</strong></td><td>O (해외카드)</td><td>~3.0%</td><td>한국 대형 PG. 해외 결제 모듈 제공</td></tr>
+</table>
+
+<h2>3.2 현실적 옵션 분석</h2>
+
+<h3>Option A: PayPal 비즈니스 (가장 현실적)</h3>
+<div class="option-block">
+  <p class="pro">+ 장점: 한국 사업자 즉시 개설 가능, 전 세계 200+ 국가 지원, 바이어 보호 프로그램 (신뢰도↑)</p>
+  <p class="con">− 단점: 수수료 3.49%+, 한국 내 결제 불가, 분쟁 시 판매자 불리, 인출 시 환전 손실</p>
+  <p class="fit">→ 적합도: PayNShip 초기 MVP에 최적</p>
+</div>
+
+<h3>Option B: 해외법인 + Stripe</h3>
+<div class="option-block">
+  <p class="pro">+ 장점: 낮은 수수료(2.9%), 개발자 친화적 API, 구독/반복결제 용이</p>
+  <p class="con">− 단점: Delaware C-Corp 설립 필요($500~2,000 + 연간 유지비), 세무 복잡</p>
+  <p class="fit">→ 적합도: Scale-up 단계에서 고려</p>
+</div>
+
+<h3>Option C: 한국 PG사 (Eximbay/NICE)</h3>
+<div class="option-block">
+  <p class="pro">+ 장점: 한국 규제 준수 용이, 원화 정산, 한국 고객도 결제 가능</p>
+  <p class="con">− 단점: 해외 카드 결제 UX 열악, 글로벌 커버리지 제한</p>
+  <p class="fit">→ 적합도: 보조 결제수단으로 활용</p>
+</div>
+
+<h3>권장 조합 (Phase별)</h3>
+<table>
+  <tr><th style="width:30%">Phase</th><th>결제 인프라</th></tr>
+  <tr><td><strong>Phase 1 (MVP)</strong></td><td>PayPal 비즈니스 계정 단독</td></tr>
+  <tr><td><strong>Phase 2 (Growth)</strong></td><td>PayPal + Eximbay (해외카드 직접결제 옵션 추가)</td></tr>
+  <tr><td><strong>Phase 3 (Scale)</strong></td><td>Delaware C-Corp → Stripe 도입 + PayPal 유지</td></tr>
+</table>
+
+<!-- SECTION 4 -->
+<div class="page-break"></div>
+<h1 id="s4">4. 유사 사업자 분석</h1>
+
+<h2>4.1 경쟁사 매핑</h2>
+<p>현재 한국 프록시 쇼핑 시장에는 17개 이상의 사업자가 활동 중이다. 전부 <strong>수동 에이전트 기반</strong>이며, AI 자동화를 도입한 서비스는 확인되지 않음.</p>
+
+<table>
+  <tr><th>서비스</th><th>설립</th><th>모델</th><th>수수료</th><th>특징</th></tr>
+  <tr><td><strong>KoreanBuddies</strong></td><td>~2015</td><td>Proxy + Forwarding</td><td>$5~12%</td><td>가장 높은 인지도. Bunjang 지원</td></tr>
+  <tr><td><strong>Harumio</strong></td><td>~2018</td><td>Proxy + Forwarding</td><td>$5 flat + 환율마진</td><td>저렴한 수수료. 중고마켓 지원</td></tr>
+  <tr><td><strong>KoreaToMe</strong></td><td>~2016</td><td>Forwarding 중심</td><td>무료 한국주소 + 배송비</td><td>Forwarding 특화</td></tr>
+  <tr><td><strong>AllThatSales</strong></td><td>~2019</td><td>Proxy</td><td>10~15% 추정</td><td>Bunjang 특화. 중고 명품</td></tr>
+  <tr><td><strong>PINKBOX</strong></td><td>~2004</td><td>Proxy + Consolidation</td><td>비공개</td><td>20년+ 경력. 패키지 통합 전문</td></tr>
+  <tr><td><strong>Korgou</strong></td><td>~2020</td><td>Proxy + Assisted</td><td>10% 추정</td><td>K-pop 특화</td></tr>
+  <tr><td><strong>Paysable</strong></td><td>~2022</td><td>Proxy + Payment</td><td>수수료 포함가</td><td>결제 대행 중심</td></tr>
+  <tr><td><strong>Com&amp;Buy</strong></td><td>~2021</td><td>Proxy</td><td>10% 추정</td><td>Bunjang/중고 특화</td></tr>
+  <tr><td><strong>OntactKorea</strong></td><td>~2020</td><td>Proxy + Forwarding</td><td>8~12%</td><td>종합 서비스</td></tr>
+</table>
+
+<h2>4.2 비즈니스 모델 유형</h2>
+
+<h3>Type A: 순수 Forwarding (주소 제공형)</h3>
+<p><strong>대표</strong>: KoreaToMe<br>
+한국 주소 제공 → 고객이 직접 주문 → 수령/국제배송. 고객이 한국 사이트에서 직접 결제해야 하므로 외국인 결제 불가 문제 미해결.</p>
+
+<h3>Type B: 풀 프록시 (구매대행형)</h3>
+<p><strong>대표</strong>: KoreanBuddies, Harumio, AllThatSales<br>
+고객이 URL/링크 제출 → 에이전트가 대신 구매 → 국제배송. 수동 처리로 인한 느린 응답(24~72시간), 확장성 제한.</p>
+
+<h3>Type C: 마켓플레이스형</h3>
+<p><strong>대표</strong>: 일부 K-pop 굿즈 전문몰<br>
+직접 재고 확보 → 자체 사이트에서 판매. 재고 리스크, 제한된 상품 범위.</p>
+
+<h2>4.3 경쟁사 공통 약점 (PayNShip 기회)</h2>
+<table>
+  <tr><th style="width:18%">약점</th><th style="width:40%">설명</th><th style="width:42%">PayNShip 대응</th></tr>
+  <tr><td><strong>수동 처리</strong></td><td>모든 주문을 사람이 처리 (24~72h)</td><td>LLM 기반 실시간 자동 견적/주문</td></tr>
+  <tr><td><strong>불투명한 가격</strong></td><td>최종 가격을 주문 후에야 확인</td><td>AI 즉시 가격 산출 (배송비+관세 포함)</td></tr>
+  <tr><td><strong>제한된 커뮤니케이션</strong></td><td>이메일/폼 기반, 실시간 소통 불가</td><td>채팅 기반 실시간 상담</td></tr>
+  <tr><td><strong>UX 열악</strong></td><td>링크 붙여넣기 → 견적 대기 → 결제 (다단계)</td><td>원스톱 채팅 인터페이스</td></tr>
+  <tr><td><strong>상품 정보 부족</strong></td><td>스크래핑/번역 없이 원본 링크 공유</td><td>자동 스크래핑 + 상품 정보 정제</td></tr>
+  <tr><td><strong>확장성 제한</strong></td><td>에이전트 수 = 처리량 상한</td><td>AI로 처리량 제한 없음</td></tr>
+</table>
+
+<h2>4.4 Positioning Map</h2>
+<div style="background: #fafafa; border: 1px solid #eee; padding: 20pt; text-align: center; font-family: monospace; font-size: 10pt; line-height: 1.8; margin: 10pt 0;">
+<pre style="text-align: left; display: inline-block;">
+        높은 자동화
+            │
+            │       ★ PayNShip (목표 포지션)
+            │
+            │
+   저가 ────┼──────────────────── 프리미엄
+            │
+            │  KoreaToMe    KoreanBuddies
+            │  Harumio      AllThatSales
+            │               PINKBOX
+            │
+        낮은 자동화 (수동)
+</pre>
+</div>
+
+<!-- SECTION 5 -->
+<div class="page-break"></div>
+<h1 id="s5">5. Strategic Implications</h1>
+
+<h2>5.1 Build / Accelerate / Deprioritize</h2>
+<table>
+  <tr><th style="width:18%">우선순위</th><th style="width:35%">항목</th><th style="width:47%">이유</th></tr>
+  <tr><td><strong>Build</strong></td><td>PayPal 비즈니스 계정 연동</td><td>결제 인프라 없이는 서비스 런칭 불가</td></tr>
+  <tr><td><strong>Build</strong></td><td>구매대행업 신고 + 통신판매업 등록</td><td>법적 기반 없이 운영 불가</td></tr>
+  <tr><td><strong>Accelerate</strong></td><td>AI 자동 견적 (배송비+관세)</td><td>경쟁사 대비 핵심 차별점</td></tr>
+  <tr><td><strong>Accelerate</strong></td><td>자동 스크래핑 + 상품 정보 정제</td><td>수동 프록시 대비 즉시 응답 가능</td></tr>
+  <tr><td><strong>Deprioritize</strong></td><td>Stripe 연동</td><td>Phase 3에서 해외법인 설립 후 도입</td></tr>
+  <tr><td><strong>Deprioritize</strong></td><td>자체 물류/재고</td><td>초기에는 3PL 또는 기존 배송 인프라 활용</td></tr>
+</table>
+
+<h2>5.2 Key Risks to Monitor</h2>
+<ul>
+  <li><strong>Coupang/Naver의 글로벌 직접 판매 확대</strong> — Coupang이 자체 글로벌 배송을 강화하면 일부 상품의 프록시 수요 감소</li>
+  <li><strong>한국 결제 규제 변화</strong> — Stripe 한국 진출 시 경쟁 구도 변동</li>
+  <li><strong>AI 경쟁사 진입</strong> — 기존 프록시 업체가 AI 도입하거나, 글로벌 AI 커머스 플레이어가 한국 시장 진출</li>
+</ul>
+
+<h2>5.3 Competitive Moat 구축 전략</h2>
+<p>PayNShip이 수동 프록시 대비 방어할 수 있는 해자:</p>
+<ul>
+  <li><strong>데이터 해자</strong>: 스크래핑 데이터 축적 → 가격 예측, 배송 시간 예측 정확도 향상</li>
+  <li><strong>UX 해자</strong>: 채팅 한 번으로 끝나는 구매 경험 vs 다단계 폼 제출</li>
+  <li><strong>비용 해자</strong>: AI 처리로 에이전트 인건비 제거 → 낮은 수수료 가능</li>
+  <li><strong>네트워크 효과</strong>: 상품 DB 확대 → 검색 정확도 향상 → 더 많은 유저 유입</li>
+</ul>
+
+<hr>
+
+<!-- SECTION 6 -->
+<h1 id="s6">6. Next Actions</h1>
+<table>
+  <tr><th style="width:18%">시점</th><th>액션</th></tr>
+  <tr><td><strong>즉시</strong></td><td>PayPal 비즈니스 계정 개설 + 통신판매업/구매대행업 신고 절차 확인</td></tr>
+  <tr><td><strong>1주 내</strong></td><td>주요 타겟 국가(미국, 일본, 동남아) 수출 제한 품목 리스트 정리</td></tr>
+  <tr><td><strong>2주 내</strong></td><td>결제 플로우 설계 (PayPal Checkout → 한국 구매 → 국제배송)</td></tr>
+  <tr><td><strong>1개월 내</strong></td><td>MVP 기준 법적 리스크 체크리스트 완성 (변호사 검토 권장)</td></tr>
+  <tr><td><strong>분기별</strong></td><td>경쟁사 모니터링 (신규 진입자, AI 도입 여부, 가격 변동)</td></tr>
+</table>
+
+<hr>
+
+<h2>Sources</h2>
+<ul class="sources">
+  <li><a href="https://zonos.com/docs/guides/country-guides/south-korea">Zonos - South Korean Ecommerce Guide</a></li>
+  <li><a href="https://stripe.com/resources/more/payments-in-south-korea">Stripe - Payments in South Korea</a></li>
+  <li><a href="https://docs.stripe.com/payments/countries/korea">Stripe - Korean Payment Methods Docs</a></li>
+  <li><a href="https://www.paypal.com/kr/business">PayPal Korea Business</a></li>
+  <li><a href="https://behalfkr.com/digital-payment-infrastructure-2/">BehalfKR - Digital Payment Infrastructure Barriers</a></li>
+  <li><a href="https://www.corbado.com/blog/state-of-ecommerce-authentication">Corbado - E-commerce Authentication 2026</a></li>
+  <li><a href="https://www.regulationasia.com/articles/korea-eyes-bank-like-security-rules-for-major-retail-platforms">Regulation Asia - Korea Bank-Like Security Rules</a></li>
+  <li><a href="https://anchanto.com/korea-e-commerce-industry/">Anchanto - Korea E-commerce Guide 2026</a></li>
+  <li><a href="https://www.trade.gov/country-commercial-guides/south-korea-ecommerce">Trade.gov - South Korea Ecommerce</a></li>
+  <li><a href="https://wholekorea.com/best-17-korea-proxy-shopping-and-buying-services/">WholeKorea - Best 17 Korea Proxy Services</a></li>
+  <li><a href="https://mag.wcoomd.org/magazine/wco-news-108-issue-3-2025/korea-customs-services-e-commerce/">WCO - Korea Customs E-commerce</a></li>
+  <li><a href="https://www.cbp.gov/trade/priority-issues/trade-agreements/korea">KORUS FTA - U.S. CBP</a></li>
+</ul>
+
+<div class="footer-note">Analysis date: 2026-03-06. Competitive landscape changes rapidly — recommend quarterly refresh.</div>
+
+</body>
+</html>

@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayNShip (Pro Version)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Google Sans', 'sans-serif'] },
+                    colors: {
+                        gemini: { bg: '#ffffff', sidebar: '#f0f4f9', input: '#f0f4f9', blue: '#1a73e8', text: '#1f1f1f' }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                        'slide-up': 'slideUp 0.5s ease-out forwards',
+                        'blink': 'blink 1s step-end infinite',
+                        'pulse-slow': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        slideUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        blink: { '0%, 100%': { opacity: '1' }, '50%': { opacity: '0' } }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Google Sans', sans-serif; background-color: white; color: #1f1f1f; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .text-gradient { background: linear-gradient(to right, #4285f4, #9b72cb, #d96570); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-block; }
+        .cursor { display: inline-block; width: 6px; height: 16px; background-color: #1a73e8; margin-left: 2px; vertical-align: middle; animation: blink 1s step-end infinite; }
+        
+        /* Markdown Table Style */
+        .invoice-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .invoice-table th { text-align: left; color: #6b7280; padding: 8px 0; border-bottom: 1px solid #e5e7eb; font-weight: 500; }
+        .invoice-table td { padding: 12px 0; border-bottom: 1px solid #f3f4f6; color: #374151; }
+        .invoice-table tr:last-child td { border-bottom: none; font-weight: 700; color: #111827; font-size: 1.1rem; padding-top: 16px; }
+    </style>
+</head>
+<body class="h-screen flex overflow-hidden bg-white">
+
+    <!-- Version Badge -->
+    <div class="fixed z-50 top-3 right-16 md:top-4 md:right-6 bg-gray-100/80 backdrop-blur text-gray-400 text-[10px] px-2 py-0.5 rounded border border-gray-200 font-mono pointer-events-none">
+        v0.2.0 (Pro)
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center backdrop-blur-sm hidden">
+        <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl animate-slide-up">
+            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                <i class="fas fa-robot text-blue-600"></i> Agent Setup
+            </h2>
+            <p class="text-sm text-gray-500 mb-4">Gemini API Key를 입력하면 AI 쇼핑 에이전트가 활성화됩니다.</p>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Gemini API Key</label>
+                    <input type="password" id="input-gemini-key" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="AIzaSy...">
+                </div>
+            </div>
+            <div class="mt-6 flex gap-2">
+                <button onclick="saveSettings()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-bold text-sm transition">Activate Agent</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar (Left Menu) -->
+    <aside class="hidden md:flex w-[260px] bg-gemini-sidebar flex-col p-4 space-y-4 border-r border-gray-100 transition-all">
+        <div class="flex items-center gap-2 px-2 py-1 mb-2">
+            <div class="w-8 h-8 bg-gradient-to-tr from-blue-500 to-purple-500 rounded-lg flex items-center justify-center text-white">
+                <i class="fas fa-shopping-bag text-sm"></i>
+            </div>
+            <span class="font-bold text-gray-700 text-lg tracking-tight">PayNShip</span>
+        </div>
+        
+        <button onclick="location.reload()" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-white border border-gray-200 hover:bg-gray-50 text-sm font-medium transition shadow-sm text-gray-700">
+            <i class="fas fa-plus text-blue-500"></i> New Chat
+        </button>
+
+        <!-- Persistent Shortcuts in Sidebar -->
+        <div class="space-y-1 pt-4">
+            <p class="px-4 text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Quick Actions</p>
+            <button onclick="fillInput('https://smtownandstore.com/product/wayv-winter-special-album')" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-gray-200/50 transition text-sm text-gray-600 text-left">
+                <span class="w-6 h-6 rounded bg-blue-100 flex items-center justify-center text-blue-600 text-xs"><i class="fas fa-compact-disc"></i></span>
+                Buy K-Pop Album
+            </button>
+            <button onclick="fillInput('BTS 앨범 추천해줘')" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-gray-200/50 transition text-sm text-gray-600 text-left">
+                <span class="w-6 h-6 rounded bg-purple-100 flex items-center justify-center text-purple-600 text-xs"><i class="fas fa-wand-magic-sparkles"></i></span>
+                Recommend Items
+            </button>
+            <button onclick="fillInput('한국 과자 추천해줘')" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg hover:bg-gray-200/50 transition text-sm text-gray-600 text-left">
+                <span class="w-6 h-6 rounded bg-orange-100 flex items-center justify-center text-orange-600 text-xs"><i class="fas fa-cookie-bite"></i></span>
+                Find K-Snacks
+            </button>
+        </div>
+
+        <div class="mt-auto">
+            <button onclick="openSettings()" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-200/50 transition text-xs text-gray-500 font-medium">
+                <i class="fas fa-cog"></i> Settings
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col relative h-full bg-white">
+        <!-- Mobile Header -->
+        <header class="md:hidden flex items-center justify-between p-4 bg-white/90 backdrop-blur sticky top-0 z-10 border-b border-gray-100">
+            <span class="font-bold text-gray-700">PayNShip</span>
+            <button onclick="openSettings()"><i class="fas fa-cog text-gray-400"></i></button>
+        </header>
+
+        <!-- Chat Container -->
+        <div id="chat-container" class="flex-1 overflow-y-auto pb-48 w-full max-w-4xl mx-auto px-4 scrollbar-hide pt-6">
+            
+            <!-- Welcome Screen -->
+            <div id="welcome-screen" class="flex flex-col h-full justify-center items-center text-center space-y-8 pb-20 animate-fade-in">
+                <div class="w-16 h-16 bg-white rounded-2xl shadow-lg border border-gray-100 flex items-center justify-center mb-4">
+                    <i class="fas fa-robot text-3xl text-blue-500"></i>
+                </div>
+                <div class="space-y-2">
+                    <h1 class="text-4xl md:text-5xl font-bold tracking-tight text-gray-900">
+                        Global Shopping,<br><span class="text-gradient">Simplified.</span>
+                    </h1>
+                    <p class="text-lg text-gray-500 max-w-lg mx-auto">
+                        Paste a URL from any Korean store, and I'll handle the translation, shipping calculation, and payment for you.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Input Area & Quick Chips -->
+        <div class="fixed bottom-0 left-0 md:left-[260px] right-0 bg-gradient-to-t from-white via-white to-transparent pb-6 pt-10 px-4">
+            <div class="max-w-3xl mx-auto relative">
+                
+                <!-- Quick Chips (Persistent) -->
+                <div class="flex gap-2 mb-3 overflow-x-auto scrollbar-hide py-1">
+                    <button onclick="fillInput('https://smtownandstore.com/product/wayv-winter-special-album')" class="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-full text-sm font-medium text-gray-600 hover:bg-gray-50 hover:border-blue-300 transition shadow-sm whitespace-nowrap">
+                        <i class="fas fa-link text-blue-500"></i> Paste Example URL
+                    </button>
+                    <button onclick="fillInput('Recommend K-Pop Merch')" class="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-full text-sm font-medium text-gray-600 hover:bg-gray-50 hover:border-purple-300 transition shadow-sm whitespace-nowrap">
+                        <i class="fas fa-star text-purple-500"></i> Recommend
+                    </button>
+                    <button onclick="fillInput('Calculate Shipping')" class="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-full text-sm font-medium text-gray-600 hover:bg-gray-50 hover:border-orange-300 transition shadow-sm whitespace-nowrap">
+                        <i class="fas fa-calculator text-orange-500"></i> Calculator
+                    </button>
+                </div>
+
+                <!-- Input Box -->
+                <div class="relative flex items-center w-full bg-gemini-input rounded-2xl border border-transparent focus-within:bg-white focus-within:border-blue-200 focus-within:shadow-lg transition-all duration-300">
+                    <div class="pl-4 text-gray-400">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <input id="user-input" type="text" class="w-full bg-transparent h-14 pl-3 pr-12 outline-none text-base text-gray-700" placeholder="Paste URL or ask a question..." onkeypress="if(event.key === 'Enter') sendMessage()">
+                    <button onclick="sendMessage()" class="absolute right-2 p-2 w-10 h-10 rounded-xl hover:bg-blue-100 transition text-blue-600 flex items-center justify-center">
+                        <i class="fas fa-arrow-up"></i>
+                    </button>
+                </div>
+                <p class="text-center text-[11px] text-gray-400 mt-2">
+                    PayNShip uses Gemini AI & Shopify API. Costs are estimates.
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // --- Configuration ---
+        const config = {
+            geminiKey: '', // User input
+            shopUrl: 'aigent-kim.myshopify.com',
+            shopToken: '' 
+        };
+
+        const chatContainer = document.getElementById('chat-container');
+        const userInput = document.getElementById('user-input');
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const modal = document.getElementById('settings-modal');
+        
+        // State
+        let currentStep = 0; // 0: Idle, 1: Product Found, 2: Address Input, 3: Calculating
+        let selectedProduct = null;
+        let customerInfo = {};
+
+        // --- Settings ---
+        function openSettings() { document.getElementById('input-gemini-key').value = config.geminiKey; modal.classList.remove('hidden'); }
+        function saveSettings() {
+            const key = document.getElementById('input-gemini-key').value.trim();
+            if (!key) return alert('API Key is required.');
+            config.geminiKey = key;
+            modal.classList.add('hidden');
+        }
+        window.onload = () => { if (!config.geminiKey) setTimeout(openSettings, 600); };
+
+        // --- UI Core ---
+        function fillInput(text) { userInput.value = text; userInput.focus(); }
+        function scrollToBottom() { chatContainer.scrollTo({ top: chatContainer.scrollHeight, behavior: 'smooth' }); }
+        
+        async function typeWriter(element, text, speed = 15) {
+            // Remove any existing cursor in the element just in case
+            const existingCursor = element.querySelector('.cursor');
+            if(existingCursor) existingCursor.remove();
+
+            const cursor = document.createElement('span');
+            cursor.className = 'cursor';
+            element.appendChild(cursor);
+            
+            // Allow HTML tags in text? Simple implementation treats as string, 
+            // but for complex HTML we append chunks. 
+            // Here we assume text is plain text. For HTML, we render immediately.
+            if (text.includes('<')) {
+                element.innerHTML = text; // Direct render for HTML content
+                return;
+            }
+
+            for (let i = 0; i < text.length; i++) {
+                cursor.before(text[i]);
+                scrollToBottom();
+                // Randomize speed slightly for human feel
+                await new Promise(r => setTimeout(r, speed + Math.random() * 10));
+            }
+            cursor.remove();
+        }
+
+        function createMessageContainer(sender) {
+            if (welcomeScreen.style.display !== 'none') welcomeScreen.style.display = 'none';
+            
+            const wrapper = document.createElement('div');
+            wrapper.className = `w-full mb-6 ${sender === 'user' ? '' : 'animate-slide-up'}`;
+            
+            const avatar = sender === 'bot' 
+                ? `<div class="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 flex items-center justify-center flex-shrink-0 shadow-md text-white"><i class="fas fa-sparkles text-sm"></i></div>`
+                : `<div class="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0 text-gray-600 font-bold text-xs">YOU</div>`;
+
+            wrapper.innerHTML = `
+                <div class="max-w-3xl mx-auto flex gap-4 ${sender === 'user' ? 'flex-row-reverse' : ''}">
+                    ${avatar}
+                    <div class="message-content ${sender === 'user' ? 'bg-[#f0f4f9] px-5 py-3 rounded-[20px] rounded-tr-sm text-gray-800' : 'pt-1 text-gray-800 w-full'} text-[15px] leading-7 overflow-hidden">
+                        <div class="text-body"></div>
+                    </div>
+                </div>`;
+            chatContainer.appendChild(wrapper);
+            return wrapper.querySelector('.text-body');
+        }
+
+        function showLoading(text = "Thinking...") {
+            const id = 'loading-' + Date.now();
+            const wrapper = createMessageContainer('bot');
+            wrapper.id = `wrapper-${id}`;
+            wrapper.innerHTML = `
+                <div class="flex items-center gap-3 text-gray-500">
+                    <div class="flex space-x-1">
+                        <div class="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 0s"></div>
+                        <div class="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                        <div class="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                    </div>
+                    <span class="text-sm font-medium animate-pulse">${text}</span>
+                </div>`;
+            return id;
+        }
+
+        function removeLoading(id) {
+            const el = document.getElementById(`wrapper-${id}`);
+            if (el) {
+                // Remove the spinner content but keep the container if we want to reuse it, 
+                // OR remove entire container. Here, remove entire container for cleaner flow.
+                el.closest('.w-full').remove();
+            }
+        }
+
+        // --- Logic ---
+        async function sendMessage() {
+            const text = userInput.value.trim();
+            if (!text) return;
+            if (!config.geminiKey) return openSettings();
+
+            userInput.value = '';
+            const userMsg = createMessageContainer('user');
+            userMsg.innerText = text;
+
+            const loadingId = showLoading("Analyzing request...");
+            
+            try {
+                await processScenario(text);
+            } catch (e) {
+                const botMsg = createMessageContainer('bot');
+                botMsg.innerText = "Error: " + e.message;
+            } finally {
+                removeLoading(loadingId);
+            }
+        }
+
+        // --- Scenario Processor ---
+        async function processScenario(text) {
+            const botMsg = createMessageContainer('bot');
+
+            // 1. URL Analysis Phase
+            if (text.includes('http')) {
+                await typeWriter(botMsg, "I'm analyzing the product page...");
+                
+                // Mock Data Logic based on URL
+                let pData = { title: "Product", priceNum: 0, weightNum: 0.5, category: "General" };
+                
+                if (text.includes('luxboy')) {
+                    pData = { title: "[Prada] Saffiano Leather Mini Bag", priceKrw: "₩2,450,000", priceNum: 2450000, weight: "1.2kg", weightNum: 1.2, category: "Luxury > Bags", img: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=400" };
+                } else if (text.includes('kurly')) {
+                    pData = { title: "[Kurly] Gangnam Galbi Tang", priceKrw: "₩15,000", priceNum: 15000, weight: "1.5kg", weightNum: 1.5, category: "Food", img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400" };
+                } else {
+                    pData = { title: "WayV - Winter Special Album", priceKrw: "₩27,800", priceNum: 27800, weight: "0.8kg", weightNum: 0.8, category: "Album", img: "https://img.youtube.com/vi/F5nmWoWpvTU/maxresdefault.jpg" };
+                }
+                
+                selectedProduct = pData;
+                
+                // Show Product Card
+                const card = document.createElement('div');
+                card.className = "mt-4 bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm max-w-sm animate-slide-up";
+                card.innerHTML = `
+                    <div class="h-40 bg-gray-100 overflow-hidden relative">
+                         <img src="${pData.img}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/400x200?text=Product'">
+                         <div class="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded backdrop-blur-md">
+                            ${pData.category}
+                         </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-bold text-gray-800 text-lg leading-tight mb-2">${pData.title}</h3>
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="text-sm text-gray-500">Weight: ${pData.weight}</div>
+                            <div class="text-xl font-bold text-blue-600">${pData.priceKrw}</div>
+                        </div>
+                        <button onclick="requestAddress()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold transition flex items-center justify-center gap-2">
+                            <i class="fas fa-calculator"></i> Calculate Shipping
+                        </button>
+                    </div>
+                `;
+                botMsg.appendChild(card);
+                return;
+            }
+            
+            // 2. Default Chat / Recommendation
+            // Call Gemini API
+            const response = await fetchGemini(text); // Assume returns array of products
+            await typeWriter(botMsg, `I found some interesting items related to "${text}".`);
+            
+            const grid = document.createElement('div');
+            grid.className = "grid grid-cols-1 md:grid-cols-2 gap-3 mt-4 animate-slide-up";
+            
+            response.forEach(p => {
+                const item = document.createElement('div');
+                item.className = "bg-white border rounded-xl p-3 shadow-sm hover:shadow-md transition cursor-pointer flex flex-col gap-2";
+                item.innerHTML = `
+                    <div class="h-24 bg-gray-100 rounded-lg overflow-hidden">
+                        <img src="https://image.pollinations.ai/prompt/${encodeURIComponent(p.title)}?width=300&height=200&nologo=true" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <div class="font-bold text-sm text-gray-800 truncate">${p.title}</div>
+                        <div class="text-xs text-gray-500">${p.category}</div>
+                        <div class="flex justify-between items-center mt-2">
+                            <span class="font-bold text-blue-600 text-sm">${p.priceKrw}</span>
+                            <button class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-3 py-1 rounded text-xs font-bold">Select</button>
+                        </div>
+                    </div>
+                `;
+                item.onclick = () => {
+                    selectedProduct = p;
+                    // Simulate selecting product then showing card
+                    const bMsg = createMessageContainer('bot');
+                    bMsg.innerHTML = `<div class="font-medium text-gray-800">You selected: <b>${p.title}</b>.</div>`;
+                    
+                    setTimeout(() => {
+                         const card = document.createElement('div');
+                         card.innerHTML = `<button onclick="requestAddress()" class="mt-2 bg-blue-600 text-white px-6 py-2 rounded-lg font-bold shadow-md animate-slide-up">Start Calculation <i class="fas fa-arrow-right ml-1"></i></button>`;
+                         bMsg.appendChild(card);
+                    }, 500);
+                };
+                grid.appendChild(item);
+            });
+            botMsg.appendChild(grid);
+        }
+
+        // --- Step 2: Address Input Form ---
+        function requestAddress() {
+            const botMsg = createMessageContainer('bot');
+            typeWriter(botMsg, "To give you an exact quote, I need your shipping details.");
+            
+            const form = document.createElement('div');
+            form.className = "mt-4 bg-white border border-gray-200 rounded-xl p-5 shadow-sm max-w-md animate-slide-up";
+            form.innerHTML = `
+                <h4 class="font-bold text-gray-800 mb-3 flex items-center gap-2"><i class="fas fa-map-marker-alt text-red-500"></i> Shipping Address</h4>
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 mb-1">Country</label>
+                        <select id="addr-country" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2.5 text-sm outline-none focus:border-blue-500">
+                            <option value="US">United States</option>
+                            <option value="CA">Canada</option>
+                            <option value="UK">United Kingdom</option>
+                            <option value="SG">Singapore</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-1">State/Province</label>
+                            <input type="text" id="addr-state" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2.5 text-sm outline-none focus:border-blue-500" placeholder="NY">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-1">Zip Code</label>
+                            <input type="text" id="addr-zip" class="w-full bg-gray-50 border border-gray-200 rounded-lg p-2.5 text-sm outline-none focus:border-blue-500" placeholder="10001">
+                        </div>
+                    </div>
+                </div>
+                <button onclick="calculateFinalPrice()" class="w-full mt-4 bg-black text-white py-3 rounded-lg font-bold hover:bg-gray-800 transition">
+                    Get Final Quote
+                </button>
+            `;
+            botMsg.appendChild(form);
+        }
+
+        // --- Step 3: Calculation Logic (Simulating Shopify) ---
+        async function calculateFinalPrice() {
+            // Get inputs
+            const country = document.getElementById('addr-country').value;
+            const zip = document.getElementById('addr-zip').value;
+            
+            // UI Feedback
+            const loadingId = showLoading("Connecting to Shopify Store...");
+            await new Promise(r => setTimeout(r, 1500)); // Simulate network
+            
+            removeLoading(loadingId);
+            const loadingId2 = showLoading("Calculating duties & taxes...");
+            await new Promise(r => setTimeout(r, 1500)); // Simulate calculation
+            removeLoading(loadingId2);
+
+            // Calculation Logic
+            const exRate = 1400; // KRW to USD
+            const itemPriceUsd = selectedProduct.priceNum / exRate;
+            const weight = selectedProduct.weightNum || 1.0;
+            
+            // Dynamic Shipping based on Zone (Mock)
+            let shipRatePerKg = 25; 
+            if (country === 'US') shipRatePerKg = 22;
+            if (country === 'SG') shipRatePerKg = 15;
+            
+            const shippingCost = weight * shipRatePerKg;
+            const subtotal = itemPriceUsd + shippingCost;
+            
+            // Tax / Duty (Mock)
+            const dutyRate = 0.05; // 5%
+            const taxRate = 0.08; // 8%
+            const duty = subtotal * dutyRate;
+            const tax = subtotal * taxRate;
+            
+            // Shopify Transaction Fee (Mock - internal cost, maybe passed to user or absorbed)
+            const serviceFee = subtotal * 0.10; // 10% Service Fee from plan
+            
+            const total = subtotal + duty + tax + serviceFee;
+            
+            // Store for checkout
+            customerInfo = { country, zip, total: total.toFixed(2) };
+
+            // Render Invoice
+            const botMsg = createMessageContainer('bot');
+            await typeWriter(botMsg, `Calculation complete for <b>${country}</b>. Here is your breakdown:`);
+            
+            const invoice = document.createElement('div');
+            invoice.className = "mt-4 bg-white border border-gray-200 rounded-xl p-6 shadow-lg max-w-md animate-slide-up";
+            invoice.innerHTML = `
+                <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-4">
+                    <h3 class="font-bold text-lg">Estimated Invoice</h3>
+                    <span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded font-bold">DRAFT</span>
+                </div>
+                <table class="invoice-table">
+                    <tr>
+                        <th>Item</th>
+                        <td class="text-right">$${itemPriceUsd.toFixed(2)}</td>
+                    </tr>
+                    <tr>
+                        <th>Int'l Shipping (${weight}kg)</th>
+                        <td class="text-right">$${shippingCost.toFixed(2)}</td>
+                    </tr>
+                    <tr>
+                        <th>Est. Duties & Taxes</th>
+                        <td class="text-right">$${(duty + tax).toFixed(2)}</td>
+                    </tr>
+                    <tr>
+                        <th>Service Fee (10%)</th>
+                        <td class="text-right">$${serviceFee.toFixed(2)}</td>
+                    </tr>
+                    <tr>
+                        <th>Total (USD)</th>
+                        <td class="text-right text-blue-600">$${total.toFixed(2)}</td>
+                    </tr>
+                </table>
+                <div class="mt-4 bg-gray-50 p-3 rounded-lg text-xs text-gray-500 flex gap-2">
+                    <i class="fas fa-info-circle mt-0.5"></i>
+                    <div>Rates are retrieved from Shopify based on the provided address. Final duties may vary at customs.</div>
+                </div>
+                <button onclick="createOrder()" class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold shadow-md transition flex justify-center items-center gap-2">
+                    Proceed to Payment <i class="fas fa-credit-card"></i>
+                </button>
+            `;
+            botMsg.appendChild(invoice);
+        }
+
+        // --- Step 4: Checkout ---
+        async function createOrder() {
+            const loadingId = showLoading("Generating Shopify Checkout Link...");
+            
+            // Mock Shopify Draft Order Creation
+            const payload = {
+                // ... payload construction ...
+            };
+            
+            // Simulate API Call
+            setTimeout(async () => {
+                removeLoading(loadingId);
+                const botMsg = createMessageContainer('bot');
+                
+                // Actual CORS workaround logic would go here, we mock success
+                const checkoutUrl = `https://${config.shopUrl}/checkouts/cn/c1-${Math.random().toString(36).substr(2,9)}`;
+                
+                const successCard = document.createElement('div');
+                successCard.className = "bg-green-50 border border-green-200 rounded-2xl p-6 text-center animate-slide-up";
+                successCard.innerHTML = `
+                    <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center text-white mx-auto mb-3 shadow-lg">
+                        <i class="fas fa-check text-xl"></i>
+                    </div>
+                    <h3 class="font-bold text-green-800 text-xl mb-1">Order Ready!</h3>
+                    <p class="text-green-700 text-sm mb-4">Your cart has been reserved on Shopify.</p>
+                    <a href="${checkoutUrl}" target="_blank" class="inline-block w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl transition shadow-md transform hover:-translate-y-0.5">
+                        Pay $${customerInfo.total} Now
+                    </a>
+                    <button onclick="location.reload()" class="mt-3 text-xs text-green-600 hover:underline">Start New Order</button>
+                `;
+                botMsg.appendChild(successCard);
+            }, 2000);
+        }
+
+        // --- Utils ---
+        async function fetchGemini(query) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${config.geminiKey}`;
+            const prompt = `Recommend 3 popular Korean products related to "${query}". Return JSON Array: [{title, category, priceKrw, priceNum, weight}]. No markdown.`;
+            try {
+                const res = await fetch(url, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }) });
+                const data = await res.json();
+                return JSON.parse(data.candidates[0].content.parts[0].text.replace(/```json|```/g, ''));
+            } catch(e) {
+                // Fallback mock data if API fails or empty key
+                return [
+                    { title: "BTS - Proof (Standard Ed.)", category: "K-Pop", priceKrw: "₩55,000", priceNum: 55000 },
+                    { title: "Innisfree Green Tea Serum", category: "Beauty", priceKrw: "₩24,000", priceNum: 24000 },
+                    { title: "Gentle Monster Sunglasses", category: "Fashion", priceKrw: "₩280,000", priceNum: 280000 }
+                ];
+            }
+        }
+    </script>
+</body>
+</html>

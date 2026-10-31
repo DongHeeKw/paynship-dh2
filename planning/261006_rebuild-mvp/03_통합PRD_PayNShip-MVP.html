@@ -1,0 +1,2726 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>통합 PRD — PayNShip MVP (rebuild 기반 · 미국 소프트런칭)</title>
+<style>
+/* Pretendard 파일을 못 찾아 시스템 서체로 굽는다 */
+:root {
+  --ground:#F8F9F7; --surface:#FFFFFF; --sunk:#F1F3F0;
+  --ink-strong:#171A18; --ink:#4C534E; --ink-weak:#69716B;
+  --line:#E2E6E2; --line-soft:#EDF0EC;
+  --accent:#1B6B4F; --accent-soft:#E7F1EC; --on-accent:#FFFFFF;
+  --warn:#D0343A; --warn-soft:#FBECEC;
+  --sans:"Pretendard Variable",-apple-system,BlinkMacSystemFont,system-ui,"Apple SD Gothic Neo",sans-serif;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --ground:#141715; --surface:#1B1F1C; --sunk:#191D1A;
+  --ink-strong:#EDEFEC; --ink:#A8B0AA; --ink-weak:#8A928C;
+  --line:#2C322E; --line-soft:#232823;
+  --accent:#4FB68C; --accent-soft:#1D2E26; --on-accent:#0E1A14;
+  --warn:#FF8B8E; --warn-soft:#2E1E1F;
+}}
+:root[data-theme="dark"]{
+  --ground:#141715; --surface:#1B1F1C; --sunk:#191D1A;
+  --ink-strong:#EDEFEC; --ink:#A8B0AA; --ink-weak:#8A928C;
+  --line:#2C322E; --line-soft:#232823;
+  --accent:#4FB68C; --accent-soft:#1D2E26; --on-accent:#0E1A14;
+  --warn:#FF8B8E; --warn-soft:#2E1E1F;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);
+  font-size:16px;line-height:1.75;-webkit-font-smoothing:antialiased}
+.shell{max-width:1220px;margin:0 auto;padding:0 24px 120px;
+  display:grid;grid-template-columns:214px minmax(0,1fr);gap:56px;align-items:start}
+
+.toc{position:sticky;top:28px;padding-top:64px;font-size:13px;display:grid;gap:1px;max-height:100dvh;overflow-y:auto}
+.toc-title{margin:0 0 10px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--accent);font-weight:700}
+.toc a{display:block;padding:4px 8px 4px 0;color:var(--ink-weak);text-decoration:none;border-radius:5px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.toc a:hover{color:var(--accent)}
+.toc a.lv1{margin-top:12px;font-weight:700;color:var(--ink-strong)}
+.toc a.lv2{padding-left:10px}
+
+main{min-width:0;padding-top:64px}
+h1{font-size:clamp(26px,3.4vw,34px);font-weight:800;letter-spacing:-.03em;line-height:1.2;
+  color:var(--ink-strong);margin:64px 0 18px;padding-bottom:12px;border-bottom:2px solid var(--accent);
+  text-wrap:balance}
+h1:first-child{margin-top:0;font-size:clamp(34px,5vw,50px);border-bottom:none;padding-bottom:0}
+h2{font-size:24px;font-weight:700;letter-spacing:-.022em;color:var(--ink-strong);
+  margin:48px 0 12px;text-wrap:balance}
+h3{font-size:17px;font-weight:700;color:var(--ink-strong);margin:32px 0 10px}
+p{margin:0 0 16px;max-width:74ch;text-wrap:pretty}
+a{color:var(--accent);text-underline-offset:3px}
+ul,ol{margin:0 0 16px;padding-left:22px;max-width:74ch}
+li{margin:4px 0}
+strong{color:var(--ink-strong)}
+hr{border:none;border-top:1px solid var(--line);margin:44px 0}
+blockquote{margin:0 0 20px;padding:14px 18px;border-left:2px solid var(--accent);
+  background:var(--accent-soft);border-radius:0 8px 8px 0;font-size:14.5px}
+blockquote p{margin:0 0 8px;max-width:none}
+blockquote p:last-child{margin:0}
+
+code{font-family:var(--mono);font-size:.85em;background:var(--sunk);
+  padding:1px 5px;border-radius:4px;border:1px solid var(--line-soft)}
+pre{background:var(--sunk);border:1px solid var(--line);border-radius:10px;
+  padding:16px 18px;overflow-x:auto;margin:0 0 22px;line-height:1.55}
+pre code{background:none;border:none;padding:0;font-size:12.5px;color:var(--ink)}
+pre.mermaid{background:var(--surface);text-align:center;padding:22px}
+
+table{border-collapse:collapse;width:100%;font-size:14.5px;margin:0 0 8px;
+  font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:10px 13px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+th{font-size:11.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-weak);border-bottom:1px solid var(--line);white-space:nowrap}
+tbody tr:last-child td{border-bottom:none}
+table{display:block;overflow-x:auto}
+@media (min-width:900px){table{display:table}}
+
+/* 표기 딱지 */
+code:where(:not(pre code)){white-space:nowrap}
+
+footer{margin-top:72px;padding-top:24px;border-top:1px solid var(--line);
+  font-size:13px;color:var(--ink-weak)}
+
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr;gap:0}
+  .toc{position:static;padding:32px 0 0;max-height:none;
+    display:flex;gap:6px;overflow-x:auto;border-bottom:1px solid var(--line-soft);padding-bottom:14px}
+  .toc-title{display:none}
+  .toc a{white-space:nowrap;background:var(--sunk);border-radius:999px;padding:6px 12px}
+  .toc a.lv2{display:none}
+  main{padding-top:28px}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+<nav class='toc'><p class='toc-title'>목차</p><a class="lv1" href="#통합-prd-paynship-mvp-rebuild-기반-미국-소프트런칭">통합 PRD — PayNShip MVP (rebuild 기반 · 미국 소프트런칭)</a><a class="lv2" href="#0-한-문장">0. 한 문장</a><a class="lv2" href="#1-배경과-문제">1. 배경과 문제</a><a class="lv2" href="#2-범위">2. 범위</a><a class="lv2" href="#3-이용자와-기기">3. 이용자와 기기</a><a class="lv2" href="#4-도메인-동작-매트릭스">4. 도메인 × 동작 매트릭스</a><a class="lv2" href="#5-화면">5. 화면</a><a class="lv2" href="#6-기능-요구사항과-수용-조건">6. 기능 요구사항과 수용 조건</a><a class="lv2" href="#7-데이터">7. 데이터</a><a class="lv2" href="#8-아키텍처">8. 아키텍처</a><a class="lv2" href="#9-비기능-요구">9. 비기능 요구</a><a class="lv2" href="#10-지표와-단위-경제">10. 지표와 단위 경제</a><a class="lv2" href="#11-일정">11. 일정</a><a class="lv2" href="#12-리스크">12. 리스크</a><a class="lv2" href="#13-결정-전부-확정-261007">13. 결정 — 전부 확정(261007)</a><a class="lv2" href="#14-이-문서의-갱신-규칙">14. 이 문서의 갱신 규칙</a></nav>
+<main>
+<h1 id="통합-prd-paynship-mvp-rebuild-기반-미국-소프트런칭">통합 PRD — PayNShip MVP (rebuild 기반 · 미국 소프트런칭)</h1>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Document Ver.</strong></td>
+<td>v.0.3</td>
+</tr>
+<tr>
+<td><strong>Last Update</strong></td>
+<td>2026. 10. 07</td>
+</tr>
+<tr>
+<td><strong>In Charge</strong></td>
+<td>박요한</td>
+</tr>
+</tbody>
+</table>
+<p>표기: <code>[실측]</code> 코드·스키마·운영화면을 직접 확인한 것 · <code>[가설]</code> 검증하지 않은 추정 · <code>[가정]</code> 계산을 위해 둔 값(실측으로 바꿀 것) · <code>[미조사]</code> 아직 안 본 것 · <code>[확인 필요]</code> 외부(법무·세무·계약) 확인이 필요한 것.
+결정 표기: <code>S0~S9</code> · <code>D1~D10</code> 은 <a href="plans/261006_rebuild_통합_머지계획.md">머지 계획</a> 번호, <code>P-n</code> 은 정책 값(정책서 §10 과 같은 번호). <strong>모든 결정은 확정(261007)이다. 최종 결정 = 박요한(D10).</strong>
+v0.3 의 단일 기준은 <a href="plans/261007_v0.3_변경시트.md">v0.3 변경 시트</a> 이고, 근거는 <a href="researches/261007-전략정책-반영점검/">전략·정책 반영 점검 4건</a> 이다. 요구·FR ID 는 변경 시트 §3.2 배정을 따른다.</p>
+<p>관련 문서: <a href="01_정책서_PayNShip-MVP.md">정책서(01)</a> · <a href="02_요구정의_기능목록.md">요구정의·기능목록(02)</a> · <a href="89_레드팀_사전QA_261006.md">레드팀 사전 QA(89)</a> ·
+<a href="261006_kbuyer-v2_vs_rebuild_비교.md">비교</a> · <a href="261006_스토리보드_비교_고객_운영자.md">스토리보드·어드민</a> · <a href="261006_gemini_모델_재평가.md">Gemini 재평가</a> · <a href="researches/261006-us-de-minimis/README.md">미국 관세 연구</a> ·
+약관 6종(시행 2026-03-10): <code>kbuyer-v2/docs/external-inputs/2026-04-15-policies/terms/</code> — 약칭 CJ(고객여정 매핑) · T(이용약관) · OS(주문·배송) · DL(배송) · RR(반품·환불) · PV(개인정보)</p>
+<h3>변경 이력</h3>
+<table>
+<thead>
+<tr>
+<th>버전</th>
+<th>날짜</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>v0.2</td>
+<td>2026-10-06</td>
+<td>레드팀 사전 QA(89) 16건 반영</td>
+</tr>
+<tr>
+<td><strong>v0.3</strong></td>
+<td><strong>2026-10-07</strong></td>
+<td><strong>261007 결정 전부 확정 반영.</strong> S4 Shopify 하이브리드 원장(§7.1 · §8.1) · S1 1회 결제 + 예외 3종(§8.2) · P-1 가격 상승 추가 결제 · P-2 무게 버퍼 +20% · P-3 반품(약관대로) · P-4 판매처 실비 · P-8 Shopify 할인 · P-9 구매 전 즉시 셀프 취소 P1 · 검수(기본 미개봉 / 디테일 $7 P1) · 관세 초과 고객 부담 · 수익원 4종 · 법인 · 인허가. B 동작 오기 정정(E2 · E3 · E5 · E7 · E8 · E11 · E13). 신규 FR 반영(§6). §10.2 단위 경제 신설. §11 일정(첫 실매출 2027-01 하순). §12 리스크 7건 추가. §13 결정 전부 확정</td>
+</tr>
+<tr>
+<td>v0.3 (오후 보강)</td>
+<td>2026-10-07</td>
+<td><strong>261007 오후 추가 확정 반영(변경 시트 §1.0).</strong> 합포장 MVP 포함(D-g — 요구 27.0 · FR-C-048 · FR-O-049 · FR-B-019, §2.1 · §5.7 · §6.4 · §7.2 <code>ConsolidationGroup</code> · §8.2 #3 부분 환불 상한) · 디테일 검수 결과 항상 고객 확정(D-a) · 검수 환불 시 판매처 반품비(D-b) · 창고 분실·파손 전액(D-c) · 금지품목 폐기 환불(D-j) · 반품 환불 기준액(D-k) · 장기 보류 보관 처리기(D-f, FR-B-063) · 구매 약속 1~3영업일(D-e) · 증빙 보관 1년(D-h) · DPO 박요한(D-i) · 배송 마크업 10% · 환율 마진 0.5% 확정(§10.2) · D3 현행 유지. §11 일정(M3 11/23~12/24 · M4 12/28~2027-01-29 · 첫 실매출 2027-01 말, G0 후 약 16주). §13 에 D-a~D-k · D3 추가</td>
+</tr>
+<tr>
+<td>v0.3 (저녁 보강)</td>
+<td>2026-10-07</td>
+<td><strong>261007 저녁 추가 확정 3건 반영(변경 시트 §1.0).</strong> 합포장 배송비 = 묶은 상자 실측 그대로(버퍼 없음) · 합포장 허용 = 고객 총액(배송비 + 관세 변화) 기준(§5.7 예시 환불 $8.80 → $11.62 · FR-C-048 · O-049 · B-019 · §7.2 · §8.2 #3 · §10.2) · 장기 보류 보관료 = 환불 건 차감 / 출고 건 출고 전 추가 결제 <code>STORAGE_FEE</code>(FR-B-037 · B-063 · §8.2 #3 각주). §13 D-f · D-g 갱신</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="0-한-문장">0. 한 문장</h2>
+<p><strong>해외 K-팬이 한국 상품 URL 하나로, 결제 전에 확정된 관세 포함 총액을 보고, 대화로 사서 받는다</strong> — 운영자는 시스템이 만든 작업만 처리한다.</p>
+<p><strong>고객 약속 문구(정본)</strong>: "Duties &amp; taxes prepaid at checkout (DDP). Only if customs reclassifies your item and charges more will we bill the difference."
+"No extra charges at the border" 같은 무조건 문구는 쓰지 않는다(약관 T§4.2 · DL§1.2 — 세관 재분류로 생긴 초과분은 고객 부담).</p>
+<p><strong>끝났다고 말할 수 있는 조건</strong>: 미국 고객의 <strong>실결제 주문 1건 이상</strong>이 URL → 견적 → 결제 → 발주 → 입고·검수 → 특송 출고 → 배송 완료까지
+<strong>국경에서 고객에게 추가 청구 없이(DDP)</strong> 끝나고, 그 주문의 모든 운영 변경이 <strong>감사로그로 재구성</strong>되며, <strong>Shopify 주문 · 결제 · 환불 · 출고 기록과 DB 가 일일 대사에서 일치</strong>하고,
+견적 관세와 특송사가 청구한 관세의 차이가 <strong>주문당 $1 이내(관세가 0 보다 크면 5% 이내)</strong> 다. 관세 대조는 특송사 청구서 수령 후 판정한다.</p>
+<hr />
+<h2 id="1-배경과-문제">1. 배경과 문제</h2>
+<h3>1.1 지금 어떻게 하고 있나 <code>[실측 261006]</code></h3>
+<table>
+<thead>
+<tr>
+<th>코드</th>
+<th>상태</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>A</strong> kbuyer-v2 (<code>paynshipcompany/paynship-v2</code>)</td>
+<td>운영 중(<code>paynship-v2.vercel.app</code>). 결제는 mock(<code>ENABLE_MOCK_CHECKOUT=true</code>). <strong>운영 DB 주문 0 · 견적 0 · 사용자 1</strong></td>
+</tr>
+<tr>
+<td><strong>A'</strong> 김도윤 레거시 루트 (<code>maybedy/kbuyer</code> main)</td>
+<td>6월에 운영 화면 보강(구매 기록·ops inbox·환불 완료). 7/14 마지막 커밋. 배포본 없음</td>
+</tr>
+<tr>
+<td><strong>B</strong> rebuild (<code>maybedy/kbuyer</code> <code>rebuild/</code>)</td>
+<td>모노레포. 상태 기계·감사로그·기한 감시·Outbox. <strong>배포 전</strong>, 화면 거의 없음</td>
+</tr>
+</tbody>
+</table>
+<p>운영 A 를 직접 써 보면 상품 URL 을 넣었을 때 상품명·가격까지는 나오지만 상세 로딩이 끝나지 않아 <strong>장바구니 버튼이 비활성</strong>이고,
+키워드 검색은 영어·한국어 모두 <code>No results for "products"</code> 다 <code>[실측: 운영 화면 261006]</code>.</p>
+<h3>1.2 그래서 무엇이 문제인가</h3>
+<table>
+<thead>
+<tr>
+<th>문제</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>팔 수 있는 상태가 아니다</strong></td>
+<td>운영 A 는 장바구니까지 못 간다. B 는 배포본이 없다 <code>[실측]</code></td>
+</tr>
+<tr>
+<td>돈의 흐름이 세 갈래다</td>
+<td>A 결제 경로 2개 + 브라우저가 보낸 가격으로 Draft Order 생성(변조 가능) <code>[실측]</code></td>
+</tr>
+<tr>
+<td>관세 견적이 틀린다</td>
+<td>A 는 미국 $800 면세를 가정한다. 면세는 <strong>2025-08-29 정지</strong> <code>[실측: 1차 출처]</code></td>
+</tr>
+<tr>
+<td>운영 기록이 남지 않는다</td>
+<td>A·A' 운영 변경 대부분에 감사로그·상태 검사가 없다 <code>[실측]</code></td>
+</tr>
+<tr>
+<td>첫 매출 마일스톤을 놓쳤다</td>
+<td>전략 문서의 첫 매출 2026-08-12 — 달성 기록 없음 <code>[실측: 문서·커밋]</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>문제는 "기능이 없다" 가 아니라 "돈이 흐르는 한 줄이 끝까지 이어지지 않는다" 이다.</strong></p>
+<h3>1.3 이미 진행 중인 것 — 이 프로젝트의 자리 <code>[실측]</code></h3>
+<table>
+<thead>
+<tr>
+<th>출처</th>
+<th>이미 있는 것</th>
+<th>이 PRD 의 처리</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>B (rebuild)</td>
+<td>견적 게이트 · 가격 엔진(7개국) · 주문/의향/결제 상태 기계 · 기한 감시 15종 · Outbox · 환불 · 반품/검수/포기/차지백 서비스 · 작업 큐 · 2차 결제 차액 계산(차액 0 이면 바로 출고)</td>
+<td><strong>뼈대로 쓴다</strong></td>
+</tr>
+<tr>
+<td>A (kbuyer-v2)</td>
+<td>2-pane 채팅 · 장바구니 · 표시 통화 · 상담 연결 · 창고 검수 화면 · 카탈로그 엔진 · 환율 provider</td>
+<td><strong>화면·모듈 이식</strong></td>
+</tr>
+<tr>
+<td>A' (레거시)</td>
+<td>구매 기록 모달 · ops inbox · 주문 상세 · 의향 검토 · 환불 완료 · NextAuth</td>
+<td><strong>운영 화면 이식</strong></td>
+</tr>
+<tr>
+<td>신규</td>
+<td>에이전트 v0 · 판매처 추천 · 관세 301 규칙 · 고객 응답 화면 · <strong>Shopify 하이브리드 동기화(웹훅 · 태그 · fulfillment · 대사)</strong> · <strong>예외 결제 단계(가격 상승 · 관세 초과)</strong> · <strong>셀프 취소</strong> · <strong>디테일 검수</strong> · <strong>분실·파손 클레임</strong> · <strong>수익원 설정</strong> · <strong>합포장</strong> · <strong>장기 보류 보관 처리기</strong></td>
+<td><strong>새로 만든다</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>이 PRD 는 git merge 계획서가 아니다.</strong> 코드는 B 로 단일화하고 A·A' 는 동결한 뒤 기능 단위로 옮긴다(이식 규칙은 머지 계획 §1.3).</p>
+<h3>1.4 차별점과 경쟁 대안</h3>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>일반 구매대행</th>
+<th>PayNShip MVP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>견적 시점</td>
+<td>주문 후(검수 후 후정산)</td>
+<td><strong>결제 전 확정 총액(Landed Cost).</strong> 추가 결제는 예외 3종뿐(§8.2)</td>
+</tr>
+<tr>
+<td>견적 방식</td>
+<td>운영자 수동</td>
+<td>URL + AI 채팅(에이전트 v0)</td>
+</tr>
+<tr>
+<td>관세</td>
+<td>도착국에서 따로 낸다</td>
+<td><strong>DDP 사전 결제.</strong> 세관 재분류로 생긴 초과분만 사후 청구</td>
+</tr>
+<tr>
+<td>검수</td>
+<td>일률 · 비쌈</td>
+<td>기본 미개봉 재포장 $0 / <strong>디테일 검수 $7(판매처당) 선택</strong></td>
+</tr>
+<tr>
+<td>운영</td>
+<td>엑셀 · 메모</td>
+<td>상태 기계 · 감사로그 · 기한 감시 · Shopify 대사</td>
+</tr>
+</tbody>
+</table>
+<p>MVP 에서 뺀 차별점: HS 자동 분리 · 위험물 박스 자동 격리(견적 단계 박스 분리 배송비 반영만 함), 자연어 검색 · 추천.
+외부 문구는 <strong>"결제 전 확정 총액"</strong> 중심으로 쓴다. 속도("5분 이내", "견적 5초")는 §9 실측값으로만 말한다.</p>
+<table>
+<thead>
+<tr>
+<th>경쟁 대안</th>
+<th>가격 구조</th>
+<th>약점(우리 관점)</th>
+<th>출처</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>KoreanBuddies 등 구매대행</td>
+<td>수수료 5~12%</td>
+<td>결제 전 확정 총액 없음</td>
+<td><code>[문서: 경쟁 브리프 2026-03]</code></td>
+</tr>
+<tr>
+<td>Harumio</td>
+<td>$5 정액 + 환율 마진</td>
+<td>채팅 UX 없음</td>
+<td><code>[문서: 경쟁 브리프 2026-03]</code></td>
+</tr>
+<tr>
+<td>Coupang 로켓직구 글로벌</td>
+<td>판매가 포함</td>
+<td>상품 한정</td>
+<td><code>[문서: v2.2 §8]</code></td>
+</tr>
+<tr>
+<td>Amazon Global</td>
+<td>판매가 포함</td>
+<td>한국 상품 없음</td>
+<td><code>[문서: v2.2 §8]</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>경쟁 표는 2026-03 기준이다. 미국 면세 폐지(2025-08) 이후 경쟁사가 DDP 로 바꿨는지는 <code>[미조사]</code></strong> — 소프트런칭 전(M4) $30 · $80 주문 총액 비교표를 새로 만든다.</p>
+<h3>1.5 법인 · 인허가</h3>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>상태</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>표기</td>
+<td><strong>Next Commerce Inc.(넥스트커머스아이앤씨) d/b/a Pay N Ship</strong> — 약관 T · PV 머리말과 같다</td>
+</tr>
+<tr>
+<td>사업자등록</td>
+<td><strong>완료</strong> (261007 박요한 확인)</td>
+</tr>
+<tr>
+<td>통신판매업 신고</td>
+<td><strong>완료</strong> (261007 박요한 확인)</td>
+</tr>
+<tr>
+<td>법인 등기 여부 · 사업자 유형</td>
+<td><code>[확인 필요]</code> — 영세율 환급(수익원 ③)의 전제</td>
+</tr>
+<tr>
+<td>예창패 협약</td>
+<td>해당 없음</td>
+</tr>
+<tr>
+<td>개인정보 보호책임자(DPO)</td>
+<td><strong>박요한</strong>(D-i 확정 261007) — 현 처리방침의 김도윤 표기는 개정 대상(<a href="plans/261007_약관_개정안_목록.md">약관 개정안 목록</a> PV-07)</td>
+</tr>
+<tr>
+<td>Shopify 스토어 · 결제 디스크립터 법인명 일치</td>
+<td><code>[확인 필요]</code> — 결제 가입(M4) 전</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="2-범위">2. 범위</h2>
+<h3>2.1 In scope (P1 — MVP)</h3>
+<ol>
+<li><strong>견적</strong> — URL 수집 · 검증 게이트 · 관세 포함 확정 총액(USD, 표시 통화 8) · 검토 중 처리 · 24시간 유효 · <strong>무게 버퍼 +20%(배송비에만)</strong> · <strong>수익원 설정(배송 마크업 · 환율 마진)</strong> · <strong>디테일 검수 선택($7/판매처)</strong> · 관세 고지 문구</li>
+<li><strong>AI 채팅 v0</strong> — 도구 호출 에이전트(견적 · 옵션 · 장바구니 · 결제 안내 · 주문 조회 · <strong>취소(<code>cancel_order</code> — 구매 전 실행, 이후 접수)</strong> · 상담원). <strong>판매처 스캔 가격은 응답에 쓰지 않는다</strong>(S7)</li>
+<li><strong>장바구니 · 로그인 · 결제</strong> — 결제 전 로그인 필수, Shopify Draft Order(PortOne · PayPal 중 <strong>먼저 끝난 하나로 출시</strong>), <strong>1회 결제 + 예외 3종</strong>, <strong>Shopify 할인(서버 적용분만)</strong>, <strong>결제 완료 페이지</strong></li>
+<li><strong>발주</strong> — 결제 시 상품별 작업 자동 생성 · 판매처 추천 상위 3(운영자 전용) · 카탈로그 매칭 · 구매 기록(<strong>쿠폰 · 포인트 · 캐시백 · 판매처 반품비 · 매입 증빙</strong>) · <strong>가격 상승(P-1: 허용분 흡수, 초과분 추가 결제)</strong> · 구매 실패 자동 환불</li>
+<li><strong>창고</strong> — 입고 · <strong>기본 = 미개봉 재포장(외박스 사진)</strong> · <strong>디테일 검수(개봉 · 결과를 이상 여부와 관계없이 항상 고객에게 보내 확정받음 · 이상 시 3선택: 그대로 발송 / 판매처 교환 / 환불, 72시간 무응답 = 확정(그대로 발송))</strong> · 실측(버퍼 포함 무게 대비) · <strong>합포장(결제가 끝난 여러 주문을 출고 전 한 상자로 — 고객 요청, 배송비 = 묶은 상자 실측 그대로(버퍼 없음), 고객 총액(배송비 + 관세 변화)이 줄 때만: 미리보기에서 총액이 늘면 요청 불가, 실측에서 늘면 미승인 · 개별 출고, 줄어든 차액은 출고 때 부분 환불)</strong> · 특송 DDP 출고(<strong>Shopify fulfillment 정본</strong>) · <strong>장기 보류 보관(45일 무료 → 하루 $1 → 75일 후 폐기 · 보관료는 환불 건 차감 / 출고 건 출고 전 추가 결제 <code>STORAGE_FEE</code>)</strong></li>
+<li><strong>예외</strong> — <strong>구매 전 즉시 셀프 취소</strong> · 출고 전 취소(판매처 실비 + $5) · 회사 취소(가격 오류) · 환불(<strong>Shopify 확인 후 완료</strong>) · 반품(약관대로) · <strong>분실·파손 클레임(창고 안 회사 과실 = 결제액 전액)</strong> · <strong>창고 금지품목 폐기(폐기 실비 차감 후 환불)</strong> · <strong>관세 초과 청구</strong> · 차지백 · <strong>차단 사용자</strong></li>
+<li><strong>Shopify 하이브리드 원장</strong> — 웹훅 7토픽 동기화 · 태그 미러 · 일일 대사 · 연동 상태 화면</li>
+<li><strong>운영 기반</strong> — 오늘 할 일 · 감사로그(<strong>운영자 개인 계정 인증</strong>) · 요율/환율/수수료/수익원 설정 · <strong>재무 대사</strong> · <strong>영세율 환급 증빙(M4)</strong> · 출시 KPI · <strong>퍼널 이벤트</strong> · <strong>CS 1차 응답 24시간</strong> · 보안 최소셋 · 인프라(월 $100 이하 — Shopify 구독료 · 결제 수수료 제외)</li>
+</ol>
+<h3>2.2 Out of scope (사유는 정책서 §10)</h3>
+<p>다국어 화면 / <strong>자연어 검색</strong> · 추천 · 선호 기억 / <strong>유료 구독(프리미엄 멤버십)</strong> / <strong>제휴(affiliate) 수수료</strong> / AcrossB API 자동 연동 / 위험물 박스 자동 분리(견적 단계 박스 분리 배송비 반영은 범위 안) /
+통관 거부 · 장기 미수령 화면(관세 초과 청구와 고지 · 동의는 범위 안) / 마진 리포트 · 엑셀(재무 대사 1장은 범위 안) / 미국 주 판매세 징수 / 우편(EMS) 기본 배송 / 일반(Standard) 배송 / 재주문 / 네이티브 앱</p>
+<h3>2.3 확장 범위 (P2 — M5)</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>범위</th>
+<th>핵심 규칙</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>9</td>
+<td>다국어 · 일본 확대</td>
+<td>KO · ZH · JA, 일본 관세(¥10,000 per parcel)</td>
+<td>v2.2 국가 순서 10 → 30 → 54</td>
+</tr>
+<tr>
+<td>10</td>
+<td>에이전트 고도화</td>
+<td>자연어 검색 · 추천 · 선호 기억 · 멀티턴 · 대체상품 제안</td>
+<td>차별점 1위</td>
+</tr>
+<tr>
+<td>11</td>
+<td>운영 자동화</td>
+<td>배치 자동 묶기 · 엑셀 · 마진 리포트(원가 = 실구매가) · 발주 칸반</td>
+<td>운영 처리 ≤8분 KPI</td>
+</tr>
+<tr>
+<td>12</td>
+<td>물류 자동화</td>
+<td>AcrossB API · 박스 자동 분리 · 통관 거부 · 장기 미수령 화면</td>
+<td>계약 이후</td>
+</tr>
+<tr>
+<td>13</td>
+<td>수익 확장</td>
+<td>유료 구독 · 제휴 수수료</td>
+<td>사업계획</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="3-이용자와-기기">3. 이용자와 기기</h2>
+<table>
+<thead>
+<tr>
+<th>이용자</th>
+<th>기기</th>
+<th>빈도</th>
+<th>특성</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>해외 K-팬 (주문당 상품가 $35~150 가정 — §10.2 시나리오)</td>
+<td>모바일 브라우저</td>
+<td>컴백 · 굿즈 발매 시 몰림</td>
+<td><strong>영어</strong>, 한국 사이트 사용 불가, 관세 걱정이 이탈 원인 <code>[가설]</code></td>
+</tr>
+<tr>
+<td>운영자 (1인 가정 <code>[문서]</code>)</td>
+<td>데스크톱</td>
+<td>매일</td>
+<td>구매 · 검수 · 출고를 손으로 한다. 놓치면 바로 지연</td>
+</tr>
+<tr>
+<td>공동창업자 2인</td>
+<td>—</td>
+<td>주 1회</td>
+<td>정책 · 요율 · 결제 설정 (super_admin)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>해외 거주 한국인은 1차 비대상이다</strong> — 영어 UI, 의약품 금지, 검역 때문이다.</p>
+<h3>3.1 출시 시장 — 미국 (S0~S9 확정 261007)</h3>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>값</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>첫 시장</td>
+<td><strong>미국</strong> — 역직구 비중 38% <code>[문서: PSST]</code>, B 랜딩 기본값 US <code>[실측]</code></td>
+</tr>
+<tr>
+<td>카테고리</td>
+<td>K-pop 앨범 · 굿즈, K-뷰티 <code>[문서]</code></td>
+</tr>
+<tr>
+<td>언어 · 통화</td>
+<td>영어 · USD 결제 + 표시 8종 (S6)</td>
+</tr>
+<tr>
+<td>배송</td>
+<td>특송 DDP — 우편 간이통관은 한국산 301 대상 물품 불가 <code>[실측: FR 2026-12669]</code>. 리드타임 = 출고 후 5~7영업일(국내 이동 제외, DL§2)</td>
+</tr>
+<tr>
+<td>결제</td>
+<td>PortOne · PayPal 병행 준비, <strong>먼저 끝난 하나로 출시</strong> (S9 · P-7)</td>
+</tr>
+<tr>
+<td>모집</td>
+<td>Reddit · Discord 소규모 <code>[문서: GTM 1단계]</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="4-도메인-동작-매트릭스">4. 도메인 × 동작 매트릭스</h2>
+<table>
+<thead>
+<tr>
+<th>도메인 (B 모델)</th>
+<th>생성</th>
+<th>조회</th>
+<th>수정</th>
+<th>확정·전이</th>
+<th>삭제</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>상품·증거 (<code>Product</code>)</td>
+<td>수집 워커</td>
+<td>고객(견적) · 운영자</td>
+<td><strong>운영자 보정(근거 필수 — 근거 필드 신규, E9)</strong></td>
+<td>검증 게이트</td>
+<td>불가</td>
+</tr>
+<tr>
+<td>견적 (<code>Quote</code>)</td>
+<td>시스템</td>
+<td>고객 · 운영자</td>
+<td><strong>불가</strong>(스냅샷)</td>
+<td>24시간 만료</td>
+<td>불가</td>
+</tr>
+<tr>
+<td>주문 의향 (<code>OrderIntent</code>)</td>
+<td>고객(결제 요청)</td>
+<td>고객 · 운영자</td>
+<td>재견적으로만</td>
+<td>자동 승인 · <strong>운영자 승인/거절(P-6, 승인 시 견적 재검증)</strong></td>
+<td>불가</td>
+</tr>
+<tr>
+<td>결제 요청 (<code>PaymentRequest</code>)</td>
+<td>시스템(1차 · 예외 ①②③)</td>
+<td>고객 · 운영자</td>
+<td>재발행(새 요청)</td>
+<td>웹훅 정산</td>
+<td>만료 시 Draft 삭제</td>
+</tr>
+<tr>
+<td>주문 (<code>Order</code>)</td>
+<td><strong>Shopify <code>orders/paid</code> 정산 시 미러 생성</strong></td>
+<td>고객(본인) · 운영자</td>
+<td>운영자(허용 전이만)</td>
+<td>상태 기계 14상태(운영 상태 = DB 정본)</td>
+<td>불가</td>
+</tr>
+<tr>
+<td>발주 작업 (<code>ProcurementTask</code>)</td>
+<td><strong>결제 정산 시 상품별 자동</strong> ← 지금 없음(스키마 변경, E8)</td>
+<td>운영자</td>
+<td>구매 기록</td>
+<td>QUEUED → … → PURCHASED/FAILED</td>
+<td>취소만</td>
+</tr>
+<tr>
+<td>발주 배치 (<code>ProcurementBatch</code>)</td>
+<td>운영자</td>
+<td>운영자</td>
+<td>운영자</td>
+<td>자동 집계(PARTIALLY_PURCHASED)</td>
+<td>취소만</td>
+</tr>
+<tr>
+<td>가격 변동 (<code>PriceChangeDecision</code> 신규)</td>
+<td>구매 기록 시 시스템</td>
+<td>고객 · 운영자</td>
+<td>고객 동의/거절</td>
+<td>48시간 → 무응답 취소 · 전액 환불</td>
+<td>불가</td>
+</tr>
+<tr>
+<td>판매처 가격 스캔 (신규)</td>
+<td>워커</td>
+<td><strong>운영자만</strong></td>
+<td>불가</td>
+<td>—</td>
+<td>보존 기간 후</td>
+</tr>
+<tr>
+<td>카탈로그 매칭 (신규 · A 이식)</td>
+<td>워커</td>
+<td>운영자</td>
+<td><strong>운영자 확인(0.60~0.84)</strong></td>
+<td>자동(≥0.85)</td>
+<td>&lt;0.60 은 새 카탈로그 항목</td>
+</tr>
+<tr>
+<td>검수 (<code>InspectionResponse</code>)</td>
+<td><strong>운영자(디테일 검수 완료 시 항상 — 이상 여부 무관, D-a)</strong> ← 생성 경로 없음</td>
+<td>고객(본인) · 운영자</td>
+<td>고객 응답(확정 / 이상 시 3선택)</td>
+<td>72시간 무응답 = 확정(발송)</td>
+<td>불가</td>
+</tr>
+<tr>
+<td>합포장 묶음 (<code>ConsolidationGroup</code> 신규)</td>
+<td>고객(결제 완료 · 출고 전 주문 2개 이상, 같은 배송지)</td>
+<td>고객(본인) · 운영자</td>
+<td>고객 철회 · 운영자 포장 · 실측</td>
+<td>미리보기(고객 총액이 늘면 요청 불가) → 입고 후 실측 판정(총액이 줄면 승인 · 같거나 늘면 미승인 → 개별 출고) → 출고 1개</td>
+<td>불가(철회 · 거부 · 해제는 상태로)</td>
+</tr>
+<tr>
+<td>국제 출고 (<code>Shipment</code> 신규)</td>
+<td>운영자(송장 입력)</td>
+<td>고객 · 운영자</td>
+<td>운영자</td>
+<td><strong>Shopify fulfillment 정본</strong> — 합포장이면 출고 1개에 주문 N개</td>
+<td>불가</td>
+</tr>
+<tr>
+<td>환불 (<code>Refund</code>)</td>
+<td>고객 셀프 취소 · 운영자 · 시스템 · <strong>합포장 차액(시스템, 출고 시)</strong> · <strong>Shopify Admin 직접 환불(웹훅)</strong></td>
+<td>고객 · 운영자</td>
+<td>—</td>
+<td><strong><code>refunds/create</code> 확인 후 COMPLETED</strong></td>
+<td>불가</td>
+</tr>
+<tr>
+<td>반품 (<code>ReturnRequest</code>)</td>
+<td>고객(5영업일 · 영상)</td>
+<td>고객 · 운영자</td>
+<td>—</td>
+<td>운영자(수동 승인만)</td>
+<td>불가</td>
+</tr>
+<tr>
+<td>분실·파손 클레임 (신규)</td>
+<td>고객(5영업일 · 사진/영상) · <strong>운영자(창고 안 사고)</strong></td>
+<td>고객 · 운영자</td>
+<td>운영자</td>
+<td>운영자(환불/재발송 — 창고 회사 과실이면 결제액 전액, 고객 선택)</td>
+<td>불가</td>
+</tr>
+<tr>
+<td>장기 보류 보관 (<code>Order</code> 보관 기한 필드 신규)</td>
+<td>시스템(보류 시작 시)</td>
+<td>고객 · 운영자</td>
+<td>운영자(보류 해제)</td>
+<td>sweeper: 45일 → 보관료 시작 · 75일 → 폐기 작업</td>
+<td>불가</td>
+</tr>
+<tr>
+<td>차지백 (<code>Chargeback</code>)</td>
+<td>운영자 · <strong><code>disputes/*</code> 웹훅(신규, FR-B-056)</strong></td>
+<td>운영자</td>
+<td>운영자</td>
+<td>운영자</td>
+<td>불가</td>
+</tr>
+<tr>
+<td>차단 사용자 (신규)</td>
+<td>시스템(차지백 · 관세 미납) · super_admin</td>
+<td>운영자</td>
+<td>super_admin(사유)</td>
+<td>해제</td>
+<td>불가</td>
+</tr>
+<tr>
+<td>작업 (<code>OpsTask</code>)</td>
+<td>시스템 · sweeper</td>
+<td>운영자</td>
+<td>맡기 · 해결</td>
+<td>—</td>
+<td>불가</td>
+</tr>
+<tr>
+<td>요율·설정 (<code>ExchangeRate</code> 등 · <code>AppConfig</code>)</td>
+<td>super_admin · 환율 워커</td>
+<td>운영자</td>
+<td>super_admin(이력)</td>
+<td>유효기간</td>
+<td>불가</td>
+</tr>
+<tr>
+<td>감사로그 (<code>AdminAuditLog</code>)</td>
+<td>시스템</td>
+<td>운영자</td>
+<td><strong>불가</strong></td>
+<td>—</td>
+<td><strong>불가</strong></td>
+</tr>
+</tbody>
+</table>
+<p>빈칸 판정: 판매처 스캔 · 카탈로그 · 검수 생성 경로 · 발주 자동 생성 · 국제 출고 · 클레임 · 차단 사용자 · 합포장 묶음 · 장기 보류 보관은 <strong>이번에 만든다</strong>(FR). 견적 · 감사로그 수정은 <strong>만들지 않는다</strong>(원장 불변).</p>
+<hr />
+<h2 id="5-화면">5. 화면</h2>
+<h3>5.1 고객 — 채팅 (핵심 화면)</h3>
+<pre><code>┌─────────────────────────────────────┬──────────────────────────────┐
+│ PayNShip        [USD ▾]  [Sign in]  │  Quote                        │
+├─────────────────────────────────────┤  ┌─────────────────────────┐ │
+│ 🧑 https://www.musinsa.com/...      │  │ [img] ESCAPEFROM tee    │ │
+│ 🤖 Which size? (S / M / L / XL)     │  │ Size  [ M ▾ ]           │ │
+│ 🧑 M please, ship to Texas          │  ├─────────────────────────┤ │
+│ 🤖 Here's your total. Duties &amp;      │  │ Item            $21.36  │ │
+│    taxes are prepaid (DDP).         │  │ Pay &amp; svc fee    $5.00  │ │
+│    [ Add to cart ]                  │  │ Shipping in KR   $0.00  │ │
+│                                     │  │ Shipping KR→US* $14.10  │ │
+│                                     │  │ Duty (12.5%)     $2.67  │ │
+│                                     │  │ Sales tax   not charged │ │
+│                                     │  │ Customs fee      $2.69  │ │
+│                                     │  │ ─────────────────────── │ │
+│                                     │  │ Total (USD)     $45.82  │ │
+│                                     │  │ [ ] Detail check +$7    │ │
+│ ┌─────────────────────────────┐ [→] │  │ Valid 23h 59m           │ │
+│ │ Paste a link or ask…        │     │  └─────────────────────────┘ │
+│ └─────────────────────────────┘     │  [ Talk to a person ]         │
+└─────────────────────────────────────┴──────────────────────────────┘
+</code></pre>
+<ul>
+<li>예시 검산: 21.36 + 5.00 + 0.00 + 14.10 + 2.67 + 2.69 = <strong>$45.82</strong>(관세는 KORUS 신고 가정 12.5%, MPF 의 KORUS 면제 여부는 <code>[미확인]</code>). 항목은 센트 반올림 후 합산한다(FR-B-015). 배송비는 버퍼 · 마크업이 들어간 예시 값이다.</li>
+<li><strong>화면 문구(정본, FR-C-021)</strong> — 와이어는 줄여 적었다.</li>
+<li>수수료 라벨: <strong>"Payment &amp; service fee"</strong>(약관 OS§1 "결제 및 대행 수수료" 명칭).</li>
+<li>관세: "Duties &amp; taxes prepaid at checkout (DDP). Only if customs reclassifies your item and charges more will we bill the difference."</li>
+<li>배송비(*): "Shipping is based on estimated weight +20%. If the actual weight doesn't exceed it, there's no extra charge."</li>
+<li>리드타임: "Delivered 5–7 business days after dispatch from our Korea warehouse (excludes domestic transit to our warehouse)."</li>
+<li>디테일 검수: "Detail inspection +$7 per seller — we open the box, check it matches your order and look for visible defects."</li>
+<li>숫자는 <strong>오른쪽 견적 카드가 정본</strong>이다. 채팅 말풍선은 숫자를 다시 쓰지 않고 카드를 가리킨다(AI 가 숫자를 만들지 않게).</li>
+<li>견적 상품가 = <strong>고객이 준 URL 의 판매가</strong>다. 판매처 스캔 · 최저가는 카드와 채팅 어디에도 나오지 않는다(S7).</li>
+<li>화면의 <code>#PNS-1042</code> 같은 번호는 <strong>사람용 주문번호(신규 필드)</strong> 다. B 의 주문 ID(cuid)와 달리 URL 에는 쓰지 않는다.</li>
+<li>검토 중이면 카드 자리에 "We're verifying this item — usually within N hours" + 처리 예정 시각.</li>
+</ul>
+<h3>5.2 고객 — 검수 응답 (디테일 검수 주문만)</h3>
+<pre><code>┌──────────────────────────────────────────────┐
+│ Inspection result — order #PNS-1042          │
+│ Seller: Olive Young · Detail check ($7)      │
+│ [photo] [photo] [photo]                      │
+│ Opened: OK · Matches order: OK               │
+│ Visible defect: small scratch on the case    │
+├──────────────────────────────────────────────┤
+│ ( ) Confirm and ship as is                   │
+│ ( ) Exchange with the seller (free)          │
+│ ( ) Refund (seller return fee may apply)     │
+│ Respond within 71h 12m. If we don't hear     │
+│ from you, we'll treat it as confirmed and    │
+│ ship it.                                     │
+│ [ Submit ]                                   │
+└──────────────────────────────────────────────┘
+</code></pre>
+<ul>
+<li><strong>디테일 검수 결과는 이상 여부와 관계없이 항상 고객에게 간다(D-a).</strong> 이상이 없으면 선택지 대신 <code>[ Confirm and ship ]</code> 버튼 하나와 상담 연결만 보인다. 이상이 있으면 위처럼 3선택이다.</li>
+<li>고객이 확정하거나 <strong>72시간 무응답(= 확정 간주)</strong> 이면 출고한다. 화면 하단 고지(정본): "Once you confirm (or 72 hours pass), we ship. Issues found after delivery — even within the inspection scope — follow our standard return policy." — 출고 후 문제는 일반 하자 반품 규칙(국제 반송비 고객 선불 · −DDP −$10, FR-B-055)을 따른다.</li>
+<li>환불을 고르면 판매처 반품비는 회사가 판매처와 교섭하고, 판매처가 부담하지 않으면 <strong>실비를 환불액에서 뺀다(D-b)</strong> — 그래서 선택지에 "seller return fee may apply" 를 적는다.</li>
+<li>기본(미개봉) 주문은 고객 검수 요청이 없다. 외박스가 파손돼 있으면 운영자가 보류하고 작업을 만든다.</li>
+<li>마감 24시간 전에 리마인드 메일이 1회 간다(FR-B-058).</li>
+</ul>
+<h3>5.3 고객 — 추가 결제 동의 (FR-C-045, 예외 ①②③ 통합)</h3>
+<pre><code>┌──────────────────────────────────────────────┐
+│ Additional payment for order #PNS-1042       │
+│ Reason: The seller raised the price          │
+│   Quoted item  $21.36 → Now  $27.10          │
+│   We cover     $3.00                         │
+│   You pay      $3.46  (duty included)        │
+│ Pay within 47h 10m. If you decline or don't  │
+│ respond, we cancel and fully refund.         │
+│ [ Pay $3.46 ]   [ Cancel &amp; refund ]          │
+└──────────────────────────────────────────────┘
+</code></pre>
+<ul>
+<li>사유별 문구와 기한: ① 실측 무게 초과 — 3일(연체 후 7일 자동 취소) ② 가격 상승 — <strong>48시간, 무응답 · 거절 = 취소 · 전액 환불</strong> ③ 관세 초과 — 특송사 청구 증빙 첨부, <strong>7일, 미납 = 계정 차단</strong>.</li>
+<li>예시 차액 = 동결 환율로 <code>computeQuote</code> 를 다시 돌린 총액 − 기수납 − 허용분(수수료 · 관세 · VAT 함께 반영). §5.1 견적 기준 검산: 재계산 총액 27.10 + 5.00(최소 수수료 유지) + 14.10 + 3.39(관세 12.5%) + 2.69 = $52.28 → 52.28 − 45.82 − 3.00(허용분 = max(21.36 × 5%, $3)) = <strong>$3.46</strong>.</li>
+</ul>
+<h3>5.4 운영자 — 오늘 할 일</h3>
+<pre><code>┌ 오늘 할 일 ───────────────────────────────────────────────────┐
+│ 유형          대상           기한         상태       담당   [맡기] │
+│ 의향 검토     PNS-1050 $382  2h 남음      대기       -      [맡기] │
+│ 발주          3건(올리브영)   🔴 1h 초과   진행       박요한  [열기] │
+│ 추가 결제 대기 PNS-1047 가격 31h 남음     고객 대기   -            │
+│ 검수 응답     PNS-1042       71h 남음     고객 대기   -            │
+│ 웹훅 실패     refunds/create  🔴 재처리     대기       -      [맡기] │
+│ 환불 실패     PNS-1031       🔴 상위 보고  대기       -      [맡기] │
+└───────────────────────────────────────────────────────────────┘
+</code></pre>
+<h3>5.5 운영자 — 구매 기록 (발주 배치 &gt; 모달)</h3>
+<pre><code>┌ 구매 기록 — 배치 #B-77 (올리브영 · 3건) ─────────────────────┐
+│ 판매처 추천   ① 올리브영 공식 ₩22,000  ② 네이버 A ₩21,500  ③ … │
+│ 선택 판매처   [ 올리브영 공식 ▾ ]  (추천과 다르면 사유 필수)    │
+│ 판매처 주문번호 [ __________ ]   실구매가(필수) [ ₩ ______ ]    │
+│ 쿠폰 [ ₩ ___ ]  포인트 [ ₩ ___ ]  캐시백 [ ₩ ___ ]              │
+│ 판매처 반품비(왕복) [ ₩ ___ ]   매입 증빙 [ 파일 첨부 ]         │
+│ 결제 수단     [ 법인카드 ●●12 ▾ ]   영수증 [ 파일 첨부 ]        │
+│ ⚠ 견적가 ₩21,000 대비 +4.8% — 허용 한도 max(5%, $3) 안(흡수)    │
+│                                   [ 취소 ]  [ 구매 완료 저장 ]  │
+└───────────────────────────────────────────────────────────────┘
+</code></pre>
+<ul>
+<li>허용 한도를 넘으면 저장 시 해당 작업이 보류되고 가격 변동 결정(<code>PriceChangeDecision</code>)과 고객 추가 결제 요청이 생긴다(FR-O-035).</li>
+<li>판매처 추천 · 쿠폰 · 포인트 · 캐시백 값은 운영자 화면에만 있다(S7).</li>
+</ul>
+<h3>5.6 상태별 화면</h3>
+<table>
+<thead>
+<tr>
+<th>상황</th>
+<th>고객 문구(요지)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>검토 중</td>
+<td>"We're verifying this item" + 처리 예정 시각</td>
+</tr>
+<tr>
+<td>처리 불가</td>
+<td>"We can't buy this item" + 이유(금지품목 · 판매 중지 · 사이트 미지원)</td>
+</tr>
+<tr>
+<td>견적 만료</td>
+<td>"Prices may have changed — get a new quote"</td>
+</tr>
+<tr>
+<td>결제 링크 만료</td>
+<td>"This payment link expired — we sent you a new one" (운영자 재발행)</td>
+</tr>
+<tr>
+<td>결제 완료</td>
+<td>주문번호 · 다음 단계 · <strong>구매 완료 1~3영업일</strong>(D-e) · 리드타임(국내 이동 제외) (FR-C-036)</td>
+</tr>
+<tr>
+<td>구매 전 취소</td>
+<td>"Cancelled — full refund issued" (즉시 셀프 취소)</td>
+</tr>
+<tr>
+<td>구매 후 취소 요청</td>
+<td>"We've received your request. Seller return shipping + $5 will be deducted"</td>
+</tr>
+<tr>
+<td>구매 실패</td>
+<td>"The seller sold out — full refund within 4 hours"</td>
+</tr>
+<tr>
+<td>가격 상승 초과</td>
+<td>"The seller raised the price. Pay the difference within 48h, or we'll cancel and fully refund"</td>
+</tr>
+<tr>
+<td>실측 무게 초과</td>
+<td>"Your package weighs more than our estimate +20%. Please pay the shipping difference"</td>
+</tr>
+<tr>
+<td>관세 초과</td>
+<td>"Customs charged more than we prepaid. Here's the carrier's bill — please pay within 7 days"</td>
+</tr>
+<tr>
+<td>디테일 검수 결과 도착</td>
+<td>"Your inspection result is ready — confirm within 72h, or we'll ship as confirmed" (이상 없음 · 있음 모두)</td>
+</tr>
+<tr>
+<td>합포장 요청 불가</td>
+<td>"Combining these orders wouldn't lower your total (shipping + duties), so we'll ship them separately"</td>
+</tr>
+<tr>
+<td>합포장 승인 · 출고</td>
+<td>"Your orders ship together. We'll refund $X.XX of shipping when the box leaves our warehouse" → 출고 시 "Refunded $X.XX"</td>
+</tr>
+<tr>
+<td>합포장 미승인(실측)</td>
+<td>"After weighing, combining wouldn't lower your total (shipping + duties), so we'll ship your orders separately"</td>
+</tr>
+<tr>
+<td>장기 보류</td>
+<td>"Your order has been on hold for 45 days. Storage is $1/day from now, and items are disposed of after 75 days"</td>
+</tr>
+</tbody>
+</table>
+<p>화면 목록 전체는 <a href="02_요구정의_기능목록.md">02 §2 메뉴구조</a> 를 따른다. <strong>B 실측 경로</strong> <code>[실측]</code>: <code>/</code> · <code>/quote/[ref]</code> · <code>/quote/error</code> · <code>/pay/[id]</code> · <code>/orders/[id]</code> · <code>/admin</code> · <code>/admin/orders</code> · <code>/admin/login</code> · <code>/terms</code> · <code>/privacy</code> · <code>/refund-policy</code>. 나머지는 신규·이식이다(신규 고객 화면: 결제 완료 · 배송·주문 안내 · 추가 결제 동의 · 클레임 접수 · 합포장 요청).</p>
+<h3>5.7 고객 — 합포장 요청 (FR-C-048, D-g)</h3>
+<pre><code>┌──────────────────────────────────────────────┐
+│ Combine orders into one box                  │
+│ Ship to: Austin, TX 78701                    │
+├──────────────────────────────────────────────┤
+│ [x] #PNS-1042  in warehouse   paid $15.14    │
+│ [x] #PNS-1047  purchasing     paid $19.36    │
+│ [ ] #PNS-1039  shipped — can't combine       │
+├──────────────────────────────────────────────┤
+│ International shipping paid      $34.50      │
+│ Combined box (estimate)          $22.88      │
+│ Duties change (estimate)          $0.00      │
+│ Estimated refund at dispatch     $11.62      │
+│ Final refund is set after we weigh the box.  │
+│ [ Request combined shipping ]                │
+└──────────────────────────────────────────────┘
+</code></pre>
+<ul>
+<li>고를 수 있는 주문 = <strong>같은 계정 · 같은 배송지 · 결제 완료 · 아직 출고(특송사 인계) 전</strong>. 출고된 주문 · 다른 배송지 주문은 회색으로 이유를 보인다.</li>
+<li>예시 검산(§10.2 공통 가정): 낸 국제 배송비 = 15.14(0.6kg 추정) + 19.36(1.0kg 추정) = $34.50. 묶음 = 추정 무게 합 1.6kg 그대로(<strong>버퍼 없음</strong> — 승인 단계에서도 실측 그대로) → 특송 원가 8 + 8 × 1.6 = $20.80 → × 1.1 = <strong>$22.88</strong>. 관세 변화 = $0(신고 단위가 바뀌어도 관세가 같다고 가정). 예상 환불 = 34.50 − 22.88 = <strong>$11.62</strong> = 기본 운임 한 번분 $8.80(상자 하나라 한 번만 붙는다) + 각 주문 견적에 붙었던 버퍼분 $2.82(0.32kg × 8 × 1.1).</li>
+<li><strong>고객 총액 차액(배송비 감소 + 관세 변화)이 0 이하면 요청 버튼이 비활성</strong>되고 "wouldn't lower your total" 이유가 보인다 — 묶음은 고객이 내는 총액이 줄 때만 허용한다. 관세가 늘어도 총액이 줄면 요청할 수 있다.</li>
+<li>화면 금액은 추정(미리보기)이다. 승인은 묶음 상품이 모두 입고된 뒤 <strong>실측으로 판정</strong>한다(FR-O-049). 묶은 상자 실측 그대로(버퍼 없음) 계산한 배송비 + 재계산 관세가 낸 금액보다 줄면 승인하고 확정 차액을 <strong>출고 때 부분 환불</strong>한다(FR-B-019). <strong>실측에서 총액이 같거나 늘면 승인하지 않고 주문별로 개별 출고</strong>한다(각 주문은 일반 실측 규칙 · 예외 ①을 그대로 따른다).</li>
+<li>관세: 신고 단위가 바뀌면 관세를 다시 계산한다(신고 단위는 <code>[관세사 확인]</code>). <strong>관세가 늘어도 배송비 감소가 더 커서 고객 총액이 줄면 허용</strong>하고, 관세 증가분은 부분 환불에서 뺀다 — 묶음 때문에 새 결제를 만들지 않는다(§8.2 #3).</li>
+</ul>
+<hr />
+<h2 id="6-기능-요구사항과-수용-조건">6. 기능 요구사항과 수용 조건</h2>
+<p>기능 ID 는 <a href="02_요구정의_기능목록.md">02_요구정의_기능목록.md</a> 를 따른다(v0.3 배정 = 변경 시트 §3.2). <code>v0.3</code> 표시는 이번에 새로 생기거나 바뀐 항목이다.
+<strong>FR-C-046 은 삭제했다</strong>(FR-C-045 "추가 결제 동의"로 통합).</p>
+<h3>6.1 견적 · 에이전트</h3>
+<table>
+<thead>
+<tr>
+<th>FR</th>
+<th>수용 조건 (Given / When / Then)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FR-B-002 검증 게이트</td>
+<td>필수 값 하나라도 검증되지 않은 상품에는 <strong>견적 금액이 나가지 않는다.</strong> 대신 운영 작업(기한 포함)이 생기고 고객 화면에 처리 예정 시각이 보인다. 필수 4필드 = 무게 · HS · 원산지 · 국내 배송비, 선행 = 가격 · 카테고리 <code>[실측: canon §4]</code></td>
+</tr>
+<tr>
+<td>FR-C-021 항목 분해 <code>v0.3</code></td>
+<td>모든 견적에 7개 항목(+선택 시 디테일 검수)과 합계가 보이고, 합계 = 항목 합이다(1센트 오차 없음). 수수료 라벨은 "Payment &amp; service fee". <strong>§0 관세 문구와 무게 버퍼 고지 문구가 있고, "No extra charges at the border" 같은 무조건 문구는 없다</strong></td>
+</tr>
+<tr>
+<td>FR-B-010 수수료 <code>v0.3</code></td>
+<td>상품가 $30 → 수수료 $5(최소), 상품가 $80 → $8. 배송비 · 관세 · 버퍼에는 수수료가 붙지 않는다. 라벨 = "결제 및 대행 수수료(Payment &amp; service fee)". 요율(10%, 최소 $5)은 약관 · 안내 페이지에 공개한다(D-d)</td>
+</tr>
+<tr>
+<td>FR-B-011 관세(미국)</td>
+<td>한국산 화장품 $50 → 관세 $6.25, 한국산 앨범(CD) $40 → 301 관세 $0, 한국산 면 티셔츠 $150(KORUS 신고) → $18.75. <strong>$800 이하라는 이유로 0 이 되는 경로가 없다.</strong> B 불변식 canon §12.5 <code>dutyRate = min(fta, mfn)</code> 를 바꾸는 <strong>canon 개정 ADR(M2)</strong> 이 선행된다(E13)</td>
+</tr>
+<tr>
+<td>FR-B-017 무게 버퍼 <code>v0.3</code></td>
+<td>견적 청구 무게 = 추정 청구 무게 × 1.2(AppConfig). 버퍼는 <strong>배송비에만</strong> 적용되고 관세 신고가 · 수수료는 변하지 않는다. 골든 테스트에 버퍼 전 · 후 값이 있다</td>
+</tr>
+<tr>
+<td>FR-B-018 수익원 <code>v0.3</code></td>
+<td>배송 마크업 <code>shipping.markupRate</code>(<strong>10% 확정</strong> 261007) · 환율 마진 <code>fx.spreadRate</code>(<strong>0.5% 확정</strong> 261007) — 둘 다 설정값으로 바꿀 수 있다 — 이 RateContext 로 들어가 견적에 반영되고, 견적 스냅샷에 적용값이 남는다. 값 0 이면 기존 결과와 같다</td>
+</tr>
+<tr>
+<td>FR-C-026 디테일 검수 선택 <code>v0.3</code></td>
+<td>판매처마다 $7 체크박스가 있고, 체크하면 견적 · Draft Order 에 판매처당 $7 줄이 생긴다</td>
+</tr>
+<tr>
+<td>FR-C-011 에이전트 <code>v0.3</code></td>
+<td>도구 7종(<code>cancel_order</code> — 구매 전 실행, 이후 접수). 벤치마크 10문항(영·한·중, 금지품목, 맥락)을 통과한다. <strong>응답 텍스트의 모든 금액이 견적 엔진 결과와 같다</strong>(불일치 0건). <strong>판매처 스캔 · 최저가 금액이 응답에 0건</strong></td>
+</tr>
+<tr>
+<td>FR-C-012 금지품목</td>
+<td>금지품목 요청에는 도구 호출이 0건이고 이유를 설명한다</td>
+</tr>
+<tr>
+<td>FR-O-038 카탈로그 매칭 <code>v0.3</code></td>
+<td>신뢰도 ≥0.85 자동, 0.60~0.84 운영자 확인, <strong>&lt;0.60 은 매칭 후보를 버리고 새 카탈로그 항목을 만든다</strong></td>
+</tr>
+<tr>
+<td>FR-O-061 증거 보정 <code>v0.3</code></td>
+<td>근거(출처 · 메모) 없이 보정이 저장되지 않는다. B 보정 라우트에는 근거 필드가 없어 <strong>신규</strong>다(E9)</td>
+</tr>
+</tbody>
+</table>
+<h3>6.2 결제 · Shopify 하이브리드</h3>
+<table>
+<thead>
+<tr>
+<th>FR</th>
+<th>수용 조건 (Given / When / Then)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FR-C-031 결제 전 견적 확인 <code>v0.3</code></td>
+<td>체크아웃은 <strong>저장된 견적의 유효기간만</strong> 확인한다(B 는 판매처 재수집 없음 <code>[실측]</code>, E10). 견적이 만료됐으면 재견적 후 바뀐 금액을 고객이 다시 확인해야 결제로 간다. 판매가 변동은 구매 시점(P-1)에 처리한다</td>
+</tr>
+<tr>
+<td>FR-C-032 로그인 <code>v0.3</code></td>
+<td>비로그인 고객은 결제 화면에 들어갈 수 없다. 로그인 후 장바구니가 유지되고, 이전 전에 <strong>게스트 토큰 HMAC 과 소유를 검증</strong>한다</td>
+</tr>
+<tr>
+<td>FR-C-036 결제 완료 <code>v0.3</code></td>
+<td>결제 후 주문번호 · 다음 단계 · <strong>구매 완료 약속 1~3영업일</strong>(D-e — 내부 기한은 12시간 그대로) · 리드타임(국내 이동 제외)이 보인다. 주문 상세에도 같은 약속이 보인다</td>
+</tr>
+<tr>
+<td>FR-B-031 Draft Order <code>v0.3</code></td>
+<td>Shopify 주문에 상품 · 수수료 · 배송 · 관세 · 세금 · 통관 수수료 · (선택 시) 디테일 검수 $7 이 <strong>항목별 줄</strong>로 남는다. 줄 합계 − 서버가 넣은 <code>appliedDiscount</code> = <code>PaymentRequest.amountUsd</code>. <strong>브라우저가 보낸 금액은 쓰이지 않는다</strong></td>
+</tr>
+<tr>
+<td>FR-B-038 Shopify 할인 <code>v0.3</code></td>
+<td>할인은 서버가 Draft Order 에 <code>appliedDiscount</code> 로 넣고 <code>amountUsd</code> 에 <strong>할인 후 금액</strong>을 기록한다. 할인 주문이 <code>AMOUNT_MISMATCH</code> 로 멈추지 않는다(B 는 지금 멈춘다 <code>[실측]</code>). 고객이 인보이스 결제 화면에서 코드를 직접 넣을 수 있는지는 <code>[미조사]</code></td>
+</tr>
+<tr>
+<td>FR-B-015 반올림</td>
+<td>항목별 센트 반올림 후 합산한 값이 총액이다. 반올림 경계 골든 케이스(예: x.xx5)에서 화면 · Shopify · 원장 금액이 같다</td>
+</tr>
+<tr>
+<td>FR-B-016 자동 승인 규칙 <code>v0.3</code></td>
+<td><strong>결제 총액 &gt; $300 · 동일 상품 수량 &gt; 5 · 위험물 · 금지 의심 · 차단 사용자</strong> 중 하나면 <code>PENDING_REVIEW</code> 로 남고 검토 기한 작업이 생긴다(기준값 AppConfig). 나머지는 자동 승인. 승인 시 견적 유효성을 다시 보고, 만료면 재견적</td>
+</tr>
+<tr>
+<td>FR-O-011 의향 승인 <code>v0.3</code></td>
+<td>운영자가 승인하면 <strong>PaymentRequest · Draft Order 가 생성되고</strong>(B <code>review()</code> 는 상태만 바꿈 → 신규) 결제 링크가 열리며 감사로그에 전·후 상태 · 행위자가 남는다. 거절하면 결제 링크가 무효화되고 고객에게 메일이 간다</td>
+</tr>
+<tr>
+<td>FR-B-030 결제 정산 <code>v0.3</code></td>
+<td>같은 웹훅을 두 번 받아도 주문 · 발주 작업이 1번만 생긴다(멱등). 중간 실패는 재전송으로 복구된다. <strong>결제 확인 1분 내 상품별 발주 작업이 생긴다.</strong> 전제: <code>ProcurementTask</code> 에 <code>productId</code> · <code>lineIndex</code> · <code>quantity</code> 추가, <code>orderIntentId @unique</code> 해제, <code>createTask</code> 의 배치를 선택값으로(E8)</td>
+</tr>
+<tr>
+<td>FR-B-032 웹훅 수신 <code>v0.3</code></td>
+<td><code>orders/paid</code> · <code>orders/updated</code> · <code>orders/fulfilled</code> · <code>orders/cancelled</code> · <code>refunds/create</code> · <code>disputes/create</code> · <code>disputes/update</code> 7토픽을 HMAC 검증 후 <code>ShopifyWebhookEvent</code> 에 남기고 처리한다. 같은 이벤트 2회 = 1회 처리</td>
+</tr>
+<tr>
+<td>FR-B-033 예외 결제 연결 <code>v0.3</code></td>
+<td>예외 결제(①②③)는 별도 Draft Order 로 만들고 1차 주문번호를 tag · note 로 단다. Shopify 주문 편집(order edit)으로 한 주문에 붙일 수 있으면 그 방식을 우선한다(<code>[미조사]</code>)</td>
+</tr>
+<tr>
+<td>FR-B-034 출고 · 태그 <code>v0.3</code></td>
+<td>운영 상태가 바뀌면 Outbox 로 CJ 태그(§7.3)가 <code>tagsAdd</code> 되고, 출고 시 <code>fulfillmentCreate</code>(송장 포함)가 실행된다. Shopify 고객 알림은 끄고 출고 메일은 우리 메일 1회</td>
+</tr>
+<tr>
+<td>FR-B-035 하이브리드 동기화 <code>v0.3</code></td>
+<td>Shopify Admin 에서 직접 한 환불 · 취소가 웹훅으로 DB 에 반영되고 감사로그 행위자가 <code>shopify:admin</code> 으로 남는다. 웹훅 실패는 재처리 큐와 운영 작업이 된다</td>
+</tr>
+<tr>
+<td>FR-B-036 일일 대사 <code>v0.3</code></td>
+<td>매일 Shopify 주문 · 결제 · 환불 합계와 DB 를 주문 단위로 비교하고, 불일치마다 운영 작업이 생긴다. 불일치 0 이 출시 관문이다</td>
+</tr>
+<tr>
+<td>FR-B-037 예외 결제 단계 <code>v0.3</code></td>
+<td><code>PaymentPhase</code> · <code>ShopifyPhase</code> 에 <code>PRICE_ADJUSTMENT</code> · <code>TAX_OVERAGE</code> 가 있다. 단계별 유니크 제약이 실측 2차 결제와 충돌하지 않고, 정산 분기(가격 조정 결제 → 해당 발주 작업 보류 해제 / 관세 초과 결제 → 차단 해제 / <strong>보관료 결제 <code>STORAGE_FEE</code> → 출고 보류 해제</strong>)가 동작하며, 여러 Shopify 주문에 나눠 환불된다. <code>STORAGE_FEE</code> 는 같은 예외 결제 경로를 쓰는 고객 귀책 부수 청구라 "예외 3종" 에 세지 않는다(§8.2 #3 각주)</td>
+</tr>
+<tr>
+<td>FR-B-053 결제 링크 만료 <code>v0.3</code></td>
+<td>결제 링크 만료 = min(48시간, 견적 만료). <strong>만료되면 Draft Order 를 삭제한다(<code>draftOrderDelete</code> 신규).</strong> 만료 후 들어온 입금은 B 대로 <strong>정산한 뒤</strong>(money reality wins) 운영 큐에서 환불 여부를 판단한다(E3)</td>
+</tr>
+<tr>
+<td>FR-O-076 Shopify 연동 화면 <code>v0.3</code></td>
+<td>연결 상태 · 최근 웹훅 실패 · 재처리 버튼 · 일일 대사 결과가 한 화면에 있다</td>
+</tr>
+</tbody>
+</table>
+<h3>6.3 발주 · 가격 변동</h3>
+<table>
+<thead>
+<tr>
+<th>FR</th>
+<th>수용 조건 (Given / When / Then)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FR-O-032 구매 기록 <code>v0.3</code></td>
+<td>실구매가 없이는 저장되지 않는다. 판매처 주문번호 · 결제 수단 · 국내 송장 · <strong>판매처 반품비(왕복) · 쿠폰 · 포인트 · 캐시백 · 매입 증빙</strong>이 <strong>전용 칸</strong>에 저장된다(메모 JSON 아님)</td>
+</tr>
+<tr>
+<td>FR-O-034 판매처 추천</td>
+<td>결제된 상품의 80% 이상에서 추천 1곳 이상이 나온다 <code>[가설 — 측정 후 확정]</code>. 추천과 다른 선택은 사유 없이 저장되지 않는다. 추천은 운영자 화면에만 있다</td>
+</tr>
+<tr>
+<td>FR-O-035 가격 상승 <code>v0.3</code></td>
+<td>실구매가 ≤ 견적 상품가 + <strong>max(견적 상품가 × 5%, $3)</strong> 이면 고객 화면 변화 없이 회사가 흡수한다. 넘으면 해당 작업(또는 줄)이 보류되고 <strong>고객 추가 결제 요청</strong>이 간다. 차액 = 동결 환율로 <code>computeQuote</code> 재계산 총액 − 기수납 − 허용분(수수료 · 관세 · VAT 함께 반영)</td>
+</tr>
+<tr>
+<td>FR-B-052 가격 변동 응답 기한 <code>v0.3</code></td>
+<td>고객 동의 기한 <strong>48시간</strong>. 무응답 · 거절이면 해당 주문(또는 줄)이 취소되고 <strong>전액 환불</strong>된다(구매 전이라 비용 0). 처리기는 기한 필드와 짝이다</td>
+</tr>
+<tr>
+<td>FR-O-036 · FR-B-046 구매 실패</td>
+<td>결제 직후(<code>PENDING_PAYMENT</code>) 주문도 <code>PURCHASE_FAILED</code> 로 갈 수 있다. 실패 기록 즉시 고객 메일, 4시간 안에 Shopify 환불이 실행된다. 일부 상품만 실패하면 그 줄 상품가 + 관세 몫 + 수수료 재계산 차액만 환불되고 나머지는 진행된다</td>
+</tr>
+<tr>
+<td>FR-B-049 구매 시각</td>
+<td>발주 roll-up 으로 <code>PURCHASED</code> 가 된 주문에 <code>purchasedAt</code> 이 기록되고, 48시간 뒤 입고가 없으면 작업이 생긴다</td>
+</tr>
+</tbody>
+</table>
+<h3>6.4 창고 · 검수 · 출고</h3>
+<table>
+<thead>
+<tr>
+<th>FR</th>
+<th>수용 조건 (Given / When / Then)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FR-O-042 검수 등록 <code>v0.3</code></td>
+<td><strong>기본 주문은 미개봉 재포장 — 입고 시 외박스 사진만</strong> 남고, 외박스 파손이면 운영자 보류 작업이 생긴다. <strong>고객 검수 요청은 디테일 검수 주문에만</strong> 만들 수 있다. 디테일 검수 완료 시 사진(최대 5장)과 고객 응답 기한 72시간이 생기고, 기한이 지나면 <strong>확정 간주 → 그대로 발송</strong>(행위자 <code>system:cron</code>)</td>
+</tr>
+<tr>
+<td>FR-O-047 디테일 검수 <code>v0.3</code></td>
+<td>디테일 검수 주문은 개봉 · 주문 일치 · 육안 하자 체크리스트와 사진을 모두 채워야 검수 완료가 된다. <strong>검수 완료 = 이상 여부와 관계없이 고객 확정 요청 생성</strong>(D-a). 이상 없음이면 선택지는 "확정" 하나, 이상 있음이면 3선택이다</td>
+</tr>
+<tr>
+<td>FR-O-048 판매처 교환 <code>v0.3</code></td>
+<td>고객이 교환을 고르면 판매처 교환 대행 기록(요청 · 발송 · 재입고)이 생기고, 재입고 후 다시 검수한다(다시 고객 확정). 교환 비용은 고객에게 청구하지 않는다(OS§3.2)</td>
+</tr>
+<tr>
+<td>FR-B-043~045 검수 응답 · 후속 · 차단 <code>v0.3</code></td>
+<td>응답 3종: <code>SHIP_AS_IS</code>(= 확정) → 출고 해제, <code>EXCHANGE</code> → 판매처 교환(FR-O-048), <code>RETURN_REFUND</code> → <code>REFUND_PENDING</code>. <strong>디테일 검수 주문은 고객 확정(또는 72h 기본값) 전에는 출고 전이가 거부된다.</strong> <code>RETURN_REFUND</code> 의 판매처 반품비(D-b): 운영자가 판매처 교섭 결과를 기록해야 환불이 실행되고, 판매처가 부담하지 않으면 <strong>실비(근거 첨부)를 해당 상품 환불액에서 뺀다</strong> — 출고 전이라 관세 몫은 그대로 환불된다</td>
+</tr>
+<tr>
+<td>FR-B-041 검수 기본값</td>
+<td>B 상수 <code>INSPECTION_DEFAULT_VERDICT = 'ACCEPT'</code> 를 유지하고, 기본값 적용 시 <strong>확정 기록(<code>confirmedBy = system:cron</code>) + 출고 해제 후속 전이</strong>가 일어나는 회귀 테스트가 있다(지금은 상태만 바뀐다 <code>[실측]</code>). 이상이 없는 검수에도 기본값이 같은 방식으로 적용된다</td>
+</tr>
+<tr>
+<td>FR-C-042 검수 응답 <code>v0.3</code></td>
+<td>고객이 확정(이상 없음) 또는 3선택 중 하나로 응답하면 그 즉시 운영자 화면에 반영되고, 기한 이후 응답은 받지 않는다. 확정 화면에 "출고 후 문제는 일반 반품 규칙" 고지가 있다(§5.2)</td>
+</tr>
+<tr>
+<td>FR-O-046 창고 보류 · 금지품목 <code>v0.3</code></td>
+<td>외박스 파손 · 오배송 · 위조 의심 · <strong>금지품목 발견</strong>은 운영자가 출고 보류하고, 보류 중에는 72시간 기본값을 적용하지 않는다. 금지품목이면 고객 연락 작업이 생기고 <strong>14일 무응답 → 폐기</strong>, 환불 = <strong>국제 배송비 + 관세 몫(세금 · 통관 수수료 포함) − 폐기 실비</strong>(출고 전이라 국제 배송비 · 관세는 돌려주고, 상품가 · 수수료 · 국내 배송비는 환불하지 않는다, D-j). 폐기 실비는 근거 첨부 필수 · 감사로그</td>
+</tr>
+<tr>
+<td>FR-C-048 합포장 요청 <code>v0.3</code> 신규</td>
+<td>같은 계정 · 같은 배송지 · 결제 완료 · 출고 전 주문이 2개 이상이면 내 주문에서 묶을 주문을 고를 수 있다. 고르면 낸 국제 배송비 합 · 묶음 추정 배송비(버퍼 없음) · 관세 변화 · 예상 환불액이 보이고(§5.7), <strong>고객 총액 차액이 0 이하면 요청이 거부</strong>된다(이유 표시). 관세가 늘어도 총액이 줄면 요청된다. 출고된 주문 · 다른 배송지 주문 · 이미 다른 묶음에 든 주문은 고를 수 없다</td>
+</tr>
+<tr>
+<td>FR-O-049 합포장 처리 <code>v0.3</code> 신규</td>
+<td>묶음의 모든 주문이 입고되고(디테일 검수 주문은 고객 확정까지) 나서야 묶음 실측을 기록할 수 있다. <strong>실측 기록 = 승인 판정</strong>(FR-B-019): 고객 총액(배송비 + 관세)이 줄면 승인, 같거나 늘면 미승인 → 묶음이 풀리고 주문별 개별 출고 작업이 생기며 고객에게 이유 메일이 간다. 승인된 묶음을 출고하면 <strong><code>Shipment</code> 1개에 묶인 주문 N개</strong>가 연결되고, 각 Shopify 주문에 같은 송장으로 fulfillment 가 생긴다. 묶음에 든 주문은 개별 출고가 거부된다. 묶인 주문 하나가 출고 전 취소 · 환불되면 남은 주문으로 묶음을 다시 계산한다(1개만 남으면 묶음 해제). 모든 처리는 감사로그</td>
+</tr>
+<tr>
+<td>FR-B-019 합포장 배송비 재계산 · 부분 환불 <code>v0.3</code> 신규</td>
+<td>차액 = (묶인 주문들이 낸 국제 배송비 + 관세 합) − (묶음 배송비 + 묶음 관세). <strong>요청 시</strong>: 묶을 주문의 추정 청구 무게 합을 <strong>버퍼 없이</strong> 견적 엔진(같은 요율 · 마크업)에 넣어 묶음 추정 배송비를 내고, 신고 단위가 바뀌면 관세도 다시 계산해 차액 ≤ 0 이면 거부한다. <strong>승인 단계(실측)</strong>: 묶은 상자 실측 청구 무게를 <strong>버퍼 없이 그대로</strong> 견적 엔진에 넣어 확정 재계산하고 관세도 재계산 → 차액 &gt; 0 이면 승인하고 <strong>출고 때 부분 환불</strong>(주문별로 낸 국제 배송비 + 관세 비율로 나눠 각 Shopify 주문에 환불, 센트 잔차는 금액이 가장 큰 주문), 차액 ≤ 0 이면 <strong>승인하지 않고(<code>REJECTED</code>, 사유 <code>NO_SAVING_AT_MEASURE</code>) 개별 출고</strong>로 돌린다 — 이때 각 주문은 일반 실측 규칙(버퍼 포함 무게 대비 · 예외 ①)을 따른다. <strong>관세가 늘어도 차액(고객 총액 감소)이 0보다 크면 승인</strong>하고 관세 증가분은 환불에서 뺀다. 묶음 때문에 생기는 결제는 없다. 주문별 부분 환불 ≤ 그 주문이 낸 국제 배송비 + 관세(§8.2 #3). 환불은 <code>refunds/create</code> 확인 후 완료. 신고 단위는 <code>[관세사 확인]</code>. 묶음 배송비에는 버퍼가 없으므로 묶인 주문들의 버퍼 잔여는 부분 환불로 고객에게 돌아가고, FR-B-048 집계에는 묶음 단위 차액 · 관세 변화로 남는다</td>
+</tr>
+<tr>
+<td>FR-O-043 실측 <code>v0.3</code></td>
+<td>실측 청구 무게 ≤ <strong>버퍼 포함 견적 무게</strong>면 추가 청구 없이 출고된다. 넘으면 2차 결제(예외 ①) 승인 작업만 생기고 <strong>고객 동의 전에는 청구되지 않는다</strong></td>
+</tr>
+<tr>
+<td>FR-B-047 실측 → 2차 결제 <code>v0.3</code></td>
+<td>실측 입력 시 B <code>phase2-billing</code> 이 <strong>자동 호출</strong>된다. 차액 0 이면 바로 <code>SHIPPING</code>(B 에 이미 있음 <code>[실측]</code>, E7) — 신규는 버퍼 반영과 자동 호출뿐이다. canon §9 express 0.5kg 가드는 "실측 &gt; 버퍼 포함 무게"로 바뀐다</td>
+</tr>
+<tr>
+<td>FR-B-048 버퍼 잔여 · 초과 기록 <code>v0.3</code></td>
+<td>주문마다 (버퍼 포함 무게 − 실측) 잔여분과 초과분이 기록되어 주간 집계된다(§10.2 단위 경제 원천)</td>
+</tr>
+<tr>
+<td>FR-O-044 출고 <code>v0.3</code></td>
+<td>송장 입력 → Shopify fulfillment 생성(정본) → DB <code>Shipment</code> 와 연결된다(일반 = 주문 1 : 출고 1, 합포장 = 주문 N : 출고 1, FR-O-049). 출고 메일은 우리 메일 1회. 검수 대기(디테일 검수 고객 확정 전) 중이면 출고 불가</td>
+</tr>
+<tr>
+<td>FR-C-041 리드타임 <code>v0.3</code></td>
+<td>고객 화면의 예상일은 <strong>출고 후 5~7영업일(국내 이동 제외)</strong> 기준으로 계산하고 그 기준을 함께 보인다</td>
+</tr>
+<tr>
+<td>FR-B-051 신규 메일 <code>v0.3</code></td>
+<td>구매 완료 · 입고 · 검수 결과 확정 요청 · 검수 마감 리마인드 · 출고 · 배송 완료 · 구매 실패 · <strong>추가 결제 요청(사유 3종 + 보관료 <code>STORAGE_FEE</code>)</strong> · 합포장 승인 · 거부 · 부분 환불 · 장기 보류 45일 안내 메일이 각 사건마다 <strong>정확히 1회</strong> 나간다</td>
+</tr>
+</tbody>
+</table>
+<h3>6.5 취소 · 환불 · 반품 · 클레임 · 관세 초과 · 차지백</h3>
+<table>
+<thead>
+<tr>
+<th>FR</th>
+<th>수용 조건 (Given / When / Then)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FR-C-043 셀프 취소 <code>v0.3</code></td>
+<td>발주 작업이 <strong>전부 <code>QUEUED</code></strong> 인 주문은 고객이 즉시 취소할 수 있고 전액 환불된다(P1). 하나라도 구매가 시작됐으면 취소 <strong>요청</strong>이 접수되고 비용(판매처 왕복 배송 · 반품비 실비 + $5)이 표시된다</td>
+</tr>
+<tr>
+<td>FR-B-054 셀프 취소 실행 <code>v0.3</code></td>
+<td>한 트랜잭션에서 발주 작업 전부 <code>QUEUED</code> 확인 + 행 잠금 → 즉시 환불 + Shopify <code>orderCancel</code>. <strong>운영자 구매 기록과 동시에 실행하면 둘 중 하나만 성공한다</strong>(경합 e2e)</td>
+</tr>
+<tr>
+<td>FR-O-024 운영자 취소 <code>v0.3</code></td>
+<td>구매 후 ~ 출고 전 취소는 판매처 실비 + $5 를 뺀다(판매처별 입력). 판매처 반품 불가 상품은 거절 사유 코드로 거절할 수 있다. <strong>특송사 인계(출고) 후 취소는 취소 경로 가드로 거부된다</strong>(B 는 지금 막지 않음 <code>[실측]</code>). 환불은 판매처 환불 완료 후</td>
+</tr>
+<tr>
+<td>FR-O-025 회사 취소 <code>v0.3</code></td>
+<td>가격 오류(T§3.2)로 취소하면 사유 <code>PRICING_ERROR</code> · 감사로그와 함께 <strong>전액 환불</strong>된다</td>
+</tr>
+<tr>
+<td>FR-B-039 환불 확정 <code>v0.3</code></td>
+<td>환불은 Shopify <code>refunds/create</code> 를 확인한 뒤에만 <code>COMPLETED</code> 가 된다(B 는 확인 전 COMPLETED + 주문 REFUNDED 로 바꿈 — M2 필수 수정, E4)</td>
+</tr>
+<tr>
+<td>FR-O-052 다주문 환불</td>
+<td>1차 · 예외 결제가 모두 있는 주문을 전액 환불하면 Shopify 주문 여러 건 모두에서 환불이 실행되고 합계가 결제 합계와 같다</td>
+</tr>
+<tr>
+<td>FR-O-053 환불 실패 <code>v0.3</code></td>
+<td>실패 → <code>FAILED</code> → 재시도 또는 Shopify Admin 수동 환불. 수동 환불은 <code>refunds/create</code> 웹훅으로 COMPLETED 가 되고, 웹훅 없이 강제 완료하지 않는다</td>
+</tr>
+<tr>
+<td>FR-C-044 반품 접수 <code>v0.3</code></td>
+<td><strong>수령 후 5영업일(한국 영업일)</strong> 안에 <strong>언박싱 영상</strong>을 붙여야 접수된다. 사유 = 하자 · 오배송만(교환 · 단순변심 불가)</td>
+</tr>
+<tr>
+<td>FR-B-055 반품 기한 · 환불 계산 <code>v0.3</code></td>
+<td>기한 3종(접수 5영업일 · 승인 후 7역일 발송 · 발송 후 14역일 도착) 중 하나라도 넘으면 승인이 철회된다. 환불 = 초기 결제액 − DDP 기납부 세금 − $10(<code>RETURN_PROCESSING_FEE_USD</code>), 국제 반송비는 고객 선불. <strong>"초기 결제액" = 1차 + 예외 결제(①②③) 합계, "DDP 기납부 세금" 에는 관세 초과 추가 납부분(예외 ③)이 포함된다(D-k).</strong> 합포장 부분 환불을 이미 받았으면 그만큼 뺀다. 디테일 검수 주문도 고객 확정 후 출고된 뒤에는 같은 공식이다(D-a). 반품이 열려 있으면 14일 자동 완료가 보류된다</td>
+</tr>
+<tr>
+<td>FR-C-047 · FR-O-058 분실·파손 클레임 <code>v0.3</code></td>
+<td><strong>운송 중</strong>: 수령일(또는 배송 완료 예정일)부터 5영업일 안에 사진 · 영상으로 접수된다. 운영자가 특송사 클레임 · 결과(환불/재발송)를 기록한다. 보상은 특송사 보험 약관을 따른다. <strong>창고 안(D-c)</strong>: 운영자가 사고를 등록하고, 회사 과실이면 <strong>결제액 전액</strong> — 고객이 환불 또는 재구매 발송 중 고른다(재구매 비용은 고객에게 청구하지 않는다). 클레임 증빙은 종결 후 1년 보관(D-h, FR-B-081)</td>
+</tr>
+<tr>
+<td>FR-O-059 · FR-B-059 관세 초과 청구 <code>v0.3</code></td>
+<td>특송사 청구 증빙을 입력하면 고객에게 추가 결제 요청(예외 ③)이 가고, <strong>7일</strong> 안에 안 내면 계정이 차단된다(다음 주문 불가)</td>
+</tr>
+<tr>
+<td>FR-C-045 추가 결제 동의 <code>v0.3</code></td>
+<td>사유(실측 · 가격 · 관세) · 금액 근거 · 기한 · 거절 시 결과가 한 화면에 보이고, 동의 전에는 청구되지 않는다</td>
+</tr>
+<tr>
+<td>FR-O-056 예외 결제 승인 <code>v0.3</code></td>
+<td>예외 ①②③ 결제 요청은 운영자 승인(사유 필수) 후에만 고객에게 간다</td>
+</tr>
+<tr>
+<td>FR-O-055 · FR-B-056 차지백 <code>v0.3</code></td>
+<td><code>disputes/*</code> 웹훅으로 차지백이 생기고, 분쟁 중 환불이 막히며, 증빙 묶음(견적 · 결제 · 출고 · 배송 · 감사로그)을 내려받을 수 있다. 사용자는 <strong>영구 차단</strong>된다(T§6.2)</td>
+</tr>
+<tr>
+<td>FR-O-077 차단 사용자 <code>v0.3</code></td>
+<td>super_admin 이 사유와 함께 차단 · 해제한다. 차단 사용자는 결제 의향이 자동 승인되지 않는다</td>
+</tr>
+</tbody>
+</table>
+<h3>6.6 운영 · 기한 · 보안 · 지표</h3>
+<table>
+<thead>
+<tr>
+<th>FR</th>
+<th>수용 조건 (Given / When / Then)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FR-O-022 상태 변경</td>
+<td>운영자 화면에서 허용되지 않은 상태는 선택지에 나오지 않고, API 로 보내도 <code>InvalidTransitionError</code> 로 거부된다</td>
+</tr>
+<tr>
+<td>FR-B-040 기한 감시 <code>v0.3</code></td>
+<td>기한 15종 + 신규(반품 3종 · 가격 변동 48h · 관세 초과 7일 · CS 1차 응답 24h · 검수 리마인드 · <strong>장기 보류 45일 · 75일</strong>)을 시계를 돌려 넘기면 작업 · 알림 · 자동 처리 · 감사로그가 생긴다(B 테스트 방식)</td>
+</tr>
+<tr>
+<td>FR-B-057 CS 1차 응답 <code>v0.3</code></td>
+<td>상담 요청 후 24시간 안에 사람 응답이 없으면 작업 · Slack 경보가 생긴다</td>
+</tr>
+<tr>
+<td>FR-B-063 장기 보류 보관 처리기 <code>v0.3</code> 신규</td>
+<td>장기 보류 건(검수 보류 · 가격 동의 대기 · 추가 결제 연체 · 금지품목 연락 대기)은 보류 시작 시각이 기록된다. 시계를 돌려 <strong>45일</strong>을 넘기면 하루 $1 보관료가 쌓이기 시작하고(고객 메일 1회 · 작업), <strong>75일</strong>을 넘기면 폐기 작업이 생긴다(운영자 폐기 기록 · 감사로그). 보류가 풀리면 기한 필드가 비워진다(B 규칙: <code>*DeadlineAt</code> ↔ 처리기). 보관료는 <strong>환불로 끝나는 건(75일 폐기 포함)은 환불액에서 차감</strong>하고, <strong>출고되는 건은 출고 전 추가 결제로 청구</strong>한다(예외 결제 경로 재사용, 사유 <code>STORAGE_FEE</code> — FR-B-037, §8.2 #3 각주). 보관료 결제 요청은 보류가 풀려 출고가 가능해질 때 누적액으로 만들고, <strong>미납이면 출고를 보류</strong>한다(보관료는 계속 쌓이고 75일이 지나면 폐기). 결제가 확인되면 출고 보류가 풀린다</td>
+</tr>
+<tr>
+<td>FR-B-058 검수 리마인드 <code>v0.3</code></td>
+<td>검수 응답 마감 24시간 전에 고객 메일이 1회 간다</td>
+</tr>
+<tr>
+<td>FR-B-081 파일 저장 <code>v0.3</code></td>
+<td>사진 · 영상 · 영수증 · 매입 증빙은 서명 URL 로만 열리고, 본인 · 운영자 외 접근은 거부된다. 종류별 보관 기간이 있다 — <strong>클레임 증빙(언박싱 영상 · 사진)은 클레임 종결 후 1년</strong>(D-h) 뒤 삭제된다</td>
+</tr>
+<tr>
+<td>FR-B-042 워커 감시</td>
+<td>워커가 5분 이상 멈추면 Slack 긴급 알림이 간다</td>
+</tr>
+<tr>
+<td>FR-B-020 환율</td>
+<td>매일 1회 환율이 갱신되고, 신한 실패 시 수출입은행 값이 들어간다. 둘 다 실패하면 전날 값 유지 + 경보. 고시 환율 · 환율 마진 · 적용 환율이 함께 저장된다</td>
+</tr>
+<tr>
+<td>FR-O-075 수익원 설정 <code>v0.3</code></td>
+<td>super_admin 만 배송 마크업 · 환율 마진을 바꿀 수 있고 변경 이력이 남는다</td>
+</tr>
+<tr>
+<td>FR-O-084 재무 대사 <code>v0.3</code></td>
+<td>일별 결제액 합계 vs 실구매가 합계 · 법인카드 사용액과 한도가 보인다</td>
+</tr>
+<tr>
+<td>FR-O-085 영세율 증빙 <code>v0.3</code></td>
+<td>주문별 매입 증빙 · 수출 신고 목록을 기간 단위로 내보낼 수 있다(M4)</td>
+</tr>
+<tr>
+<td>FR-B-062 퍼널 이벤트 <code>v0.3</code></td>
+<td>URL 입력 → 견적 → 장바구니 → 결제 이벤트가 세션 단위로 남아 §10 깔때기 지표를 계산할 수 있다</td>
+</tr>
+<tr>
+<td>FR-B-072 운영자 개인 인증 <code>v0.3</code></td>
+<td>공용 <code>ADMIN_API_TOKEN</code> · 자기 신고 <code>x-actor-email</code> 이 제거되고, 감사로그 행위자 = 로그인한 개인 계정이다. <strong>M3 수용 테스트 전 필수</strong>(E11)</td>
+</tr>
+<tr>
+<td>FR-O-004 출시 KPI <code>v0.3</code></td>
+<td>§10.1 지표 8종이 매일 갱신되어 보인다(관세 오차는 청구서 대조분만)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="7-데이터">7. 데이터</h2>
+<h3>7.1 어디에 무엇을 두는가 — Shopify 하이브리드 원장 (S4 확정 261007)</h3>
+<table>
+<thead>
+<tr>
+<th>정본 = <strong>Shopify</strong></th>
+<th>정본 = <strong>자체 DB (B <code>@paynship/db</code>)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>주문(판매 기록) · 결제 · 환불 · 출고(fulfillment · 송장) · 고객 · 할인</td>
+<td>견적 · 주문 의향 · 결제 요청 · 발주 · 검수 · <strong>운영 상태(Order 14)</strong> · 작업 큐 · 감사로그 · 대화 · 요율 · 환율 · 설정</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>규칙</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>동기화</td>
+<td>웹훅 <code>orders/paid</code> · <code>orders/updated</code> · <code>orders/fulfilled</code> · <code>orders/cancelled</code> · <code>refunds/create</code> · <code>disputes/create</code> · <code>disputes/update</code> 를 모두 받아 DB 에 반영한다. Shopify Admin 에서 직접 한 환불 · 취소도 웹훅으로 반영된다</td>
+</tr>
+<tr>
+<td>태그 미러</td>
+<td>운영 상태 → Shopify 태그(CJ 태그명, §7.3 표). Outbox 로 <code>tagsAdd</code></td>
+</tr>
+<tr>
+<td>출고</td>
+<td>Shopify fulfillment 가 정본. <strong>블로커</strong>: B Draft Order 줄이 <code>requiresShipping:false</code> → fulfillment 가능 여부 M2 첫 주 조사(불가 시 항목별 줄을 <code>requiresShipping:true</code> 로)</td>
+</tr>
+<tr>
+<td>예외 결제</td>
+<td>①②③은 별도 Draft Order + 1차 주문번호 태그 · note. Shopify 주문 편집으로 한 주문에 붙이는 방식은 <code>[미조사]</code> — 되면 우선</td>
+</tr>
+<tr>
+<td>환불 확정</td>
+<td>Shopify <code>refunds/create</code> 확인 후에만 <code>COMPLETED</code></td>
+</tr>
+<tr>
+<td>대사</td>
+<td>매일 Shopify 주문 · 결제 · 환불 합계 ↔ DB. 불일치 = 운영 작업</td>
+</tr>
+<tr>
+<td>고객 알림</td>
+<td>출고 알림은 <strong>우리 메일 단일</strong>(RT-05 유지). Shopify 고객 알림은 끈다</td>
+</tr>
+<tr>
+<td>요율 · 환율 · 설정</td>
+<td>PG 테이블 + <code>AppConfig</code>. 2026년에만 미국 관세 규칙이 4번 바뀌었다 — 코드 상수로 두면 배포해야 고친다</td>
+</tr>
+<tr>
+<td>상품 증거</td>
+<td><code>Product.evidence</code>(필드별 출처 · 신뢰도) — 보정 근거 · 견적 재평가</td>
+</tr>
+<tr>
+<td>감사로그</td>
+<td><code>AdminAuditLog</code> — 누가 무엇을 바꿨는지(전·후). Shopify 발 변경은 행위자 <code>shopify:admin</code> · <code>shopify:webhook</code></td>
+</tr>
+</tbody>
+</table>
+<p>B 규모: 약 1.5~2.5주 <code>[추정]</code>. B 설계(canon §7 "로컬 상태를 먼저 저장하고 Shopify 와 분리", §5)와 부딪히므로 ADR <code>rebuild/docs/01_Architecture/ADR/2026-10-07_shopify-hybrid-ledger.md</code>(canon §5 · §7 개정 포함)로 정리한다.
+v0.2 의 "1·2차 결제가 두 건으로 보여 Shopify 는 원장이 될 수 없다"는 판정은 <strong>철회</strong>한다 — 결제 건 연결은 태그 · note(또는 주문 편집)로, 운영 상태는 DB 로 나눠 해결한다.</p>
+<pre class="mermaid">flowchart LR
+    subgraph SH["Shopify 정본"]
+        SO["주문 · 결제 · 환불"]
+        SF["출고 fulfillment · 송장"]
+        SC["고객 · 할인"]
+    end
+    subgraph DB["자체 DB 정본"]
+        DQ["견적 · 의향 · 결제 요청"]
+        DO["운영 상태 Order 14&lt;br/&gt;발주 · 검수 · 작업 큐"]
+        DA["감사로그 · 대화"]
+    end
+    DQ --&gt;|"Draft Order&lt;br/&gt;appliedDiscount"| SO
+    SO --&gt;|"웹훅 7토픽"| DO
+    DO --&gt;|"Outbox&lt;br/&gt;tagsAdd · fulfillmentCreate"| SF
+    SO &lt;--&gt;|"일일 대사"| DO
+</pre>
+<h3>7.2 핵심 테이블</h3>
+<p>B 스키마 <code>[실측]</code>: 모델 38 · enum 22. 주요 모델 — <code>User</code> <code>Product</code> <code>CanonicalProduct</code> <code>Quote</code> <code>OrderIntent</code> <code>PaymentRequest</code> <code>Order</code> <code>ShopifyPaymentEvent</code>
+<code>ProcurementBatch</code> <code>ProcurementBatchIntent</code> <code>ProcurementTask</code> <code>AsyncJob</code> <code>OpsTask</code> <code>ReturnRequest</code> <code>InspectionResponse</code> <code>AbandonmentLog</code> <code>Chargeback</code> <code>Refund</code>
+<code>AppConfig</code> <code>ExchangeRate</code> <code>ShippingRate</code> <code>HsCodeRate</code> <code>CountryCustoms</code> <code>FtaRate</code> <code>FeeCapRule</code> <code>AdminAuditLog</code> <code>Outbox</code> <code>ShopifyWebhookEvent</code> <code>ChatSession</code> <code>Message</code> <code>LlmUsage</code>.</p>
+<p><strong>추가 · 변경 (이 PRD)</strong></p>
+<table>
+<thead>
+<tr>
+<th>대상</th>
+<th>변경</th>
+<th>FR</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Shopify ID</strong> <code>v0.3</code></td>
+<td><code>User.shopifyCustomerId</code> · <code>Order.shopifyOrderId</code>(1차) · <code>PaymentRequest.shopifyDraftOrderId</code> · <code>Refund.shopifyRefundId</code> · <code>confirmedAt</code> · <code>Chargeback.shopifyDisputeId</code></td>
+<td>FR-B-032 · 035 · 039 · 056</td>
+</tr>
+<tr>
+<td><strong>Shopify 상태 · 태그 미러</strong> <code>v0.3</code></td>
+<td><code>Order.shopifyFinancialStatus</code> · <code>shopifyFulfillmentStatus</code> · <code>mirroredTag</code> · <code>mirroredAt</code></td>
+<td>FR-B-034 · 036</td>
+</tr>
+<tr>
+<td><strong>국제 출고 <code>Shipment</code></strong> (신규) <code>v0.3</code></td>
+<td>주문 · 박스 번호 · 운송사 · 국제 송장 · 청구 무게 · 실측 무게 · 출고 시각. 박스 여러 개 대비(위험물 분리 포함). <strong>합포장이면 <code>consolidationGroupId</code> 로 주문 N개와 연결</strong>되고 Shopify fulfillment 는 주문마다 1개씩(<code>ShipmentFulfillment</code>: 주문 · <code>shopifyFulfillmentId</code>)</td>
+<td>FR-O-044 · O-049 · B-034</td>
+</tr>
+<tr>
+<td><strong>합포장 묶음 <code>ConsolidationGroup</code></strong> (신규) <code>v0.3</code></td>
+<td>고객 · 배송지 · 상태(<code>REQUESTED</code> → 실측 판정 <code>APPROVED</code> / <code>REJECTED</code> → <code>SHIPPED</code>, 출고 전 취소로 1개만 남으면 <code>DISSOLVED</code>) · 요청 시각 · <strong>낸 국제 배송비 합 · 낸 관세 합</strong> · 묶음 추정 배송비(미리보기, 버퍼 없음) · 묶음 확정 배송비(실측 그대로) · 묶음 관세(재계산) · 실측 청구 무게 · 차액(고객 총액 기준) · 미승인 사유(<code>NO_SAVING_AT_MEASURE</code> — 관세 증가를 합친 총액 기준이라 관세 단독 사유는 두지 않는다. 미리보기에서 안 되는 묶음은 요청 자체가 만들어지지 않는다) · <code>Shipment</code> 참조. 주문 쪽 <code>Order.consolidationGroupId</code>(주문 N → 묶음 1 → 출고 1)</td>
+<td>FR-C-048 · O-049 · B-019</td>
+</tr>
+<tr>
+<td><strong>부분 환불 기록</strong> <code>v0.3</code></td>
+<td><code>Refund</code> 에 사유 enum(<code>CONSOLIDATION_SAVING</code> · <code>INSPECTION_REFUND</code> · <code>PROHIBITED_DISPOSAL</code> · <code>WAREHOUSE_CLAIM</code> 등) · <code>consolidationGroupId</code> · <strong>배분 근거(주문별 낸 국제 배송비 · 관세 · 배분액)</strong> · 차감 항목(판매처 반품비 · 폐기 실비 · 보관료, 근거 파일). 주문별 환불 합계 ≤ 그 주문 결제 합계를 저장 시 검사</td>
+<td>FR-B-019 · B-043~045 · O-046 · O-058</td>
+</tr>
+<tr>
+<td><strong>예외 결제 단계</strong> <code>v0.3</code></td>
+<td><code>PaymentPhase</code> · <code>ShopifyPhase</code> 에 <code>PRICE_ADJUSTMENT</code> · <code>TAX_OVERAGE</code> · <code>STORAGE_FEE</code>(장기 보류 보관료, 출고 건). <code>PaymentRequest @@unique([orderIntentId, phase])</code> · <code>ShopifyPaymentEvent @@unique([orderId, phase])</code> 재설계(같은 단계 여러 건 허용 여부 포함). 1차 주문 참조</td>
+<td>FR-B-033 · 037 · O-052</td>
+</tr>
+<tr>
+<td><strong>차단 사용자 <code>BlockedUser</code></strong> (신규) <code>v0.3</code></td>
+<td>사용자 · 사유(<code>CHARGEBACK</code> / <code>UNPAID_TAX_OVERAGE</code> / <code>ABUSE</code>) · 차단자 · 시각 · 해제</td>
+<td>FR-O-077 · B-056 · 059</td>
+</tr>
+<tr>
+<td><strong>분실·파손 클레임 <code>Claim</code></strong> (신규) <code>v0.3</code></td>
+<td>주문 · 유형 · <strong>발생 위치(창고 / 운송)</strong> · 회사 과실 여부 · 증빙 파일 · 접수 기한 · 특송사 클레임 번호 · 결과(환불 / 재발송 / 재구매 발송) · 종결 시각(증빙 보관 1년 기산, D-h)</td>
+<td>FR-C-047 · O-058 · B-081</td>
+</tr>
+<tr>
+<td><code>ExchangeRate</code> <code>v0.3</code></td>
+<td>KRW/USD 한 쌍 → 다통화 + 출처(신한/KEXIM) + <strong>고시 환율 · 환율 마진 · 적용 환율</strong> 분리 저장</td>
+<td>FR-B-020 · 018</td>
+</tr>
+<tr>
+<td><code>Quote</code> · <code>PriceBreakdown</code> <code>v0.3</code></td>
+<td>통관 수수료 <code>customsFeeUsd</code> · 센트 반올림 · <strong>추정 청구 무게 · 버퍼율 · 버퍼 포함 무게 · 배송 마크업 적용값</strong> · 디테일 검수 줄</td>
+<td>FR-B-014 · 015 · 017 · 018 · C-026</td>
+</tr>
+<tr>
+<td><code>Product</code> <code>v0.3</code></td>
+<td><strong>위험물 · 검역 플래그</strong>(견적 단계 박스 분리 배송비 반영 근거)</td>
+<td>FR-B-016</td>
+</tr>
+<tr>
+<td><code>ProcurementTask</code> <code>v0.3</code></td>
+<td><strong><code>productId</code> · <code>lineIndex</code> · <code>quantity</code> 추가 · <code>orderIntentId @unique</code> 해제 · <code>batchId</code> 선택값</strong>(E8). <code>sellerOrderNo</code> · <code>paymentMethodRef</code> · <code>domesticTrackingNo</code> · <strong><code>sellerReturnFeeKrw</code> · <code>couponKrw</code> · <code>pointsKrw</code> · <code>cashbackKrw</code> · 매입 증빙 파일</strong>. 지금은 <code>actualPriceKrw</code> · <code>purchaseReceiptUrl</code> · <code>purchasedAt</code> 만 있다 <code>[실측]</code></td>
+<td>FR-B-030 · O-032</td>
+</tr>
+<tr>
+<td><code>PriceChangeDecision</code> (신규) <code>v0.3</code></td>
+<td>주문 · 줄 · 견적가 · 실구매가 · 허용분 · <strong>추가 결제 요청(PRICE_ADJUSTMENT)</strong> · 고객 응답 · 기한(48h, + sweeper)</td>
+<td>FR-O-035 · B-052</td>
+</tr>
+<tr>
+<td><code>InspectionResponse</code> <code>v0.3</code></td>
+<td>검수 등급(기본/디테일, 판매처 단위) · 사진 파일 참조 · <strong>이상 여부</strong> · <strong>고객 응답(<code>SHIP_AS_IS</code>(= 확정)/<code>EXCHANGE</code>/<code>RETURN_REFUND</code>)</strong> · <code>confirmedAt</code> · <code>confirmedBy</code>(고객 / <code>system:cron</code>) · 판매처 반품비 교섭 결과(D-b) · 기본값(ACCEPT) 후속 전이. 디테일 검수 주문은 이상이 없어도 생성(D-a). 지금은 운영자 verdict 모델 <code>[실측]</code></td>
+<td>FR-O-042 · 047 · B-041~045</td>
+</tr>
+<tr>
+<td><code>ReturnRequest</code> <code>v0.3</code></td>
+<td>사유 enum(<code>DEFECT</code> / <code>WRONG_ITEM</code>) · 기한 3종 · 언박싱 영상 · 환불 계산값</td>
+<td>FR-C-044 · B-055</td>
+</tr>
+<tr>
+<td><code>Order</code></td>
+<td>사람용 주문번호 <code>displayNo</code> · <code>purchaseFailedAt</code> · <code>consolidationGroupId</code>. <strong>장기 보류 필드 <code>holdReason</code> · <code>holdStartedAt</code> · <code>storageFeeStartsAt</code>(+45일) · <code>disposalDeadlineAt</code>(+75일) · 누적 보관료</strong> — 처리기 FR-B-063 과 짝. <code>domesticShippingKrw</code> 는 구매 기록 때 채운다(지금 아무도 안 씀 <code>[실측]</code>)</td>
+<td>FR-C-040 · B-046 · O-032 · B-063</td>
+</tr>
+<tr>
+<td>파일 객체 (신규)</td>
+<td>저장 키 · 소유 주문 · 종류(검수/반품 영상/클레임/영수증/매입 증빙) · 보관 기한</td>
+<td>FR-B-081</td>
+</tr>
+<tr>
+<td><code>SellerPriceScan</code> (신규 · A <code>ProductCrossPlatformScan</code> 이식)</td>
+<td>상품 · 판매처 · 가격 · 배송비 · 공식몰 여부 · 스캔 시각. <strong>운영자 전용</strong></td>
+<td>FR-B-060 · O-034</td>
+</tr>
+<tr>
+<td><code>CatalogEntry</code> · <code>CatalogMatch</code> (A 이식)</td>
+<td>매칭 신뢰도 · 확인 상태</td>
+<td>FR-B-061 · O-038</td>
+</tr>
+<tr>
+<td><code>AnalyticsEvent</code> (신규) <code>v0.3</code></td>
+<td>세션 · 이벤트 종류(URL 입력 · 견적 · 장바구니 · 결제) · 시각</td>
+<td>FR-B-062</td>
+</tr>
+<tr>
+<td><code>AppConfig</code> 키 <code>v0.3</code></td>
+<td><code>shipping.markupRate</code>(0.10 확정) · <code>fx.spreadRate</code>(0.005 확정) · <code>quote.weightBufferRate</code> · 가격 상승 허용(5% · $3) · 자동 승인 기준($300 · 5개) · <code>RETURN_PROCESSING_FEE_USD</code>($10) · 장기 보류(무료 45일 · 일 $1 · 폐기 75일) · 검수 응답 72h</td>
+<td>FR-B-016 · 017 · 018 · 055 · 063</td>
+</tr>
+</tbody>
+</table>
+<h3>7.3 상태 전이 — 주문 (B <code>OrderStatus</code> 14 <code>[실측]</code>)</h3>
+<pre class="mermaid">stateDiagram-v2
+    [*] --&gt; PENDING_PAYMENT: 1차 결제 정산
+    PENDING_PAYMENT --&gt; PURCHASED: 구매 기록
+    PENDING_PAYMENT --&gt; PURCHASE_FAILED: 품절·판매중지 - 신규 전이 M0
+    PENDING_PAYMENT --&gt; REFUND_PENDING: 구매 전 취소 - 셀프·운영자
+    PURCHASED --&gt; PURCHASE_FAILED: 사후 실패
+    PURCHASE_FAILED --&gt; PURCHASED: 재구매
+    PURCHASE_FAILED --&gt; REFUND_PENDING: 4시간 자동
+    PURCHASED --&gt; REFUND_PENDING: 출고 전 취소 - 실비 + $5
+    PURCHASED --&gt; WAREHOUSE_RECEIVED: 입고
+    WAREHOUSE_RECEIVED --&gt; SHIPPING: 실측 ≤ 버퍼 포함 무게
+    WAREHOUSE_RECEIVED --&gt; PENDING_SHIPPING_PAYMENT: 실측 &gt; 버퍼 - 예외 ①
+    WAREHOUSE_RECEIVED --&gt; REFUND_PENDING: 출고 전 취소·검수 환불
+    PENDING_SHIPPING_PAYMENT --&gt; SHIPPING: 고객 동의·결제
+    PENDING_SHIPPING_PAYMENT --&gt; SHIPPING_PAYMENT_OVERDUE: 3일
+    SHIPPING_PAYMENT_OVERDUE --&gt; REFUND_PENDING: 7일 자동 취소
+    SHIPPING --&gt; CUSTOMS_CLEARANCE
+    CUSTOMS_CLEARANCE --&gt; DELIVERING
+    DELIVERING --&gt; DELIVERED
+    DELIVERED --&gt; REFUND_PENDING: 반품 승인
+    DELIVERED --&gt; COMPLETED: 14일
+    REFUND_PENDING --&gt; REFUNDED: Shopify refunds/create 확인
+</pre>
+<ul>
+<li><strong>E2 정정</strong>: 수금된 주문의 취소는 <strong><code>→ REFUND_PENDING → REFUNDED</code></strong> 다. <code>CANCELLED</code> 는 미수금 주문에만 쓴다(B 전이 표에 <code>PENDING_PAYMENT → CANCELLED</code> 가 있으나 수금된 주문 취소에 쓰지 않는다 <code>[실측: state-machine.ts · deadline-sweeper-handlers.ts]</code>). v0.2 의 <code>PENDING_PAYMENT → CANCELLED: 구매 전 취소</code> 는 틀렸다.</li>
+<li><strong>E7 정정</strong>: 실측 ≤ 수납액이면 차액 0 → 바로 <code>SHIPPING</code> 으로 가는 로직은 <strong>B 에 이미 있다</strong>(<code>phase2-billing</code> <code>[실측]</code>). 이 PRD 의 신규는 ① 견적에 버퍼(×1.2) 반영 ② 실측 입력 시 2차 결제 요청 자동 호출 ③ canon express 0.5kg 가드를 "실측 &gt; 버퍼 포함 무게"로 바꾸는 것뿐이다(FR-B-047).</li>
+<li><code>PENDING_PAYMENT → PURCHASE_FAILED</code> 는 B 에 없어 추가한다(RT-02). 검수 <code>PENDING</code> 이면 <code>→ SHIPPING</code> 금지(FR-B-045). 출고 후 취소는 상태 기계가 아니라 <strong>취소 경로 가드</strong>로 막는다(차지백 · 반품이 <code>SHIPPING 이후 → REFUND_PENDING</code> 를 쓰기 때문).</li>
+<li>예외 ② 가격 상승은 주문 상태를 바꾸지 않는다 — 해당 발주 작업만 보류된다(<code>PENDING_PAYMENT</code>/<code>PURCHASED</code> 중). 예외 ③ 관세 초과는 출고 후(<code>CUSTOMS_CLEARANCE</code> 이후)에 생기고 주문 상태와 별도로 결제 요청 · 차단으로 처리한다.</li>
+<li><code>REFUND_PENDING</code> 은 결제 후 모든 진행 상태에서 들어갈 수 있고, 거절 시 이전 상태로 돌아간다 <code>[실측]</code>.</li>
+<li><strong>합포장은 주문 상태 기계를 바꾸지 않는다.</strong> 묶인 주문은 각자 상태를 갖고, 승인된 묶음이 출고되면 함께 <code>WAREHOUSE_RECEIVED → SHIPPING</code> 으로 간다(실측 판정이 묶음 단위로 대신하므로 주문별 <code>PENDING_SHIPPING_PAYMENT</code> 는 생기지 않는다). 부분 환불은 주문 상태를 <code>REFUND_PENDING</code> 으로 보내지 않는 별도 <code>Refund</code> 행이다. 미승인 묶음의 주문은 일반 실측 경로로 돌아간다.</li>
+<li><strong>디테일 검수 주문</strong>은 고객 확정(또는 72h 기본값) 전에는 <code>→ SHIPPING</code> 이 거부된다(D-a). <strong>장기 보류</strong>는 상태가 아니라 보관 기한 필드 + 처리기(FR-B-063)다.</li>
+<li>의향: <code>PENDING_REVIEW</code> <code>AUTO_ACCEPTED</code> <code>ACCEPTED</code> <code>REQUOTE_REQUIRED</code> <code>REJECTED</code> <code>CANCELLED</code> <code>CONVERTED</code> <code>[실측]</code>. 발주 작업: <code>QUEUED</code> <code>RESEARCHING</code> <code>READY_TO_BUY</code> <code>PURCHASED</code> <code>FAILED</code> <code>CANCELLED</code> <code>[실측]</code>.</li>
+</ul>
+<p><strong>운영 상태 ↔ Shopify 상태 · 태그 매핑</strong> (태그명 = 약관 CJ 정본)</p>
+<table>
+<thead>
+<tr>
+<th>운영 상태 (DB)</th>
+<th>Shopify 결제</th>
+<th>Shopify 출고</th>
+<th>태그</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PENDING_PAYMENT</code> · <code>PURCHASED</code></td>
+<td>Paid</td>
+<td>Unfulfilled</td>
+<td><code>New Order</code></td>
+</tr>
+<tr>
+<td><code>WAREHOUSE_RECEIVED</code> (입고 · 검수 완료) · <code>PENDING_SHIPPING_PAYMENT</code> · <code>SHIPPING_PAYMENT_OVERDUE</code></td>
+<td>Paid</td>
+<td>Unfulfilled</td>
+<td><code>Sourcing Inspected</code></td>
+</tr>
+<tr>
+<td><code>SHIPPING</code> · <code>CUSTOMS_CLEARANCE</code> · <code>DELIVERING</code></td>
+<td>Paid</td>
+<td>Fulfilled</td>
+<td><code>Shipped_Intl</code></td>
+</tr>
+<tr>
+<td><code>DELIVERED</code> · <code>COMPLETED</code></td>
+<td>Paid</td>
+<td>Fulfilled</td>
+<td><code>Delivered</code></td>
+</tr>
+<tr>
+<td>반품 접수(<code>ReturnRequest</code> REQUESTED · APPROVED)</td>
+<td>Paid</td>
+<td>Fulfilled</td>
+<td><code>Return_Requested</code></td>
+</tr>
+<tr>
+<td>반품 반송 중</td>
+<td>Paid</td>
+<td>Fulfilled</td>
+<td><code>Return_Shipped</code></td>
+</tr>
+<tr>
+<td>반품 환불 완료</td>
+<td>Refunded / Partially refunded</td>
+<td>Fulfilled</td>
+<td><code>Resolved</code></td>
+</tr>
+<tr>
+<td>구매 후 ~ 출고 전 취소(P-4)</td>
+<td>Partially refunded</td>
+<td>Unfulfilled · 주문 Cancelled</td>
+<td><code>Canceled_Penalty</code></td>
+</tr>
+<tr>
+<td>구매 전 취소 · 구매 실패 · 가격 변동 거절 · 회사 취소(전액 환불)</td>
+<td>Refunded</td>
+<td>Unfulfilled · 주문 Cancelled(<code>orderCancel</code>)</td>
+<td>CJ 태그 없음 — <code>Canceled_Penalty</code> 를 붙이지 않는다</td>
+</tr>
+<tr>
+<td>예외 결제 Draft Order(①②③)</td>
+<td>별도 주문</td>
+<td>—</td>
+<td>1차 주문번호 태그 + 사유 note</td>
+</tr>
+</tbody>
+</table>
+<h3>7.4 ERD (요약)</h3>
+<pre class="mermaid">erDiagram
+    User ||--o{ OrderIntent : places
+    User ||--o| BlockedUser : "blocked (new)"
+    Quote ||--o{ OrderIntent : priced_by
+    Product ||--o{ Quote : quoted
+    CanonicalProduct ||--o{ Product : groups
+    OrderIntent ||--o{ PaymentRequest : "bills (phase 1 + exceptions)"
+    PaymentRequest ||--o{ ShopifyPaymentEvent : settled_by
+    OrderIntent ||--o| Order : converts
+    Order ||--o{ ProcurementTask : "buys (per product)"
+    ProcurementBatch |o--o{ ProcurementTask : "groups (optional)"
+    ProcurementTask ||--o{ SellerPriceScan : "scanned (new)"
+    Order ||--o{ InspectionResponse : inspects
+    Order ||--o{ Shipment : "ships (new)"
+    ConsolidationGroup |o--o{ Order : "combines (new)"
+    ConsolidationGroup |o--o| Shipment : "one box (new)"
+    ConsolidationGroup |o--o{ Refund : "partial refund (new)"
+    Order ||--o{ Refund : refunds
+    Order ||--o{ ReturnRequest : returns
+    Order ||--o{ Claim : "claims (new)"
+    Order ||--o{ Chargeback : disputes
+    Order ||--o{ PriceChangeDecision : "decides (new)"
+</pre>
+<h3>7.5 권한</h3>
+<p>운영자 역할 <code>viewer &lt; operator &lt; super_admin</code> (env 목록, 미등록은 viewer) <code>[실측]</code>. 모든 운영 변경은 <code>adminMutation</code> 래퍼 → 상태 검사 → <code>recordAdminAuditLog</code> <code>[실측]</code>.
+<strong>E11 정정</strong>: B 의 운영자 인증은 공용 <code>ADMIN_API_TOKEN</code> + <strong>자기 신고 <code>x-actor-email</code></strong> 이다 <code>[실측: admin-auth.ts]</code> — 감사로그 행위자를 위조할 수 있다. <strong>M3 수용 테스트 전에 운영자 개인 계정 인증(FR-B-072)이 필수</strong>다.
+고객 데이터는 로그인 세션의 <code>userId</code> 로만 조회(주문 번호만으로 남의 주문 조회 불가 — B <code>/orders/[id]</code> 는 지금 링크만 알면 열린다 <code>[실측]</code>, 세션 바인딩 신규). 상세는 정책서 §2 역할표.</p>
+<hr />
+<h2 id="8-아키텍처">8. 아키텍처</h2>
+<pre class="mermaid">flowchart LR
+    C["고객 브라우저"] --&gt;|"URL · 채팅"| W["apps/web&lt;br/&gt;Next.js · Vercel"]
+    O["운영자&lt;br/&gt;개인 계정"] --&gt; W
+    W --&gt;|"도구 호출"| AG["에이전트 v0&lt;br/&gt;gemini-3.7-flash"]
+    W --&gt; DB[("PG&lt;br/&gt;paynship/db&lt;br/&gt;운영 상태 정본")]
+    W --&gt;|"Draft Order · 할인"| SH["Shopify&lt;br/&gt;주문 · 결제 · 환불 · 출고 정본&lt;br/&gt;PortOne 또는 PayPal"]
+    SH --&gt;|"웹훅 7토픽&lt;br/&gt;paid · updated · fulfilled&lt;br/&gt;cancelled · refunds · disputes"| W
+    WK["workers/scrape-worker&lt;br/&gt;컨테이너 1대"] --&gt; DB
+    WK --&gt;|"fetch"| SC["apps/scraper-server&lt;br/&gt;Patchright"]
+    WK --&gt;|"추출"| LLM["gemini-3.5-flash-lite"]
+    WK --&gt;|"Outbox"| MAIL["Resend · Slack"]
+    WK --&gt;|"Outbox&lt;br/&gt;tagsAdd · fulfillmentCreate"| SH
+    WK --&gt;|"일일 대사"| SH
+    WK --&gt;|"가격 스캔"| NV["네이버 쇼핑 API&lt;br/&gt;사용 가능 여부 미결 P-5"]
+    WK --&gt;|"환율"| FX["신한 · 수출입은행"]
+</pre>
+<h3>8.1 Shopify 플랜과 한계</h3>
+<p><strong>현행 요금표 확인 필요</strong> — 아래 값은 <code>kbuyer-v2/yohan-docs/v2.2/migration/SHOPIFY_PLAN_MATRIX.md</code>(2026-05) <code>[문서]</code> 이고, 같은 원천 안에서도 Basic 월 요금이 $25 · $39 로 다르다. M2 첫 주에 현행 요금표로 다시 확인한다.</p>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>Basic (출시 플랜 <code>[가정]</code>)</th>
+<th>우리 처리</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>실시간 배송 요율(Carrier Calculated)</td>
+<td>없음(Advanced 부터)</td>
+<td>자체 견적 엔진 → Draft Order 줄</td>
+</tr>
+<tr>
+<td>관세 계산 · 결제(Duties at Checkout)</td>
+<td>없음(Advanced 부터). 있어도 301 하한 미지원 <code>[추정]</code></td>
+<td>자체 관세 엔진 → Draft Order 줄</td>
+</tr>
+<tr>
+<td>Shopify Flow(자동화)</td>
+<td>없음 <code>[문서 — 현행 확인]</code></td>
+<td>태그 · 알림은 자체 Outbox</td>
+</tr>
+<tr>
+<td>직원 계정</td>
+<td>2명</td>
+<td>운영 권한은 자체 어드민(viewer · operator · super_admin)</td>
+</tr>
+<tr>
+<td>외부 결제사 거래 수수료</td>
+<td>Shopify Payments 를 못 쓰면 주문당 추가 수수료 <code>[미조사]</code> — §10.2 에서 2% 로 가정</td>
+<td>단위 경제에 반영, 플랜 전환 판단 근거</td>
+</tr>
+<tr>
+<td>전환 트리거</td>
+<td>Basic → Grow: 월 매출 $5K · Grow → Advanced: $15K · Advanced → Plus: $80K <code>[문서]</code></td>
+<td>월 매출 · 거래 수수료 절감액으로 판단</td>
+</tr>
+</tbody>
+</table>
+<p><strong>출고(fulfillment) 블로커</strong> — B Draft Order 줄은 <code>requiresShipping:false</code> 다 <code>[실측: shopify-gateway.ts]</code>. 배송이 필요 없는 줄만 있는 주문은 Shopify 에서 fulfillment 를 만들 수 없을 수 있다 <code>[미조사]</code>.
+<strong>M2 첫 주에 실제 스토어로 확인</strong>하고, 안 되면 항목별 줄을 <code>requiresShipping:true</code> 로 바꾼다(수수료 · 관세 줄 처리 포함). 이 결과가 S4 출고 정본 규칙의 전제다.</p>
+<p><strong>외부 연동 지점</strong></p>
+<table>
+<thead>
+<tr>
+<th>연동</th>
+<th>방식</th>
+<th>상태</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Shopify Admin GraphQL</td>
+<td><code>draftOrderCreate</code>(항목별 줄 · <code>appliedDiscount</code>) · <code>draftOrderDelete</code> · <code>refundCreate</code> · <code>orderCancel</code> · <code>fulfillmentCreate</code> · <code>tagsAdd</code></td>
+<td><code>[실측]</code> B 는 <code>draftOrderCreate</code>(한 줄 총액) · <code>refundCreate</code> 만, API 2025-01 → <strong>나머지 신규 · API 버전 상향</strong></td>
+</tr>
+<tr>
+<td>Shopify 웹훅</td>
+<td>7토픽(§7.1)</td>
+<td><code>[실측]</code> B 는 <code>orders/paid</code> 만 정산, 나머지 202 무시 → <strong>6토픽 신규</strong></td>
+</tr>
+<tr>
+<td>Gemini</td>
+<td><code>@google/genai</code> 1.52, AppConfig <code>llm.model</code> · <code>llm.thinkingLevel</code>, 에이전트용 <code>llm.agentModel</code></td>
+<td><code>[실측]</code> 추출 모델 ADR Accepted(D8) · 에이전트 키 신규</td>
+</tr>
+<tr>
+<td>Resend · Slack</td>
+<td>Outbox dispatcher(템플릿 12종 + 신규), 키 없으면 PENDING. Slack env <code>SLACK_OPS_WEBHOOK_URL</code></td>
+<td><code>[실측]</code></td>
+</tr>
+<tr>
+<td>네이버 쇼핑 API</td>
+<td>가격 스캔(운영자 전용)</td>
+<td><code>[미조사]</code> 이용 약관 · 쿼터 — P-5 미결</td>
+</tr>
+<tr>
+<td>신한 · 수출입은행</td>
+<td>환율</td>
+<td><code>[실측]</code> A provider</td>
+</tr>
+<tr>
+<td>PortOne · PayPal</td>
+<td>Shopify 결제 앱. 먼저 끝난 하나로 출시</td>
+<td><code>[미조사]</code> 가입 전</td>
+</tr>
+<tr>
+<td>특송사(AcrossB · DHL 등)</td>
+<td>1차 수동 송장 입력</td>
+<td><code>[미조사]</code> 계약 전</td>
+</tr>
+</tbody>
+</table>
+<h3>8.2 불변식 — 깨지면 돈이 틀린다</h3>
+<ol>
+<li><strong>금액은 서버 견적에서만 온다.</strong> 브라우저 · AI 응답 · 운영자 메모의 숫자로 결제를 만들지 않는다. <strong>할인은 서버가 Draft Order 에 넣은 <code>appliedDiscount</code> 만 인정한다</strong>(그 밖의 할인이 붙은 결제는 대사 불일치로 운영 작업).</li>
+<li><strong>결제 1건 = 주문 1건 + 상품별 발주 작업.</strong> 멱등 + 재전송 복구로 보장한다(B 는 의도적으로 다중 트랜잭션 + 복구 seam <code>[실측]</code>). 웹훅 중복에도 1회. 상품별 작업은 B 스키마 변경 후에만 성립한다(E8).</li>
+<li><strong>결제 경로 = 1차 결제 + 예외 3종뿐이다</strong> — ① 실측 무게 &gt; 버퍼 포함 견적 무게(2차 결제) ② 구매 시점 가격 상승 &gt; 허용 범위(P-1) ③ 특송사 관세 초과 청구. 그 밖의 추가 결제는 없다 — 합포장은 새 결제를 만들지 않는다(관세가 늘어도 총액이 줄 때만 묶고, 증가분은 환불에서 뺀다). <em>각주: 장기 보류 보관료는 출고되는 건에 한해 같은 예외 결제 경로로 출고 전 청구한다(사유 <code>STORAGE_FEE</code>, FR-B-063). 고객 귀책 부수 청구라 "예외 3종" 에 세지 않는다. 환불로 끝나는 건은 환불액에서 차감한다.</em> <strong>환불 합계 ≤ 결제 합계</strong>(모든 단계 합). <strong>합포장 부분 환불도 이 상한 안에서만 한다</strong>: 묶음 부분 환불 ≤ 묶인 주문들이 낸 국제 배송비 + 관세 합, 주문별 배분액 ≤ 그 주문이 낸 국제 배송비 + 관세, 그 주문의 이후 환불(반품 · 클레임 등)은 이미 나간 부분 환불을 뺀 나머지 안에서만 한다.</li>
+<li><strong>Shopify ↔ DB 대사.</strong> 주문 · 결제 · 환불 · 출고는 Shopify 가 정본이고 DB 는 웹훅으로 따라간다. 매일 금액 · 상태를 대사하고 불일치는 운영 작업이 된다. 환불은 Shopify 확인 전에 완료로 보지 않는다.</li>
+<li><strong>원장은 추가만</strong> — DB 의 견적 · 감사로그 · 결제 이벤트는 수정 · 삭제하지 않는다. Shopify 주문은 환불 · 취소 · 출고로만 바뀐다.</li>
+<li><strong>기한 필드는 sweeper 와 짝</strong> — <code>*DeadlineAt</code> 을 만들면 처리기도 만든다(B 규칙).</li>
+<li><strong>판매처 스캔 · 최저가는 고객에게 나가지 않는다</strong> — 견적 상품가 = 고객 URL 판매가(S7).</li>
+</ol>
+<hr />
+<h2 id="9-비기능-요구">9. 비기능 요구</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>요구</th>
+<th>현재</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>견적 속도</td>
+<td>단계별: 미리보기 ~3초 → 기본 견적 10초 이내(구조화 데이터 있는 상품) → 장바구니 시점 심층 확인 ~30초</td>
+<td><code>[미조사]</code> — 코퍼스로 측정</td>
+</tr>
+<tr>
+<td>수동 처리율</td>
+<td>견적 중 운영자 검토로 넘어가는 비율 &lt; 10%</td>
+<td><code>[미조사]</code></td>
+</tr>
+<tr>
+<td>수집 비용</td>
+<td>상품당 ≤ $0.03 <code>[문서: KPI]</code></td>
+<td>추출 LLM $0.33/1천 콜 <code>[실측: 벤치]</code></td>
+</tr>
+<tr>
+<td>관세 견적 오차</td>
+<td>≤ 5% <code>[문서: KPI]</code></td>
+<td><code>[미조사]</code></td>
+</tr>
+<tr>
+<td>가용성</td>
+<td>워커 정지 5분 내 감지 · 가동 감시(외부 핑) · 오류 추적(서버 · 클라이언트)</td>
+<td>감시 없음 → FR-B-042 · FR-B-080</td>
+</tr>
+<tr>
+<td>보안</td>
+<td>세션 · IDOR · 웹훅 HMAC · 레이트리밋(에이전트 포함) · CRON_SECRET · <strong>CSRF · 보안 헤더(CSP · HSTS)</strong> · 운영자 개인 인증 · 수집 HTML = 적대적 입력(프롬프트 인젝션)</td>
+<td>B Phase 7 미완 <code>[실측]</code> · FR-B-071 · 072</td>
+</tr>
+<tr>
+<td>백업</td>
+<td>PG 일 1회 자동 백업 · 복구 시험 1회</td>
+<td>GAP <code>[실측: DEPLOYMENT §8]</code></td>
+</tr>
+<tr>
+<td>비용</td>
+<td>인프라 월 $100 이하 (S8 · D9) — Vercel 상용 · 워커 · PG · 백업 · 객체 저장소 포함. <strong>Shopify 구독료 · 결제 수수료는 제외</strong></td>
+<td><code>[미조사]</code> M4 전 실견적</td>
+</tr>
+<tr>
+<td>파일</td>
+<td>사진 · 영상 · 영수증 · 매입 증빙 서명 URL, 본인 · 운영자만, 종류별 보관 기간</td>
+<td>저장소 없음 <code>[실측]</code> → FR-B-081</td>
+</tr>
+<tr>
+<td>테스트</td>
+<td>출시 게이트 = Playwright e2e(고객 · 운영 흐름 + 셀프 취소 경합 · 예외 결제 3종 · 할인 정산 · 반품 기한 · 디테일 검수 항상 확정 · 3선택 · 클레임 · 대사 · 합포장 부분 환불 · 장기 보류 처리기 — 89 §3.7)</td>
+<td>B 단위 테스트 다수 통과, e2e 없음 <code>[실측]</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="10-지표와-단위-경제">10. 지표와 단위 경제</h2>
+<h3>10.1 지표</h3>
+<table>
+<thead>
+<tr>
+<th>지표</th>
+<th>정의</th>
+<th>현재</th>
+<th>재는 법</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>URL → 장바구니</td>
+<td>견적 받은 세션 중 장바구니 담은 비율</td>
+<td>기준선 없음</td>
+<td>목표 ≥25% <code>[문서]</code> — <strong>출시 4주 실측 후 재확정</strong>. 원천 = 퍼널 이벤트(FR-B-062)</td>
+</tr>
+<tr>
+<td>장바구니 → 결제</td>
+<td>장바구니 세션 중 결제 완료 비율</td>
+<td>기준선 없음</td>
+<td>목표 ≥60% <code>[문서]</code> — 같은 조건</td>
+</tr>
+<tr>
+<td>관세 견적 오차</td>
+<td>주문 단위 |견적 관세 − 청구 관세| ≤ $1, 관세 &gt; $0 이면 ≤ 5% (앨범은 관세 $0 이라 비율을 쓰지 않는다)</td>
+<td>없음</td>
+<td>특송사 청구서 수령 후 대조</td>
+</tr>
+<tr>
+<td>통관 실패율 <code>v0.3</code></td>
+<td>통관 거부 · 반송 · 폐기 건 / 출고 건</td>
+<td>없음</td>
+<td>목표 ≤0.5% <code>[문서: v2.2 KPI]</code> · 특송사 상태</td>
+</tr>
+<tr>
+<td>가격 변동률 <code>v0.3</code></td>
+<td>구매 줄 중 허용 범위를 넘어 추가 결제(예외 ②)가 생긴 비율. 허용분 흡수액은 따로 집계</td>
+<td>없음</td>
+<td>목표 ≤3% <code>[문서: v2.2 KPI — 정의는 이 PRD]</code> · <code>PriceChangeDecision</code></td>
+</tr>
+<tr>
+<td>CS 1차 응답 <code>v0.3</code></td>
+<td>상담 요청 중 24시간 안에 사람이 처음 응답한 비율</td>
+<td>없음</td>
+<td>목표 ≥95% <code>[문서]</code> · FR-B-057</td>
+</tr>
+<tr>
+<td>상품당 수집 비용</td>
+<td>LLM + 관리형 크롤 비용 / 견적 상품 수</td>
+<td>없음</td>
+<td><code>LlmUsage</code> · <code>ApiUsage</code></td>
+</tr>
+<tr>
+<td>주문당 운영 시간</td>
+<td>운영자가 실제로 손댄 시간 합</td>
+<td>없음</td>
+<td>M3 수용 테스트는 스톱워치, 운영 후엔 작업 claim → resolve 합 — 목표 ≤8분 <code>[문서]</code></td>
+</tr>
+</tbody>
+</table>
+<h3>10.2 단위 경제 <code>v0.3 신설</code> — 수수료(S3) · 배송 마크업 10% · 환율 마진 0.5% 는 <strong>확정(261007)</strong>, 나머지 값은 <code>[가정]</code> 이고 실주문으로 바꾼다</h3>
+<p><strong>계산식</strong></p>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>계산식</th>
+<th>근거</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>고객 결제 총액 T</td>
+<td>상품가 P + 수수료 F + 국내 배송비 + 국제 배송비 S + 관세 + 통관 수수료</td>
+<td>견적 엔진</td>
+</tr>
+<tr>
+<td>ⓐ 결제 및 대행 수수료 F</td>
+<td>max(P × 10%, $5)</td>
+<td>S3 확정</td>
+</tr>
+<tr>
+<td>ⓑ 배송 마크업</td>
+<td>S − 특송 원가(버퍼 포함 무게). S = 특송 원가(추정 무게 × 1.2) × (1 + 10%)</td>
+<td>수익원 ①, 마크업 <strong>10% 확정</strong>(261007, <code>shipping.markupRate</code> 설정값으로 변경 가능 · 사업계획 범위 5~15%)</td>
+</tr>
+<tr>
+<td>ⓒ 버퍼 잔여</td>
+<td>특송 원가(버퍼 포함 무게) − 특송 원가(실측 무게). 실측 &gt; 버퍼면 2차 결제라 음수가 되지 않는다</td>
+<td>P-2 확정(잔여분 회사 보유)</td>
+</tr>
+<tr>
+<td>ⓓ 환율 마진</td>
+<td>P − P ÷ 1.005 (P 는 마진이 붙은 환율로 환산한 견적 상품가)</td>
+<td>수익원 ②, <strong>0.5% 확정</strong>(261007, <code>fx.spreadRate</code> 설정값으로 변경 가능)</td>
+</tr>
+<tr>
+<td>ⓔ 최저가 결제 차익</td>
+<td>(P ÷ 1.005) × 3% — 쿠폰 · 캐시백 · 포인트 · 최저가 판매처</td>
+<td>수익원 ④, 차익률 3% <code>[가정]</code>([핵심] §6 "구매 마진 ~3%")</td>
+</tr>
+<tr>
+<td>ⓕ 부가세 영세율 환급</td>
+<td>실구매가 ÷ 11 = (P ÷ 1.005) × 97% ÷ 11</td>
+<td>수익원 ③, 국내 매입 부가세(가격의 1/11). 견적에 넣지 않는다</td>
+</tr>
+<tr>
+<td>ⓖ 결제 수수료</td>
+<td>T × 3.49% + $0.49</td>
+<td>PayPal 표준 요율 <code>[가정]</code> — 한국 법인 계정의 국제 수취 · 환전 수수료는 <code>[미조사]</code></td>
+</tr>
+<tr>
+<td>ⓗ Shopify 외부 결제 거래 수수료</td>
+<td>T × 2%</td>
+<td>Basic 플랜 <code>[가정]</code> — §8.1 <code>[미조사]</code></td>
+</tr>
+<tr>
+<td>ⓘ 가격 상승 흡수 손실(기대값)</td>
+<td>발생률 10% × max(P × 5%, $3)</td>
+<td>P-1 허용분. 발생률 <code>[가정]</code>, 발생 시 한도 전액 흡수(보수)</td>
+</tr>
+<tr>
+<td>ⓙ 변동비</td>
+<td>포장재 $1.00 + 수집 · AI $0.10</td>
+<td><code>[가정]</code></td>
+</tr>
+<tr>
+<td><strong>공헌이익</strong></td>
+<td>(ⓐ + ⓑ + ⓒ + ⓓ + ⓔ + ⓕ) − (ⓖ + ⓗ + ⓘ + ⓙ)</td>
+<td>운영자 · 개발 인건비는 고정비로 뺀다</td>
+</tr>
+</tbody>
+</table>
+<p><strong>공통 가정</strong> <code>[가정]</code>: 특송 원가 = $8.00 + $8.00 × 청구 kg(특송 계약 전 — 연속값으로 단순화) · 실측 무게 = 추정 무게 · 판매처 무료 배송(국내 배송비 $0) · 통관 수수료 = MPF $2.69(특송사 통관 수수료는 원가 그대로 넘겨 0 마진) · 관세는 원가 그대로 넘긴다(DDP) · 상품은 모두 부가세 과세 상품.</p>
+<p><strong>시나리오</strong> — 시나리오 금액은 견적 상품가 P 다(주문당 상품가 $35 = 사업계획 평균, $80 = PSST Y1 평균, $150 = 고가 주문).</p>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>계산</th>
+<th>A — $35 앨범 1장</th>
+<th>B — $80 K-뷰티</th>
+<th>C — $150 의류</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>추정 무게 → 버퍼 포함 무게</td>
+<td>× 1.2</td>
+<td>0.6 → 0.72kg</td>
+<td>1.0 → 1.2kg</td>
+<td>1.5 → 1.8kg</td>
+</tr>
+<tr>
+<td>특송 원가(버퍼 / 실측)</td>
+<td>8 + 8 × kg</td>
+<td>$13.76 / $12.80</td>
+<td>$17.60 / $16.00</td>
+<td>$22.40 / $20.00</td>
+</tr>
+<tr>
+<td>고객 배송비 S</td>
+<td>버퍼 원가 × 1.1</td>
+<td>$15.14</td>
+<td>$19.36</td>
+<td>$24.64</td>
+</tr>
+<tr>
+<td>관세</td>
+<td>앨범 301 예외 0% · 그 외 12.5%</td>
+<td>$0.00</td>
+<td>$10.00</td>
+<td>$18.75</td>
+</tr>
+<tr>
+<td><strong>고객 결제 총액 T</strong></td>
+<td>P + F + S + 관세 + $2.69</td>
+<td><strong>$57.83</strong></td>
+<td><strong>$120.05</strong></td>
+<td><strong>$211.08</strong></td>
+</tr>
+<tr>
+<td>ⓐ 수수료</td>
+<td>max(10%, $5)</td>
+<td>$5.00 (실효 14.3%)</td>
+<td>$8.00</td>
+<td>$15.00</td>
+</tr>
+<tr>
+<td>ⓑ 배송 마크업</td>
+<td>S − 버퍼 원가</td>
+<td>$1.38</td>
+<td>$1.76</td>
+<td>$2.24</td>
+</tr>
+<tr>
+<td>ⓒ 버퍼 잔여</td>
+<td>버퍼 원가 − 실측 원가</td>
+<td>$0.96</td>
+<td>$1.60</td>
+<td>$2.40</td>
+</tr>
+<tr>
+<td>ⓓ 환율 마진</td>
+<td>P − P/1.005</td>
+<td>$0.17</td>
+<td>$0.40</td>
+<td>$0.75</td>
+</tr>
+<tr>
+<td>ⓔ 최저가 차익</td>
+<td>3%</td>
+<td>$1.04</td>
+<td>$2.39</td>
+<td>$4.48</td>
+</tr>
+<tr>
+<td>ⓕ 영세율 환급</td>
+<td>실구매가 ÷ 11</td>
+<td>$3.07</td>
+<td>$7.02</td>
+<td>$13.16</td>
+</tr>
+<tr>
+<td><strong>수익 합계</strong></td>
+<td></td>
+<td><strong>$11.62</strong></td>
+<td><strong>$21.17</strong></td>
+<td><strong>$38.03</strong></td>
+</tr>
+<tr>
+<td>ⓖ 결제 수수료</td>
+<td>3.49% + $0.49</td>
+<td>−$2.51</td>
+<td>−$4.68</td>
+<td>−$7.86</td>
+</tr>
+<tr>
+<td>ⓗ Shopify 거래 수수료</td>
+<td>2%</td>
+<td>−$1.16</td>
+<td>−$2.40</td>
+<td>−$4.22</td>
+</tr>
+<tr>
+<td>ⓘ 흡수 손실(기대값)</td>
+<td>10% × max(5%, $3)</td>
+<td>−$0.30</td>
+<td>−$0.40</td>
+<td>−$0.75</td>
+</tr>
+<tr>
+<td>ⓙ 변동비</td>
+<td></td>
+<td>−$1.10</td>
+<td>−$1.10</td>
+<td>−$1.10</td>
+</tr>
+<tr>
+<td><strong>공헌이익</strong></td>
+<td></td>
+<td><strong>$6.55</strong></td>
+<td><strong>$12.59</strong></td>
+<td><strong>$24.10</strong></td>
+</tr>
+<tr>
+<td>공헌이익 ÷ T</td>
+<td></td>
+<td>11.3%</td>
+<td>10.5%</td>
+<td>11.4%</td>
+</tr>
+</tbody>
+</table>
+<p><strong>민감도 — 불확실한 수익원을 빼면</strong></p>
+<table>
+<thead>
+<tr>
+<th>경우</th>
+<th>A $35</th>
+<th>B $80</th>
+<th>C $150</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>기본(위 표)</td>
+<td>$6.55</td>
+<td>$12.59</td>
+<td>$24.10</td>
+</tr>
+<tr>
+<td>영세율 환급 0 (세무 요건 미충족)</td>
+<td>$3.48</td>
+<td>$5.57</td>
+<td>$10.94</td>
+</tr>
+<tr>
+<td>영세율 · 최저가 차익 0</td>
+<td>$2.44</td>
+<td>$3.18</td>
+<td>$6.46</td>
+</tr>
+<tr>
+<td>보수 — 수수료 · 마크업 · 환율만(버퍼 잔여도 0)</td>
+<td>$1.48</td>
+<td>$1.58</td>
+<td>$4.06</td>
+</tr>
+<tr>
+<td>Shopify 거래 수수료 없음(확인 시)</td>
+<td>+$1.16</td>
+<td>+$2.40</td>
+<td>+$4.22</td>
+</tr>
+</tbody>
+</table>
+<p><strong>손익분기(월 주문 수 = 월 고정비 ÷ 주문당 공헌이익, 올림)</strong> <code>[가정]</code></p>
+<table>
+<thead>
+<tr>
+<th>월 고정비</th>
+<th>근거</th>
+<th>A 기준</th>
+<th>B 기준</th>
+<th>C 기준</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$139</td>
+<td>인프라 $100(D9) + Shopify Basic $39 <code>[가정]</code> — 인건비 제외</td>
+<td>22건</td>
+<td>12건</td>
+<td>6건</td>
+</tr>
+<tr>
+<td>$3,000</td>
+<td>기존 문서의 "서버 + API + 2인 운영" 고정비 <code>[문서, 낡음]</code></td>
+<td>459건</td>
+<td>239건</td>
+<td>125건</td>
+</tr>
+<tr>
+<td>$3,000 · 보수 공헌이익</td>
+<td>위와 같음, 수수료 · 마크업 · 환율만</td>
+<td>2,028건</td>
+<td>1,899건</td>
+<td>739건</td>
+</tr>
+</tbody>
+</table>
+<p>인수 개발자 비용은 <code>[미조사]</code> 라 넣지 않았다. 운영 후에는 실제 고정비와 주문 믹스로 다시 낸다(D5).</p>
+<p><strong>읽는 법</strong></p>
+<ul>
+<li><strong>영세율 환급이 공헌이익의 약 절반이다</strong>(A 47% · B 56% · C 55%). 사업자 유형 · 수출 증빙(매입 증빙 · 수출신고) 요건을 세무사가 확인하기 전에는 이 몫을 믿을 수 없다 <code>[확인 필요]</code>. FR-O-085 증빙 관리가 M4 에 있는 이유다.</li>
+<li>수수료 · 마크업 · 환율만으로는 결제 수수료(약 5.5% + $0.49)와 변동비를 겨우 넘는다(주문당 $1.5~4). <strong>가격 구조는 수익원 ③④ 가 실제로 나와야 성립한다.</strong></li>
+<li>$35 주문은 최소 수수료 $5 덕에 실효 수수료율이 14.3% 지만, 고정 결제 수수료 · 포장재 비중이 커서 공헌이익률은 다른 시나리오와 비슷하다.</li>
+<li>Shopify 외부 결제 거래 수수료(2%)가 실제로 붙으면 공헌이익의 18~19% 를 먹는다. 플랜 전환(§8.1)과 결제 수단 선택의 판단 근거로 쓴다.</li>
+<li>무게는 버퍼(+20%)와 예외 ① 때문에 회사 손실이 생기지 않는다. 대신 <strong>2차 결제 미납(7일 자동 취소)</strong> 이 나면 이미 쓴 구매 · 국내 배송비가 손실이다 — 미납률 <code>[미조사]</code>.</li>
+<li>관세 초과는 고객 부담(예외 ③)이지만, 회사가 특송사에 먼저 내고 고객이 미납하면 손실이다(계정 차단으로만 막는다).</li>
+<li><strong>합포장은 줄어든 특송 원가 · 버퍼 잔여와 그 마크업을 고객에게 돌려준다.</strong> 묶음 배송비는 실측 그대로(버퍼 없음)다. §5.7 예시(A + B 묶음, 실측 = 추정, 관세 변화 0)에서 부분 환불 $11.62 = 특송 원가 절감 $8.00(상자당 기본 운임 1회분) + 버퍼 잔여 $2.56 + 그 마크업 $1.06. 회사 배송 몫은 따로 보낼 때 $5.70(마크업 3.14 + 버퍼 잔여 2.56)에서 묶으면 $2.08(실측 원가 20.80 의 마크업)로 $3.62 줄어든다. 묶음 배송비는 실측 원가에 마크업을 붙인 값이라 회사 손실은 생기지 않는다. 합포장 비율은 <code>[미조사]</code> — 출시 후 주문 믹스로 다시 계산한다.</li>
+<li>약관 Landed Cost 고지(OS§1)에 마크업 · 환율 마진 · 영세율 환급을 어떻게 적을지는 법무 확인이 필요하다 <code>[확인 필요]</code>.</li>
+</ul>
+<h3>10.3 확인 안 된 가설</h3>
+<table>
+<thead>
+<tr>
+<th>가설</th>
+<th>영향</th>
+<th>확인 방법</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>결제 전 확정 총액이 이탈을 줄인다</td>
+<td>차별점 1순위</td>
+<td>견적 화면 이탈률 vs 장바구니</td>
+</tr>
+<tr>
+<td>AI 채팅이 URL 폼보다 전환이 높다</td>
+<td>에이전트 우선순위(S2)</td>
+<td>채팅 / 폼 진입 비교</td>
+</tr>
+<tr>
+<td>버퍼 +20% 로 2차 결제(예외 ①)가 드물다</td>
+<td>1회 결제 경험(S1) · 버퍼 잔여 수익</td>
+<td>주 단위 실측 ÷ 추정 분포 · 2차 결제 발생률(FR-B-048)</td>
+</tr>
+<tr>
+<td>최저가 · 쿠폰 · 포인트로 실구매가가 견적보다 평균 3% 낮다</td>
+<td>수익원 ④ · S7 MVP 포함 근거</td>
+<td>견적 상품가 vs 실구매가(쿠폰 · 포인트 · 캐시백 포함)</td>
+</tr>
+<tr>
+<td>가격 상승 허용 초과는 구매 줄의 3% 이하</td>
+<td>고객 추가 결제 빈도</td>
+<td>가격 변동률(§10.1)</td>
+</tr>
+<tr>
+<td>영세율 환급을 받을 수 있다</td>
+<td>공헌이익의 약 절반</td>
+<td>세무사 확인 · 첫 분기 신고</td>
+</tr>
+<tr>
+<td>K-팬 주문당 상품가 $35~150</td>
+<td>단위 경제</td>
+<td>실주문</td>
+</tr>
+</tbody>
+</table>
+<p><strong>미조사</strong> — 특송 계약 요율 · 특송사 통관 수수료 · Shopify 현행 요금과 외부 결제 거래 수수료 · PayPal 한국 법인 계정 수수료 · 네이버 API 약관 · PortOne/PayPal 가입 기간 · 판매처 반품비 실비 · 경쟁사 미국 가격(면세 폐지 후).</p>
+<hr />
+<h2 id="11-일정">11. 일정</h2>
+<p>WBS 정본 = <code>tools/deckgen/gen_xlsx.py</code>. <strong>G0 = 2026-10-07 완료.</strong></p>
+<table>
+<thead>
+<tr>
+<th>단계</th>
+<th>기간</th>
+<th>내용</th>
+<th>끝</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>G0</strong></td>
+<td><strong>2026-10-07 완료</strong></td>
+<td>박요한 확정 결정(이 문서 §13)</td>
+<td>확정</td>
+</tr>
+<tr>
+<td><strong>M0</strong></td>
+<td>10/08~10/16</td>
+<td>교착 수정 4건(정산 시 발주 작업 · 의향 승인/거절 API · 구매 실패 전이 · <code>purchasedAt</code>) + 릴리스 블로커 4건 + CI Postgres. <strong>완료 후 D2 main 교체</strong>(백업 태그 <code>a-final</code> + Vercel 자동 배포 해제 후 force push)</td>
+<td>CI 전체 통과</td>
+</tr>
+<tr>
+<td><strong>M1</strong></td>
+<td>10/19~10/23</td>
+<td>메이저 업그레이드</td>
+<td>동작 변화 없음</td>
+</tr>
+<tr>
+<td><strong>M2</strong></td>
+<td>10/26~11/20 (4주)</td>
+<td>MVP 코어 + <strong>S4 하이브리드 원장</strong>(fulfillment 블로커 첫 주 조사) + 예외 결제 단계(P-1 · 관세 초과) + Shopify 할인(P-8) + 무게 버퍼(P-2) + 수익원 설정 + 관세 canon 개정 ADR</td>
+<td>e2e: URL → 결제(mock) · 할인 정산</td>
+</tr>
+<tr>
+<td><strong>M3</strong></td>
+<td>11/23~12/24 (약 5주)</td>
+<td>운영 최소셋 + 디테일 검수 $7(항상 고객 확정) · 교환 + 셀프 취소(P-9) + 반품 기한 · 계산기(P-3) + 분실·파손 클레임 + 재무 대사 · 차단 사용자 · Shopify 연동 화면 + 운영자 개인 인증 + <strong>합포장(D-g)</strong> + <strong>장기 보류 보관 처리기(D-f)</strong></td>
+<td>e2e: 의향 → 출고 · 환불 · 예외 결제 3종 · 합포장 부분 환불</td>
+</tr>
+<tr>
+<td><strong>M4</strong></td>
+<td>12/28~2027-01-29 (약 5주, 연말 포함)</td>
+<td>출시 준비(보안 · 인프라 · KPI · 영세율 증빙 · 경쟁 가격 비교) + 미국 소프트런칭</td>
+<td><strong>실결제 1건</strong></td>
+</tr>
+<tr>
+<td><strong>첫 실매출</strong></td>
+<td><strong>2027-01 말 (G0 후 약 16주)</strong></td>
+<td>외부 계약 · 법무가 실제 출시일을 좌우한다</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>v0.2 대비 +약 5주: S4(+1.5~2.5주) · 디테일 검수(+3~5일) · 셀프 취소(+3일) · 예외 결제 단계(+3일) · 클레임 · 대사 · 차단(+3일) · <strong>합포장(+약 1주, 261007 오후)</strong>.</p>
+<p><strong>외부 트랙(병행 · 출시 관문)</strong>: 결제 가입(PortOne · PayPal — <strong>먼저 끝난 하나로 출시</strong>) · 특송 계약(DDP 요율 · 통관 수수료) · 관세사(관세 골든 · 미국 식품 · 합포장 신고 단위) · 변호사(약관 개정안 · 개인정보 · 광고 문구) · 세무사(영세율 환급 요건). 사업자등록 · 통신판매업 신고는 완료.</p>
+<table>
+<thead>
+<tr>
+<th>역할 (D10)</th>
+<th>담당</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>최종 결정 · 정책 · 외부 계약 · 법무 · 운영 수용 테스트 · GTM</td>
+<td>박요한</td>
+</tr>
+<tr>
+<td>개발</td>
+<td>인수 개발자(GitHub <code>DongHeeKw</code>) + AI</td>
+</tr>
+<tr>
+<td>자문 · 리뷰(선택)</td>
+<td>김도윤</td>
+</tr>
+<tr>
+<td>운영자 1인</td>
+<td><code>[확인 필요]</code> — 창고 결정 항목(주소 · 운영자 · 촬영 장비 · 포장재)과 함께 정한다</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="12-리스크">12. 리스크</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>리스크</th>
+<th>영향</th>
+<th>대응</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>B 코드 원본이 개인 레포</strong>(<code>maybedy/kbuyer</code>)</td>
+<td>법인 귀속 불명 · 이식 코드 권리 분쟁</td>
+<td>법인 귀속(양도 또는 라이선스)을 서면으로 확인 <code>[확인 필요]</code>. 인수 개발자와 비밀유지 · IP 양도 계약</td>
+</tr>
+<tr>
+<td>2</td>
+<td>결제 수단 가입 지연(S9)</td>
+<td>출시 지연</td>
+<td><strong>먼저 끝난 하나로 출시</strong>(확정). 둘 다 늦으면 M4 범위 안에서 기다린다</td>
+</tr>
+<tr>
+<td>3</td>
+<td>관세 규칙 재변경</td>
+<td>견적 오차 · 손실</td>
+<td>요율 DB + 유효기간 · 관세사 SLA · 오차 지표 · 초과분은 예외 ③</td>
+</tr>
+<tr>
+<td>4</td>
+<td>무게 추정이 크게 빗나감</td>
+<td>2차 결제 증가 · 고객 불만 · 미납 손실</td>
+<td>버퍼 +20% · 버퍼 잔여 · 초과 기록(FR-B-048) · 주 단위 분포 점검 후 버퍼율 조정</td>
+</tr>
+<tr>
+<td>5</td>
+<td>판매처 스캔 품질 · 약관</td>
+<td>S7 · 수익원 ④ 효과 없음</td>
+<td>운영자 최종 선택 · 추천 정확도 측정 · 네이버 API 사용 가능 여부(P-5)</td>
+</tr>
+<tr>
+<td>6</td>
+<td>워커 정지 = 기한 감시 정지</td>
+<td>자동 환불 · 경보 누락</td>
+<td>FR-B-042 · 가동 감시</td>
+</tr>
+<tr>
+<td>7</td>
+<td>수집 커버리지 부족(쿠팡 403 등)</td>
+<td>검토 중 비율 ↑ · 운영 부담</td>
+<td>코퍼스 측정 · 관리형 크롤 마지막 단계 <code>[실측: 쿠팡 단순 요청 403]</code></td>
+</tr>
+<tr>
+<td>8</td>
+<td>레포 main 교체(D2)</td>
+<td>히스토리 혼선 · 되돌리기 어려움</td>
+<td><strong>M0 완료 후</strong> 백업 태그 <code>a-final</code> + Vercel 자동 배포 해제 후 force push</td>
+</tr>
+<tr>
+<td>9</td>
+<td>시크릿 노출</td>
+<td>계정 탈취</td>
+<td>kbuyer-v2 원격 주소의 PAT 폐기 · 재발급</td>
+</tr>
+<tr>
+<td>10</td>
+<td>약관 미검토 게시 · 약관과 결정의 불일치</td>
+<td>법적 리스크</td>
+<td>변호사 검토 전 게시 금지. 약관 원본은 고치지 않고 <a href="plans/261007_약관_개정안_목록.md">약관 개정안 목록</a> 으로 법무에 넘긴다</td>
+</tr>
+<tr>
+<td>11</td>
+<td>S4 · 예외 결제 · 합포장 등으로 M2 · M3 범위 증가</td>
+<td>일정 지연</td>
+<td>M2 4주 · M3 약 5주(합포장 +1주). 넘치면 신규 메일 일부를 운영자 수동 메일로 대체. 합포장 관세 재계산은 관세사 회신 전 "관세 변동 없는 묶음만" 으로 좁힐 수 있다</td>
+</tr>
+<tr>
+<td>12</td>
+<td><strong>Shopify 의존</strong> — 장애 · 웹훅 지연 · 플랜 한도 · fulfillment 블로커</td>
+<td>결제 · 환불 · 출고 정체, DB 불일치</td>
+<td>웹훅 재처리 큐 · 일일 대사 · 연동 화면(FR-O-076) · M2 첫 주 블로커 조사 · 플랜 전환 트리거(§8.1)</td>
+</tr>
+<tr>
+<td>13</td>
+<td><strong>스크래핑 약관 · 합법성</strong></td>
+<td>판매처 차단 · 법적 분쟁</td>
+<td>수집 대상 약관 검토 · 요청 빈도 제한 · 공식 API 우선(P-5) · 법무 확인</td>
+</tr>
+<tr>
+<td>14</td>
+<td><strong>특송 계약 지연</strong></td>
+<td>DDP 출고 불가 · 단위 경제 원가 미확정</td>
+<td>외부 트랙 최우선 · 후보 2곳 병행 견적</td>
+</tr>
+<tr>
+<td>15</td>
+<td><strong>경쟁 진입</strong>(쿠팡 글로벌 확대 · AI 구매대행)</td>
+<td>차별점 약화 · 가격 압박</td>
+<td>"결제 전 확정 총액" 메시지 · 소프트런칭 전 경쟁 가격 비교(M4)</td>
+</tr>
+<tr>
+<td>16</td>
+<td><strong>K-뷰티 미국 FDA 규제(MoCRA)</strong></td>
+<td>화장품 통관 보류 · 반송</td>
+<td>관세사 · 특송사 확인 · 문제 품목은 금지품목 가이드에 올린다</td>
+</tr>
+<tr>
+<td>17</td>
+<td><strong>영세율 환급 요건 미충족</strong></td>
+<td>공헌이익 약 절반 감소(§10.2)</td>
+<td>M4 전 세무사 확인 · 매입 증빙 · 수출신고 수집(FR-O-085)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="13-결정-전부-확정-261007">13. 결정 — 전부 확정(261007)</h2>
+<p>최종 결정 = 박요한(D10). G0 = 2026-10-07 완료. 상세는 <a href="plans/261007_v0.3_변경시트.md">v0.3 변경 시트 §1</a>.</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>결정</th>
+<th>확정 내용</th>
+<th>PRD 위치</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>S0 · D1</td>
+<td>기반 코드</td>
+<td>B(rebuild) 단일 기반, 기능 단위 이식</td>
+<td>§1.3</td>
+</tr>
+<tr>
+<td>S1</td>
+<td>결제 횟수</td>
+<td><strong>1회 결제 + 예외 3종</strong>(실측 초과 · 가격 상승 초과 · 관세 초과)</td>
+<td>§8.2 #3</td>
+</tr>
+<tr>
+<td>S2</td>
+<td>에이전트</td>
+<td>v0 MVP 포함</td>
+<td>§2.1</td>
+</tr>
+<tr>
+<td>S3</td>
+<td>수수료</td>
+<td>상품가 × 10%, 최소 $5. 라벨 "결제 및 대행 수수료(Payment &amp; service fee)"</td>
+<td>FR-B-010</td>
+</tr>
+<tr>
+<td>S4</td>
+<td>Shopify 역할</td>
+<td><strong>하이브리드 원장</strong> — 주문 · 결제 · 환불 · 출고 · 고객 · 할인 = Shopify, 운영 상태 등 = DB</td>
+<td>§7.1</td>
+</tr>
+<tr>
+<td>S5</td>
+<td>관세 구조</td>
+<td>국가별 면세 구조 유지 · 미국 = 면세 없음 · 한국산 max(MFN, 12.5%) · 앨범 · CD 예외</td>
+<td>FR-B-011</td>
+</tr>
+<tr>
+<td>S6</td>
+<td>통화</td>
+<td>USD 결제 + 표시 통화 8</td>
+<td>§3.1</td>
+</tr>
+<tr>
+<td>S7</td>
+<td>최저가 · Catalog Pivot</td>
+<td>MVP 포함. <strong>스캔 결과는 운영자 전용</strong></td>
+<td>§8.2 #7</td>
+</tr>
+<tr>
+<td>S8 · D9</td>
+<td>인프라 예산</td>
+<td>월 $100 이하(Shopify 구독료 · 결제 수수료 제외)</td>
+<td>§9</td>
+</tr>
+<tr>
+<td>S9 · P-7</td>
+<td>결제 수단</td>
+<td>PortOne + PayPal 병행 준비, <strong>먼저 끝난 하나로 출시</strong></td>
+<td>§11</td>
+</tr>
+<tr>
+<td>D2</td>
+<td>정본 레포</td>
+<td>paynship-v2 재사용. <strong>main 교체는 M0 완료 후</strong>(<code>a-final</code> 태그 + Vercel 자동 배포 해제)</td>
+<td>§11 · §12 #8</td>
+</tr>
+<tr>
+<td>D3</td>
+<td>커밋 작성자 · 훅</td>
+<td><strong>현행 유지</strong> — 작성자 <code>paynshipcompany</code> + pre-commit 훅. main 교체(D2) 때 새 main 에 훅 재설치</td>
+<td>머지 계획 §3</td>
+</tr>
+<tr>
+<td>D5</td>
+<td>마일스톤</td>
+<td>~~첫 실매출 2027-01 하순(G0 후 약 15주)~~ → <strong>2027-01 말(G0 후 약 16주)</strong> — 합포장 +1주(261007 오후). 손익분기는 §10.2 로 재산정</td>
+<td>§11</td>
+</tr>
+<tr>
+<td>D6</td>
+<td>검수 무응답</td>
+<td>72시간 = 그대로 발송</td>
+<td>FR-O-042</td>
+</tr>
+<tr>
+<td>D7</td>
+<td>인증</td>
+<td>결제 전 로그인 필수</td>
+<td>FR-C-032</td>
+</tr>
+<tr>
+<td>D8</td>
+<td>LLM</td>
+<td>Gemini ADR <strong>Accepted</strong> — 추출 <code>gemini-3.5-flash-lite</code>(thinking low). 에이전트 <code>gemini-3.7-flash</code> 는 에이전트 스펙에서 확정</td>
+<td>§8</td>
+</tr>
+<tr>
+<td>D10</td>
+<td>역할</td>
+<td>개발 = 인수 개발자(<code>DongHeeKw</code>) + AI · <strong>최종 결정 = 박요한</strong> · 김도윤 = 자문(선택)</td>
+<td>§11</td>
+</tr>
+<tr>
+<td>P-1</td>
+<td>가격 상승</td>
+<td>허용 max(5%, $3) 회사 흡수, 초과분만 고객 추가 결제(48h, 무응답 · 거절 = 취소 · 전액 환불). 결제 단계 <code>PRICE_ADJUSTMENT</code></td>
+<td>FR-O-035 · B-052</td>
+</tr>
+<tr>
+<td>P-2</td>
+<td>무게 버퍼</td>
+<td>견적 청구 무게 = 추정 × 1.2(배송비에만). 잔여분 회사 보유, 초과 = 예외 ①</td>
+<td>FR-B-017 · 047</td>
+</tr>
+<tr>
+<td>P-3</td>
+<td>반품</td>
+<td>약관대로 — 하자 · 오배송만 · 5영업일 · 언박싱 영상 · 반송비 고객 선불 · 환불 = 결제액 − DDP − $10</td>
+<td>FR-C-044 · B-055</td>
+</tr>
+<tr>
+<td>P-4</td>
+<td>취소 비용</td>
+<td>구매 전 무료 · 구매 후 ~ 출고 전 판매처 왕복 배송 · 반품비 실비 + $5 · 출고 후 불가</td>
+<td>FR-O-024</td>
+</tr>
+<tr>
+<td>P-5</td>
+<td>네이버 쇼핑 API</td>
+<td><strong>미결 — 박요한 확인 중</strong>(불가 시 수집 사다리 재사용)</td>
+<td>§8.1</td>
+</tr>
+<tr>
+<td>P-6</td>
+<td>자동 승인 예외</td>
+<td>결제 총액 &gt; $300 · 동일 상품 &gt; 5 · 위험물 · 금지 의심 · 차단 사용자 → 검토(AppConfig)</td>
+<td>FR-B-016</td>
+</tr>
+<tr>
+<td>P-8</td>
+<td>초기 할인</td>
+<td><strong>Shopify 할인 기능</strong>(서버 <code>appliedDiscount</code>, 할인 후 금액 정산). 수수료율 플래그 삭제</td>
+<td>FR-B-038</td>
+</tr>
+<tr>
+<td>P-9</td>
+<td>셀프 취소</td>
+<td><strong>구매 전 즉시 셀프 취소 P1</strong>(행 잠금 · <code>orderCancel</code> · 즉시 환불), 구매 후는 요청 접수</td>
+<td>FR-C-043 · B-054</td>
+</tr>
+<tr>
+<td>검수</td>
+<td>검수 정책</td>
+<td>기본 미개봉 재포장 $0 · <strong>디테일 검수 $7/판매처 P1</strong> · 결과 항상 고객 확정(D-a) · 이상 시 3선택 · 72h 무응답 = 확정(발송)</td>
+<td>FR-O-042 · 047</td>
+</tr>
+<tr>
+<td>관세 초과</td>
+<td>초과 관세 부담</td>
+<td>약관대로 고객 부담 — 예외 ③(<code>TAX_OVERAGE</code>, 7일, 미납 = 차단). 무조건 문구 금지</td>
+<td>§0 · FR-O-059</td>
+</tr>
+<tr>
+<td>수익원</td>
+<td>수익 구조</td>
+<td>4종 MVP — 배송 마크업 · 환율 마진 · 영세율 환급 · 최저가 차익. <strong>마크업 10% · 환율 마진 0.5% 확정</strong>(설정값으로 변경 가능, 261007 오후)</td>
+<td>§10.2 · FR-B-018</td>
+</tr>
+<tr>
+<td>법인</td>
+<td>인허가</td>
+<td>사업자등록 · 통신판매업 신고 완료. 등기 여부 · 사업자 유형 <code>[확인 필요]</code></td>
+<td>§1.5</td>
+</tr>
+</tbody>
+</table>
+<p><strong>추가 확정 (261007 오후 · 저녁 — 약관 운영값 · 합포장 · D3)</strong> — 원문 = <a href="plans/261007_v0.3_변경시트.md">변경 시트 §1.0</a>, 약관 반영 = <a href="plans/261007_약관_개정안_목록.md">약관 개정안 목록 §3</a></p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>결정</th>
+<th>확정 내용</th>
+<th>PRD 위치</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D-a</td>
+<td>디테일 검수 확정</td>
+<td>검수 결과를 이상 여부와 관계없이 <strong>항상 고객에게 보내 확정받는다</strong>. 고객 확정 또는 72h 무응답 = 확정 → 출고. 출고 후 검수 범위 안의 문제도 <strong>일반 하자 반품 규칙</strong>(국제 반송비 고객 · −DDP −$10)</td>
+<td>§5.2 · FR-O-047 · B-043~045 · B-055</td>
+</tr>
+<tr>
+<td>D-b</td>
+<td>검수 환불 시 판매처 반품비</td>
+<td>판매처와 교섭, 안 되면 <strong>실비를 고객 환불액에서 차감</strong></td>
+<td>FR-B-043~045</td>
+</tr>
+<tr>
+<td>D-c</td>
+<td>창고 안 분실 · 파손</td>
+<td>회사 과실이면 <strong>결제액 전액</strong> — 환불 또는 재구매 발송(고객 선택)</td>
+<td>FR-C-047 · O-058</td>
+</tr>
+<tr>
+<td>D-d</td>
+<td>수수료율 공개</td>
+<td>상품가 × 10%, 최소 $5 를 약관 · 안내 페이지에 공개</td>
+<td>FR-B-010 · C-021</td>
+</tr>
+<tr>
+<td>D-e</td>
+<td>구매 완료 약속</td>
+<td>결제 후 <strong>1~3영업일</strong>(내부 기한 12h 유지)</td>
+<td>FR-C-036</td>
+</tr>
+<tr>
+<td>D-f</td>
+<td>장기 보류 보관</td>
+<td>검수 보류 · 가격 동의 대기 · 추가 결제 연체 · 금지품목 연락 대기 건: <strong>45일 무료 → 하루 $1 → 75일 후 폐기</strong>. 보관료는 <strong>환불로 끝나는 건은 환불액에서 차감, 출고되는 건은 출고 전 추가 결제</strong>(예외 결제 경로 재사용, 사유 <code>STORAGE_FEE</code> — "예외 3종" 표기는 유지하고 각주). 미납이면 출고 보류(261007 저녁)</td>
+<td>FR-B-063 · B-037 · §8.2 #3</td>
+</tr>
+<tr>
+<td>D-g</td>
+<td>합포장</td>
+<td><strong>MVP 포함</strong> — 결제 완료 · 출고 전 여러 주문을 한 상자로(고객 요청). 배송비 = <strong>묶은 상자 실측 그대로(버퍼 없음)</strong>. 허용 = <strong>고객 총액(배송비 감소 + 관세 변화)이 줄 때만</strong> — 관세가 늘어도 총액이 줄면 허용(261007 저녁). 미리보기에서 총액이 늘면 요청 불가, 승인 단계 실측에서 늘면 미승인 · 개별 출고. 줄어든 차액은 출고 때 부분 환불. 관세는 신고 단위가 바뀌면 재계산(신고 단위 <code>[관세사 확인]</code>)</td>
+<td>§2.1 · §5.7 · FR-C-048 · O-049 · B-019 · §8.2 #3</td>
+</tr>
+<tr>
+<td>D-h</td>
+<td>클레임 증빙 보관</td>
+<td>클레임 종결 후 <strong>1년</strong></td>
+<td>FR-B-081</td>
+</tr>
+<tr>
+<td>D-i</td>
+<td>DPO</td>
+<td><strong>박요한</strong>으로 변경(처리방침 개정)</td>
+<td>§1.5</td>
+</tr>
+<tr>
+<td>D-j</td>
+<td>금지품목 창고 폐기</td>
+<td>14일 무응답 폐기 시 <strong>폐기 실비 차감 후 나머지 환불</strong> — 국제 배송비 · 관세는 환불, 상품가 · 수수료 · 국내 배송비 · 폐기 실비는 차감</td>
+<td>FR-O-046</td>
+</tr>
+<tr>
+<td>D-k</td>
+<td>반품 환불 기준액</td>
+<td>"초기 결제 금액" = <strong>1차 + 예외 결제 합계</strong>, 관세 초과 추가 납부분은 "DDP 기납부 세금" 에 포함</td>
+<td>FR-B-055</td>
+</tr>
+</tbody>
+</table>
+<p>P-5 를 빼면 남은 결정은 없다. 나머지는 결정이 아니라 외부 확인 항목(<code>[미조사]</code> · <code>[확인 필요]</code>, §10.3 · §12)이다. D4 는 머지 계획을 따른다(D4 의 전략 충돌은 위 S 행으로 모두 확정).</p>
+<hr />
+<h2 id="14-이-문서의-갱신-규칙">14. 이 문서의 갱신 규칙</h2>
+<ol>
+<li><strong>기능을 추가하면 §4 도메인 × 동작 매트릭스를 먼저 고친다.</strong> 매트릭스에 없는 FR 은 만들지 않는다.</li>
+<li>새 규칙이 생기면 <strong>정책서(01 정본 <code>deck_policy_pns.py</code>) → 요구정의·기능목록(02) → 본 PRD</strong> 순으로 반영하고 번호(요구 n.0 · FR-x-nnn · S/D/P)를 맞춘다. 문서끼리 충돌하면 최신 변경 시트를 따른다.</li>
+<li><code>[가설]</code> · <code>[가정]</code> 이 검증되면 <code>[실측]</code> 으로 바꾸고 근거(파일 · 쿼리 · 날짜)를 적는다. §10.2 단위 경제는 첫 실주문 10건 후 다시 계산한다.</li>
+<li>결정이 바뀌면 §13 에서 지우지 않고 <strong>취소선 + 새 결정 내용</strong>으로 남긴다.</li>
+<li>B 코드를 새로 확인하면 §7 · §8.1 에 <code>[실측]</code> 날짜와 함께 추가한다.</li>
+<li>문서를 고치면 <code>Document Ver.</code> 와 <code>Last Update</code> 를 올리고 변경 이력에 한 줄을 쓴 뒤 HTML 을 다시 굽는다(md 가 단일 출처).</li>
+</ol>
+<footer>03_통합PRD_PayNShip-MVP.md 에서 자동 생성 · build-doc-html.py</footer>
+</main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  // 아티팩트에서는 이 스크립트가 막히고 mermaid 가 기본 지원된다.
+  // 파일을 그냥 열었을 때를 위해 둔다.
+  if (window.mermaid) {
+    const dark = matchMedia("(prefers-color-scheme: dark)").matches;
+    window.mermaid.initialize({ startOnLoad: true, theme: dark ? "dark" : "neutral" });
+  }
+</script>
+</body>
+</html>

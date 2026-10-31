@@ -1,0 +1,7 @@
+import { formatDate } from './labels';
+const AMOUNTS = [['productCents', 'Product'], ['domesticShippingCents', 'Domestic shipping'], ['serviceFeeCents', 'Service fee'], ['internationalShippingCents', 'International shipping'], ['insuranceCents', 'Insurance'], ['dutyCents', 'Import duty'], ['taxCents', 'Import tax'], ['totalCents', 'Total']] as const;
+export default function QuoteSummary({ quote, expires }: { quote: Record<string, unknown> | null; expires: string | null }) {
+  if (!quote) return <section className="detail-section"><h2 className="section-heading">Quote</h2><p className="muted">Product details, import requirements, and shipping costs are being reviewed. Payment becomes available after a quote is approved.</p></section>;
+  const money = new Intl.NumberFormat('en', { style: 'currency', currency: 'USD' });
+  return <section className="detail-section"><h2 className="section-heading">Quote</h2>{typeof quote.productName === 'string' && <p>{quote.productName}</p>}<dl className="detail-grid">{AMOUNTS.map(([key, label]) => typeof quote[key] === 'number' ? <div className="contents" key={key}><dt>{label}</dt><dd className={key === 'totalCents' ? 'font-bold' : ''}>{money.format((quote[key] as number) / 100)}</dd></div> : null)}</dl>{expires && <p className="muted mt-5">Quote valid until {formatDate(expires)}.</p>}{typeof quote.estimatedTransitDays === 'number' && <p className="muted">Estimated carrier transit: {quote.estimatedTransitDays} days after dispatch. Customs and seller processing can add time.</p>}</section>;
+}

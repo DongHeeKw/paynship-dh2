@@ -1,0 +1,1736 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id                  String              @id @default(uuid())
+  email               String              @unique
+  shopifyCustomerId   String?             @map("shopify_customer_id")
+  notificationPref    NotificationChannel @default(EMAIL) @map("notification_pref")
+  phone               String?
+  isAdmin             Boolean             @default(false) @map("is_admin")
+  createdAt           DateTime            @default(now()) @map("created_at")
+  quotes              Quote[]
+  chatSessions        ChatSession[]
+  preferences         UserPreferences?
+  adminAuditLogs      AdminAuditLog[]     @relation("AdminAuditActor")
+  cart                Cart?
+  orders              Order[]
+  deliveryProfile     DeliveryProfile?
+  purchaseRequests    PurchaseRequest[]
+
+  @@map("users")
+}
+
+// URL purchase flow. Historical chat/order tables remain for data preservation only.
+model DeliveryProfile {
+  userId        String   @id @map("user_id")
+  encryptedData String   @map("encrypted_data")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@map("delivery_profiles")
+}
+
+model PurchaseRequest {
+  id                String   @id @default(uuid())
+  userId            String   @map("user_id")
+  sourceUrl         String   @map("source_url")
+  category          String
+  quantity          Int
+  options           String
+  destination       String
+  encryptedDelivery String   @map("encrypted_delivery")
+  idempotencyKey    String   @map("idempotency_key")
+  payloadHash       String   @map("payload_hash")
+  status            String   @default("REVIEW_REQUIRED")
+  version           Int      @default(0)
+  review            Json?
+  quote             Json?
+  quoteExpiresAt    DateTime? @map("quote_expires_at")
+  paymentDraftId    String?  @unique @map("payment_draft_id")
+  checkoutUrl       String?  @map("checkout_url")
+  paymentOrderId    String?  @unique @map("payment_order_id")
+  paidAt            DateTime? @map("paid_at")
+  carrier           String?
+  trackingNumber    String?  @map("tracking_number")
+  lastCarrierEventAt DateTime? @map("last_carrier_event_at")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+  user              User @relation(fields: [userId], references: [id])
+  events            PurchaseEvent[]
+  supportTickets    PurchaseSupportTicket[]
+  @@unique([userId, idempotencyKey])
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([status, createdAt])
+  @@map("purchase_requests")
+}
+
+model PurchaseEvent {
+  id         String @id @default(uuid())
+  requestId  String @map("request_id")
+  actorId    String @map("actor_id")
+  source     String
+  status     String
+  message    String
+  createdAt  DateTime @default(now()) @map("created_at")
+  request    PurchaseRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  @@index([requestId, createdAt])
+  @@index([requestId, status])
+  @@map("purchase_events")
+}
+
+model PurchaseSupportTicket {
+  id         String @id @default(uuid())
+  requestId  String @map("request_id")
+  subject    String
+  message    String
+  reply      String?
+  status     String @default("OPEN")
+  version    Int @default(0)
+  updatedBy  String? @map("updated_by")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  request    PurchaseRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  @@index([requestId, createdAt])
+  @@index([status, createdAt])
+  @@map("purchase_support_tickets")
+}
+
+model PurchaseQuota {
+  key    String
+  bucket DateTime
+  count  Int
+  @@id([key, bucket])
+  @@map("purchase_quotas")
+}
+
+model PurchaseWebhookReceipt {
+  id        String @id
+  provider  String
+  createdAt DateTime @default(now()) @map("created_at")
+  @@map("purchase_webhook_receipts")
+}
+
+// 유저 선호도 - LLM이 참조하는 영구 메모리
+model UserPreferences {
+  id                  String   @id @default(uuid())
+  userId              String   @unique @map("user_id")
+
+  // 쇼핑 선호도 (LLM이 자유롭게 업데이트)
+  favoriteCategories  String?  @map("favorite_categories")  // JSON string: ["K-pop", "Snacks"]
+  dislikedCategories  String?  @map("disliked_categories")  // JSON string: ["Electronics"]
+  pricePreference     String?  @map("price_preference")     // "budget", "mid-range", "premium"
+  preferredBrands     String?  @map("preferred_brands")     // JSON string: ["BTS", "Blackpink"]
+
+  // 배송 선호도
+  defaultCountry      String?  @map("default_country")
+  defaultAddress      Json?    @map("default_address")
+
+  // LLM이 학습한 자유 형식 메모
+  // 예: "이 사용자는 선물용 구매가 많고, 빠른 배송을 선호함"
+  llmNotes            String?  @map("llm_notes")
+
+  // 대화 스타일 선호 (LLM이 감지)
+  communicationStyle  String?  @map("communication_style")  // "formal", "casual", "brief"
+  language            String   @default("auto")             // "ko", "en", "auto"
+
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_preferences")
+}
+
+model ScrapeRequest {
+  id                String       @id @default(uuid())
+  userId            String?      @map("user_id")
+  sessionId         String?      @map("session_id")
+  productId         String?      @map("product_id")  // 성공 시 Product에 연결
+  sourceUrl         String       @map("source_url")
+  status            ScrapeStatus @default(PENDING)
+  requestType       String       @default("direct") @map("request_type")
+  tempProductId     String?      @map("temp_product_id")
+  rawHtml           String?      @map("raw_html")
+  parsedData        Json?        @map("parsed_data")
+  errorMsg          String?      @map("error_msg")
+  attempts          Int          @default(0)
+  leaseOwner        String?      @map("lease_owner")
+  leaseExpiresAt    DateTime?    @map("lease_expires_at")
+  heartbeatAt       DateTime?    @map("heartbeat_at")
+  startedAt         DateTime?    @map("started_at")
+  completedAt       DateTime?    @map("completed_at")
+  cancelRequestedAt DateTime?    @map("cancel_requested_at")
+  createdAt         DateTime     @default(now()) @map("created_at")
+  updatedAt         DateTime     @updatedAt @map("updated_at")
+  product           Product?     @relation(fields: [productId], references: [id])
+
+  @@index([status, createdAt])
+  @@index([sourceUrl, status])
+  @@index([leaseExpiresAt])
+  @@index([sessionId])
+
+  @@map("scrape_requests")
+}
+
+model ProductTask {
+  id              String            @id @default(uuid())
+  requestId       String?           @unique @map("request_id")
+  userId          String?           @map("user_id")
+  sessionId       String?           @map("session_id")
+  productId       String?           @map("product_id")
+  sourceUrl       String            @map("source_url")
+  taskType        String            @default("product_evidence") @map("task_type")
+  status          ProductTaskStatus @default(PREVIEW)
+  quoteReady      Boolean           @default(false) @map("quote_ready")
+  previewProductId String?          @map("preview_product_id")
+  missingFields   Json?             @map("missing_fields")
+  errorMsg        String?           @map("error_msg")
+  metadata        Json?
+  startedAt       DateTime?         @map("started_at")
+  completedAt     DateTime?         @map("completed_at")
+  createdAt       DateTime          @default(now()) @map("created_at")
+  updatedAt       DateTime          @updatedAt @map("updated_at")
+
+  @@index([sourceUrl, status])
+  @@index([sessionId, createdAt])
+  @@index([productId])
+  @@map("product_tasks")
+}
+
+model Product {
+  id               String        @id @default(uuid())
+
+  // URL 관련 (핵심) - sourceUrl이 유니크 키
+  sourceUrl        String        @unique @map("source_url")      // 정규화된 URL
+  sourceUrlHash    String        @unique @map("source_url_hash") // MD5 해시 (빠른 조회)
+  originalUrl      String?       @map("original_url")            // 원본 URL (트래킹 파라미터 포함)
+
+  // 상품 정보
+  // NOTE: @unique 제거됨 - 여러 Product가 같은 Shopify Product를 공유 (N:1 via CanonicalProduct)
+  shopifyProductId String?       @map("shopify_product_id")
+  shopifyVariantId String?       @map("shopify_variant_id")    // Shopify 상품 Variant ID
+  shopifySyncedAt  DateTime?     @map("shopify_synced_at")     // 마지막 Shopify 동기화 시간
+  name             String
+  imageUrl         String        @map("image_url")
+  priceKrw         Float         @map("price_krw")
+  salePriceKrw     Float?        @map("sale_price_krw")
+  category         String
+  options          Json?
+  weightKg         Float         @map("weight_kg")
+  dimensions       Json?
+  domesticShipping Float         @default(0) @map("domestic_shipping")
+  hsCode           String?       @map("hs_code")
+
+  // Phase 2: 3-Tier Cascade에서 추출되는 확장 메타데이터
+  description      String?                        // JSON-LD에서 추출된 상품 설명
+  brand            String?                        // 브랜드명
+  rating           Float?                         // 평균 평점 (0-5)
+  reviewCount      Int?          @map("review_count") // 리뷰 수
+  inStock          Boolean?      @default(true) @map("in_stock") // 재고 상태
+
+  // Phase 3: Tavily Enrichment 필드
+  material         String?                        // 재질 (e.g., "Cotton 95%, Spandex 5%")
+  origin           String?                        // 원산지 (e.g., "South Korea", "China")
+  enrichedAt       DateTime?     @map("enriched_at")  // 마지막 Tavily enrichment 시간
+  enrichmentSource String?       @map("enrichment_source")  // "tavily" | "scraper" | "manual"
+
+  // Phase 4: Data Source Tracking
+  dataSources      Json?         @map("data_sources")       // ProductDataSources - 각 필드별 출처/신뢰도
+  overallConfidence Float?       @map("overall_confidence") // 전체 신뢰도 (0-1)
+  extractionMethod String?       @map("extraction_method")  // 'json-ld' | 'css' | 'llm' | 'manual'
+
+  // 메타데이터
+  lastScrapedAt    DateTime      @default(now()) @map("last_scraped_at")
+  isActive         Boolean       @default(true) @map("is_active")
+  createdAt        DateTime      @default(now()) @map("created_at")
+  updatedAt        DateTime      @updatedAt @map("updated_at")
+
+  // Relations
+  scrapeRequests   ScrapeRequest[]
+  quotes           Quote[]
+  cartItems        CartItem[]
+
+  // Canonical Product 연결 (하이브리드 아키텍처)
+  canonicalProductId String?   @map("canonical_product_id")
+  canonicalProduct   CanonicalProduct? @relation(fields: [canonicalProductId], references: [id])
+
+  // 가격 추적 (최저가 비교용)
+  lastPriceCheck     DateTime? @map("last_price_check")
+  priceHistory       Json?     @map("price_history")  // [{ date, priceKrw }]
+
+  // === v6.0 Identity Fields ===
+  sku                String?                      // 상품 고유번호
+  releaseDate        String?   @map("release_date") // "YYYY-MM"
+  season             String?                      // SS25 / FW25 / AW25
+  listPriceKrw       Int?      @map("list_price_krw")     // 판매가
+  discountPriceKrw   Int?      @map("discount_price_krw") // 할인가
+
+  // === v6.0 Compliance Flags ===
+  dgClass            String?   @map("dg_class")          // IATA DG Class
+  inspectionRequired Boolean   @default(false) @map("inspection_required")
+
+  // === v6.0 Internal-only (백오피스 전용) ===
+  internalMetadata   Json?     @map("internal_metadata")
+  // { maxBenefit: { priceKrw, method, url, rewardPoints }, crossPlatform: [...], dg, inspection }
+
+  // === v2.0 Scrape Level Tracking ===
+  scrapeLevel        ScrapeLevel @default(L0_UNKNOWN) @map("scrape_level")
+  fieldProvenance    Json?      @map("field_provenance")  // { fieldName: { level, at, source } }
+  catalogEntryId     String?    @map("catalog_entry_id")  // v2.0 Catalog 연결
+
+  // === v2.0 Relations (추가) ===
+  catalogMatches     CatalogMatch[]
+
+  @@index([sourceUrlHash])
+  @@index([canonicalProductId])
+  @@index([brand, sku])
+  @@index([catalogEntryId])
+  @@index([scrapeLevel])
+  @@map("products")
+}
+
+// Canonical Product - 동일 상품의 다중 URL 그룹화
+// 하이브리드 아키텍처: PayNShip (가격/URL) + Shopify (카탈로그)
+model CanonicalProduct {
+  id                   String    @id @default(uuid())
+  canonicalHash        String    @unique @map("canonical_hash")  // MD5(name + category + imageUrl)
+  name                 String                                     // 대표 상품명 (Admin 표시용)
+  shopifyProductId     String    @unique @map("shopify_product_id")  // Shopify Product GID
+  shopifyVariantId     String    @map("shopify_variant_id")         // Default variant
+
+  // 최저가 추적
+  lowestPriceProductId String?   @map("lowest_price_product_id")
+  lowestPriceKrw       Int?      @map("lowest_price_krw")
+  lowestPriceUpdatedAt DateTime? @map("lowest_price_updated_at")
+
+  // Relations
+  products          Product[]   // Multiple PayNShip Products (다중 URL)
+
+  createdAt         DateTime    @default(now()) @map("created_at")
+  updatedAt         DateTime    @updatedAt @map("updated_at")
+
+  @@map("canonical_products")
+}
+
+model Quote {
+  id                     String   @id @default(uuid())
+  productId              String?  @map("product_id")
+  userId                 String?  @map("user_id")
+  productName            String?  @map("product_name")
+  // Snapshot of product data for order fulfillment (JSON)
+  // Contains: name, imageUrl, sourceUrl, priceKrw, category, weightKg, selectedOptions
+  productSnapshot        Json?    @map("product_snapshot")
+  // For cart orders: snapshot of all cart items
+  cartSnapshot           Json?    @map("cart_snapshot")
+  destinationCountry     String   @map("destination_country")
+  destinationAddress     Json     @map("destination_address")
+  productPriceUsd        Float    @map("product_price_usd")
+  serviceFee             Float    @map("service_fee")
+  domesticShippingUsd    Float    @map("domestic_shipping_usd")
+  internationalShipping  Float    @map("international_shipping")
+  customsDuty            Float    @map("customs_duty")
+  vat                    Float
+  totalUsd               Float    @map("total_usd")
+  exchangeRate           Float    @map("exchange_rate")
+  validUntil             DateTime @map("valid_until")
+
+  // Shopify Integration (Draft Order → Checkout)
+  shopifyDraftId         String?  @unique @map("shopify_draft_id")  // Shopify Draft Order ID
+  invoiceUrl             String?  @map("invoice_url")               // Shopify Checkout URL
+
+  createdAt              DateTime @default(now()) @map("created_at")
+  product                Product? @relation(fields: [productId], references: [id])
+  user                   User?    @relation(fields: [userId], references: [id])
+  orders                 Order[]
+  orderIntents           OrderIntent[]
+  paymentRequests        PaymentRequest[]
+
+  // PERF: userId 인덱스 추가 - memory-loader.ts에서 user의 주문 조회 시 필요
+  @@index([userId])
+  @@map("quotes")
+}
+
+model Order {
+  id                    String      @id @default(uuid())
+  userId                String      @map("user_id")
+  quoteId               String?     @map("quote_id")
+  shopifyOrderId        String?     @unique @map("shopify_order_id")
+  shopifyFulfillmentId  String?     @map("shopify_fulfillment_id")
+  status                OrderStatus @default(PENDING_PAYMENT)
+
+  // ── Phase 1: 상품 구매 결제 ──
+  productAmountKrw      Int?        @map("product_amount_krw")
+  productAmountUsd      Float?      @map("product_amount_usd")
+  serviceFeeUsd         Float?      @map("service_fee_usd")
+  domesticShippingKrw   Int?        @map("domestic_shipping_krw")
+  domesticShippingUsd   Float?      @map("domestic_shipping_usd")
+  phase1TotalUsd        Float?      @map("phase1_total_usd")
+  phase1PaidAt          DateTime?   @map("phase1_paid_at")
+  phase1PaymentRef      String?     @map("phase1_payment_ref")
+  shopifyPhase1DraftId  String?     @map("shopify_phase1_draft_id")
+  // Phase 2 estimates at checkout time (reference only)
+  estimatedShippingUsd  Float?      @map("estimated_shipping_usd")
+  estimatedDutyUsd      Float?      @map("estimated_duty_usd")
+  estimatedTaxUsd       Float?      @map("estimated_tax_usd")
+
+  // ── Warehouse: 창고 처리 ──
+  warehouseReceivedAt   DateTime?   @map("warehouse_received_at")
+  actualWeightKg        Float?      @map("actual_weight_kg")
+  actualDimensions      Json?       @map("actual_dimensions")       // {l,w,h} cm
+  volumetricWeightKg    Float?      @map("volumetric_weight_kg")
+  chargeableWeightKg    Float?      @map("chargeable_weight_kg")    // MAX(actual, volumetric)
+  warehouseNotes        String?     @map("warehouse_notes")
+  warehousePhotos       Json?       @map("warehouse_photos")        // URL[]
+  consolidationGroupId  String?     @map("consolidation_group_id")
+
+  // ── Phase 2: 배송비 정산 ──
+  intlShippingUsd       Float?      @map("intl_shipping_usd")
+  customsDutyUsd        Float?      @map("customs_duty_usd")
+  taxUsd                Float?      @map("tax_usd")
+  packagingFeeUsd       Float?      @map("packaging_fee_usd")
+  phase2TotalUsd        Float?      @map("phase2_total_usd")
+  phase2PaidAt          DateTime?   @map("phase2_paid_at")
+  phase2PaymentRef      String?     @map("phase2_payment_ref")
+  shopifyPhase2DraftId  String?     @map("shopify_phase2_draft_id")
+  phase2RequestedAt     DateTime?   @map("phase2_requested_at")
+  phase2DueAt           DateTime?   @map("phase2_due_at")
+
+  // ── Shipping tracking ──
+  trackingNumber        String?     @map("tracking_number")          // legacy compat
+  trackingNumberKr      String?     @map("tracking_number_kr")
+  trackingNumberIntl    String?     @map("tracking_number_intl")
+  shippingCarrier       String?     @map("shipping_carrier")
+  shippingMethod        String?     @map("shipping_method")          // EMS, K-Packet, etc.
+  estimatedDeliveryAt   DateTime?   @map("estimated_delivery_at")
+
+  // ── Customer/Address ──
+  destinationCountry    String?     @map("destination_country")
+  shippingAddress       Json?       @map("shipping_address")
+  customerNotes         String?     @map("customer_notes")
+
+  // ── Snapshot ──
+  cartSnapshot          Json?       @map("cart_snapshot")
+  exchangeRate          Float?      @map("exchange_rate")
+
+  // ── Denormalized query fields (populated by service layer) ──
+  shipmentStatus        String?     @map("shipment_status")
+  refundStatus          String?     @map("refund_status")
+  refundAmountUsd       Float?      @map("refund_amount_usd")
+
+  createdAt             DateTime    @default(now()) @map("created_at")
+  updatedAt             DateTime    @updatedAt @map("updated_at")
+  quote                 Quote?      @relation(fields: [quoteId], references: [id])
+  user                  User        @relation(fields: [userId], references: [id])
+
+  @@index([userId, status])
+  @@index([status, createdAt])
+  @@index([consolidationGroupId])
+  @@map("orders")
+}
+
+model OrderIntent {
+  id                String            @id @default(uuid())
+  quoteId           String?           @map("quote_id")
+  userId            String?           @map("user_id")
+  sessionId         String?           @map("session_id")
+  status            OrderIntentStatus @default(PENDING_REVIEW)
+  quoteQuality      String            @default("unknown") @map("quote_quality")
+  checkoutEligible  Boolean           @default(false) @map("checkout_eligible")
+  totalUsd          Float             @map("total_usd")
+  currency          String            @default("USD")
+  destinationCountry String?          @map("destination_country")
+  acceptanceReason  String?           @map("acceptance_reason")
+  reviewSummary     String?           @map("review_summary")
+  paymentRequestId  String?           @map("payment_request_id")
+  metadata          Json?
+  createdAt         DateTime          @default(now()) @map("created_at")
+  updatedAt         DateTime          @updatedAt @map("updated_at")
+
+  quote             Quote?            @relation(fields: [quoteId], references: [id])
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([status, createdAt(sort: Desc)])
+  @@map("order_intents")
+}
+
+model PaymentRequest {
+  id               String               @id @default(uuid())
+  orderIntentId    String               @map("order_intent_id")
+  quoteId          String?              @map("quote_id")
+  userId           String?              @map("user_id")
+  status           PaymentRequestStatus @default(READY)
+  amountUsd        Float                @map("amount_usd")
+  currency         String               @default("USD")
+  shopifyDraftId   String?              @map("shopify_draft_id")
+  invoiceUrl       String?              @map("invoice_url")
+  expiresAt        DateTime?            @map("expires_at")
+  metadata         Json?
+  createdAt        DateTime             @default(now()) @map("created_at")
+  updatedAt        DateTime             @updatedAt @map("updated_at")
+
+  quote            Quote?               @relation(fields: [quoteId], references: [id])
+
+  @@index([quoteId, createdAt(sort: Desc)])
+  @@index([userId, status])
+  @@map("payment_requests")
+}
+
+model ProcurementBatch {
+  id               String                  @id @default(uuid())
+  status           ProcurementBatchStatus  @default(DRAFT)
+  sourceVendor     String?                 @map("source_vendor")
+  selectedSourceUrl String?                @map("selected_source_url")
+  orderIntentIds   Json?                   @map("order_intent_ids")
+  operatorUserId   String?                 @map("operator_user_id")
+  metadata         Json?
+  createdAt        DateTime                @default(now()) @map("created_at")
+  updatedAt        DateTime                @updatedAt @map("updated_at")
+
+  @@index([status, createdAt(sort: Desc)])
+  @@map("procurement_batches")
+}
+
+model ProcurementTask {
+  id               String                 @id @default(uuid())
+  batchId          String?                @map("batch_id")
+  orderIntentId    String?                @map("order_intent_id")
+  canonicalProductId String?              @map("canonical_product_id")
+  status           ProcurementTaskStatus  @default(QUEUED)
+  selectedSourceUrl String?               @map("selected_source_url")
+  lowestPriceKrw   Float?                 @map("lowest_price_krw")
+  availabilityStatus String?              @map("availability_status")
+  reviewSummary    String?                @map("review_summary")
+  metadata         Json?
+  createdAt        DateTime               @default(now()) @map("created_at")
+  updatedAt        DateTime               @updatedAt @map("updated_at")
+
+  // === v2.0 9-step fields ===
+  orderId          String?  @map("order_id")
+  productId        String?  @map("product_id")
+  selectedVariantOptions Json? @map("selected_variant_options")
+  quantity         Int?
+
+  // Step 1B 입력
+  sellerUrl             String?   @map("seller_url")
+  sellerOrderNumber     String?   @map("seller_order_number")
+  sellerPaymentMethod   String?   @map("seller_payment_method")
+  sellerFinalPaidKrw    Int?      @map("seller_final_paid_krw")
+  procuredAt            DateTime? @map("procured_at")
+
+  // Step 1C
+  domesticTrackingNumber String?  @map("domestic_tracking_number")
+  domesticCarrier        String?  @map("domestic_carrier")
+  domesticShipStartedAt  DateTime? @map("domestic_ship_started_at")
+  domesticDeliveredAt    DateTime? @map("domestic_delivered_at")
+
+  // Step 1D
+  failureType            String?  @map("failure_type")              // CANCELLED | OUT_OF_STOCK
+  failureDetectedAt      DateTime? @map("failure_detected_at")
+  reprocureApprovedAt    DateTime? @map("reprocure_approved_at")
+
+  // Step 1F (검수)
+  inspectionLevel        String?  @map("inspection_level")          // BASIC | DETAIL
+  inspectionResult       Json?    @map("inspection_result")
+  warehousedAt           DateTime? @map("warehoused_at")
+
+  // Step 1G (해외발송)
+  intlShipmentId         String?  @map("intl_shipment_id")
+  intlTrackingNumber     String?  @map("intl_tracking_number")
+  intlCarrier            String?  @map("intl_carrier")
+  intlShippedAt          DateTime? @map("intl_shipped_at")
+
+  // SLA
+  stepStartedAt          DateTime? @map("step_started_at")
+  slaDeadline            DateTime? @map("sla_deadline")
+
+  @@index([batchId, createdAt(sort: Desc)])
+  @@index([orderIntentId, createdAt(sort: Desc)])
+  @@index([orderId])
+  @@index([status, slaDeadline])
+  @@map("procurement_tasks")
+}
+
+model ChatSession {
+  id                  String    @id @default(uuid())
+  userId              String?   @map("user_id")
+  isGuest             Boolean   @default(false) @map("is_guest")
+  title               String    @default("New Chat")
+  // @deprecated - Use Message relation instead. Kept for migration compatibility.
+  messagesJson        String?   @map("messages")
+  currentStep         String    @map("current_step")
+  context             Json?
+  lastViewedProductId String?   @map("last_viewed_product_id")
+  lastSearchResults   Json?     @map("last_search_results")
+  createdAt           DateTime  @default(now()) @map("created_at")
+  updatedAt           DateTime  @updatedAt @map("updated_at")
+  // Soft delete: null = active, timestamp = deleted
+  // Prevents accidental data loss when user deletes session
+  deletedAt           DateTime? @map("deleted_at")
+  // Sprint 3.4: Conversation tags
+  tags                String[]  @default([])
+  user                User?     @relation(fields: [userId], references: [id])
+  // Normalized message storage (replaces messagesJson)
+  messages            Message[]
+
+  // Performance indexes for common queries
+  @@index([userId, updatedAt(sort: Desc)])  // User session list: WHERE userId ORDER BY updatedAt DESC
+  @@index([isGuest, createdAt])             // Guest session cleanup queries
+  @@index([deletedAt])                       // Soft delete queries
+  @@map("chat_sessions")
+}
+
+// Normalized message storage for better query performance and scalability
+model Message {
+  id              String    @id @default(uuid())
+  sessionId       String    @map("session_id")
+  sender          String    // 'user' | 'bot'
+  content         String    @db.Text
+  metadata        Json?     // uiComponents, thinking, feedback, etc.
+  createdAt       DateTime  @default(now()) @map("created_at")
+
+  // Sprint 3.1: Conversation Branching
+  parentMessageId String?   @map("parent_message_id")
+  isActive        Boolean   @default(true) @map("is_active")
+  editedAt        DateTime? @map("edited_at")
+
+  session         ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  parent          Message?    @relation("MessageTree", fields: [parentMessageId], references: [id])
+  children        Message[]   @relation("MessageTree")
+
+  // Efficient queries: session messages, feedback analysis
+  @@index([sessionId, createdAt], map: "messages_session_created_asc")
+  @@index([sessionId, createdAt(sort: Desc)], map: "messages_session_created_desc")
+  @@index([parentMessageId])
+  @@map("messages")
+}
+
+model Cart {
+  id          String     @id @default(uuid())
+  // Global cart ownership: userId (logged-in) OR guestToken (anonymous)
+  userId      String?    @unique @map("user_id")
+  guestToken  String?    @unique @map("guest_token")
+  subtotalKrw Int?       @map("subtotal_krw")
+  subtotalUsd Float?     @map("subtotal_usd")
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+  user        User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items       CartItem[]
+
+  @@map("carts")
+}
+
+model CartItem {
+  id                    String   @id @default(uuid())
+  cartId                String   @map("cart_id")
+  productId             String?  @map("product_id")
+  name                  String
+  imageUrl              String?  @map("image_url")
+  priceKrw              Float    @map("price_krw")  // Float to match Product.priceKrw
+  sourceUrl             String   @map("source_url")
+  category              String   @default("other")
+  weightKg              Float    @default(0.5) @map("weight_kg")
+  hsCode                String   @default("9999.99") @map("hs_code")
+  // Shipping detail fields (snapshot from Product)
+  dimensions            Json?    // { l: number, w: number, h: number } in cm
+  origin                String?  // Country of origin
+  material              String?  // Material/fabric composition
+  // Data source tracking for each field
+  dataSources           Json?    @map("data_sources") // { weight: DataSource, hsCode: DataSource, ... }
+  selectedOptions       Json?    @map("selected_options")
+  optionPriceAdjustment Float    @default(0) @map("option_price_adjustment")  // Float for price consistency
+  quantity              Int      @default(1)
+
+  // 주문 시 스냅샷 (하이브리드 아키텍처: 어떤 URL에서 주문했는지 추적)
+  orderedSourceUrl      String?  @map("ordered_source_url")   // 주문 시점 선택된 URL
+  orderedPriceKrw       Float?   @map("ordered_price_krw")    // 주문 시점 가격
+
+  createdAt             DateTime @default(now()) @map("created_at")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+  cart                  Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product               Product? @relation(fields: [productId], references: [id])
+
+  @@map("cart_items")
+}
+
+enum ScrapeStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum ProductTaskStatus {
+  PREVIEW
+  QUEUED
+  PROCESSING
+  EVIDENCE_PARTIAL
+  QUOTE_READY
+  FAILED
+  CANCELLED
+}
+
+enum ResearchTaskStatus {
+  QUEUED
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum NotificationChannel {
+  EMAIL
+  SMS
+  KAKAO
+}
+
+enum OrderStatus {
+  // Phase 1: Product purchase
+  PENDING_PAYMENT
+  PURCHASED
+  PURCHASE_FAILED
+  // Warehouse
+  WAREHOUSE_RECEIVED
+  // Phase 2: Shipping payment
+  PENDING_SHIPPING_PAYMENT
+  SHIPPING_PAYMENT_OVERDUE
+  // Shipping
+  SHIPPING
+  CUSTOMS_CLEARANCE
+  DELIVERING
+  DELIVERED
+  // Terminal
+  COMPLETED
+  CANCELLED
+  REFUND_PENDING
+  // Legacy compat
+  PENDING
+  PAID
+  PROCESSING
+  SHIPPED
+}
+
+enum OrderIntentStatus {
+  PENDING_REVIEW
+  AUTO_ACCEPTED
+  ACCEPTED
+  REQUOTE_REQUIRED
+  REJECTED
+  CANCELLED
+}
+
+enum PaymentRequestStatus {
+  DRAFT
+  READY
+  PAID
+  EXPIRED
+  CANCELLED
+}
+
+enum ProcurementBatchStatus {
+  DRAFT
+  QUEUED
+  SOURCING
+  APPROVED
+  PURCHASED
+  PARTIALLY_PURCHASED
+  CANCELLED
+}
+
+enum ProcurementTaskStatus {
+  QUEUED
+  RESEARCHING
+  READY_TO_BUY
+  PURCHASED
+  FAILED
+  CANCELLED
+  // === v2.0 9-step Extended ===
+  ORDER_RECEIVED
+  ORDER_CONFIRMED
+  PROCUREMENT_IN_PROGRESS
+  PROCURED
+  DOMESTIC_SHIPPING
+  DOMESTIC_DELIVERED
+  WAREHOUSED
+  INTL_SHIPMENT_CREATED
+  INTL_IN_TRANSIT
+  DELIVERED
+  PROCUREMENT_FAILED
+}
+
+// v2.0 Scrape Level (공통 스크레이핑 버전)
+enum ScrapeLevel {
+  L0_UNKNOWN
+  L1_OG
+  L2_BASE
+  L3_CRITICAL
+  L4_IDENTITY
+  L5_PIVOT
+  L6_DEEP
+  L7_ADMIN_SCAN
+}
+
+model AdminSettings {
+  id                      String   @id @default(uuid())
+  llmProvider             String   @default("gemini") @map("llm_provider")
+  llmModel                String   @default("gemini-3-flash-preview") @map("llm_model")  // gemini-3-flash-preview | gemini-2.5-flash | gemini-2.5-pro | gemini-3-pro | claude-haiku | claude-sonnet-4
+  lmStudioBaseUrl         String   @default("http://127.0.0.1:1234/v1") @map("lm_studio_base_url")
+  useMockScraper          Boolean  @default(false) @map("use_mock_scraper")
+  useMockCalculator       Boolean  @default(false) @map("use_mock_calculator")
+  useMockCheckout         Boolean  @default(false) @map("use_mock_checkout")
+  useTavily               Boolean  @default(true) @map("use_tavily")  // Tavily 웹 검색 활성화
+  useGoogleShopping       Boolean  @default(false) @map("use_google_shopping")  // Google Shopping 검색 활성화 (SerpAPI)
+  debugMode               Boolean  @default(false) @map("debug_mode")
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Chat System Settings (Sprint 1-4)
+  // ═══════════════════════════════════════════════════════════════════════════
+  requireGuestToken            Boolean @default(false) @map("require_guest_token")           // Sprint 1.1: 게스트 토큰 필수 검증
+  softDeleteRetentionDays      Int     @default(30) @map("soft_delete_retention_days")       // Sprint 1.4: Soft delete 보존 기간
+  enableLlmFollowUps           Boolean @default(false) @map("enable_llm_follow_ups")         // Sprint 2.1: LLM 후속 질문 생성
+  sessionRateLimitPerHour      Int     @default(10) @map("session_rate_limit_per_hour")      // Sprint 2.3: 세션 생성 제한
+  messageRateLimitPerMinute    Int     @default(30) @map("message_rate_limit_per_minute")    // Sprint 2.3: 메시지 전송 제한
+  enableConversationBranching  Boolean @default(false) @map("enable_conversation_branching") // Sprint 3.1: 대화 분기
+  enableContextCompression     Boolean @default(false) @map("enable_context_compression")    // Sprint 3.2: 컨텍스트 압축
+  contextCompressionThreshold  Int     @default(20) @map("context_compression_threshold")    // Sprint 3.2: 압축 임계값 (메시지 수)
+  enableResumableStreams       Boolean @default(false) @map("enable_resumable_streams")      // Sprint 4.1: SSE 스트림 재개
+  enableLongTermMemory         Boolean @default(false) @map("enable_long_term_memory")       // Sprint 4.2: 장기 메모리
+  enableDeepResearch           Boolean @default(false) @map("enable_deep_research")          // Experimental deep research fallback lane
+  useMockPayment               Boolean @default(false) @map("use_mock_payment")              // Mock payment flow (skip Shopify)
+  useMockWarehouse             Boolean @default(false) @map("use_mock_warehouse")            // Mock warehouse operations
+  autoAdvanceOrders            Boolean @default(false) @map("auto_advance_orders")           // Auto-advance order status (dev/demo)
+  devAutoAdvanceDelayMs        Int     @default(5000)  @map("dev_auto_advance_delay_ms")     // Delay for auto-advance (ms)
+  maintenanceMode              Boolean @default(false) @map("maintenance_mode")              // 서비스 점검 모드 (결제 차단)
+  showDataSources              Boolean @default(false) @map("show_data_sources")             // Sprint 4.3: 데이터 출처 표시
+  enableInChatCheckout         Boolean @default(false) @map("enable_in_chat_checkout")       // Sprint 4.4: 인라인 결제
+
+  // 인증 모드 설정
+  authMode                String   @default("GUEST_UNTIL_CHECKOUT") @map("auth_mode")  // LOGIN_REQUIRED | GUEST_UNTIL_CHECKOUT | DEMO_ONLY
+  showDemoConversation    Boolean  @default(true) @map("show_demo_conversation")
+  demoConversationData    Json?    @map("demo_conversation_data")  // 데모용 목업 대화 데이터
+
+  // 이전 메시지의 UI 요소 동작 설정
+  // disable: 회색으로 표시 + 클릭 비활성화 (기본값)
+  // warn: 클릭 허용하되 확인 다이얼로그 표시
+  previousUiMode          String   @default("disable") @map("previous_ui_mode")
+
+  // 스크래퍼 실행 모드 설정 (Multi-Backend)
+  // local: Patchright 로컬 브라우저
+  // browserless: Browserless.io 클라우드
+  // scrapingbee: ScrapingBee API
+  scraperMode             String   @default("local") @map("scraper_mode")
+  scraperSecondary        String?  @map("scraper_secondary")  // Failover용 보조 백엔드
+  scraperTertiary         String?  @map("scraper_tertiary")   // 3차 백엔드
+  scraperMaxRetries       Int      @default(3) @map("scraper_max_retries")
+  scraperAdaptiveLearning Boolean  @default(true) @map("scraper_adaptive_learning")  // 도메인별 학습
+  scraperDomainConfig     Json?    @map("scraper_domain_config")  // 도메인별 오버라이드
+  scraperHeadless         Boolean  @default(true) @map("scraper_headless")  // local 모드에서 headless 여부
+
+  // Phase 4: Hybrid/Agentic 스크래핑 설정
+  enableHybridScraper     Boolean  @default(false) @map("enable_hybrid_scraper")      // Static→Agentic fallback 활성화
+  enableAdaptiveSelectors Boolean  @default(false) @map("enable_adaptive_selectors")  // LLM 기반 셀렉터 자동학습
+  agenticMaxSteps         Int      @default(10) @map("agentic_max_steps")             // Agentic 모드 최대 스텝 수
+
+  // Phase 5: Browser Engine & ariaSnapshot
+  browserEngine           String   @default("patchright") @map("browser_engine")       // "patchright" | "playwright"
+  useAriaSnapshot         Boolean  @default(false) @map("use_aria_snapshot")           // ariaSnapshot for compact page representation
+
+  // 챗 로깅 및 Explainable AI 설정
+  enableChatLogging       Boolean  @default(true) @map("enable_chat_logging")    // 대화 메타데이터 저장
+  showReasoningToUser     Boolean  @default(true) @map("show_reasoning_to_user") // 사용자에게 추론 과정 표시 (기본 ON)
+  reasoningDetailLevel    String   @default("minimal") @map("reasoning_detail_level") // "minimal" | "standard" | "verbose"
+
+  // UI 표시 설정
+  showQuickActions        Boolean  @default(false) @map("show_quick_actions")    // Quick Action 버튼 표시 (기본 OFF)
+  showAdminPanel          Boolean  @default(false) @map("show_admin_panel")      // Floating Admin Panel 표시 (기본 OFF)
+  showCacheStatusToAdmin  Boolean  @default(true) @map("show_cache_status_to_admin") // Admin에게 캐시 상태/새로고침 버튼 표시
+  quickActionSections     String[] @default(["llm", "features"]) @map("quick_action_sections") // FloatingAdminPanel에 표시할 섹션 ID 목록
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Business Settings (비즈니스 로직 설정)
+  // SSoT: lib/business/settings.ts에서 Resolver로 접근
+  // Fallback: lib/constants/business.ts
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  // 가격 설정
+  serviceFeeRate          Float    @default(0.10) @map("service_fee_rate")       // 서비스 수수료율 (0.10 = 10%)
+  minOrderAmountUsd       Float    @default(10) @map("min_order_amount_usd")     // 최소 주문 금액 (USD)
+  maxOrderAmountUsd       Float    @default(2000) @map("max_order_amount_usd")   // 최대 주문 금액 (USD)
+
+  // 환율 설정
+  defaultExchangeRate     Float    @default(1400) @map("default_exchange_rate")  // 기본 환율 (Fallback)
+
+  // 배송 설정
+  enabledCountries        String[] @default(["US","JP","CN","SG","AU","GB","DE","FR","CA","HK","TW","TH","VN","MY","PH","ID","IN"]) @map("enabled_countries")
+  defaultProductWeightKg  Float    @default(0.5) @map("default_product_weight_kg")   // 기본 상품 무게 (kg)
+  maxProductWeightKg      Float    @default(30) @map("max_product_weight_kg")        // 최대 배송 가능 무게 (kg)
+  dimFactor               Int      @default(6000) @map("dim_factor")                 // 부피 무게 계수 (K-Packet: 6000, DHL: 5000)
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Semantic Router Tuning (LLM 비용 최적화)
+  // ═══════════════════════════════════════════════════════════════════════════
+  routerConfidenceSearch      Float @default(0.75) @map("router_confidence_search")      // 검색 의도 신뢰도
+  routerConfidenceParseUrl    Float @default(0.85) @map("router_confidence_parse_url")   // URL 파싱 신뢰도
+  routerConfidenceCart        Float @default(0.80) @map("router_confidence_cart")        // 장바구니 의도 신뢰도
+  routerConfidenceCheckout    Float @default(0.80) @map("router_confidence_checkout")    // 체크아웃 신뢰도
+  routerFallbackThreshold     Float @default(0.70) @map("router_fallback_threshold")     // 이 이하면 LLM fallback
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Tavily API Tuning
+  // ═══════════════════════════════════════════════════════════════════════════
+  tavilyMaxQueries      Int   @default(3) @map("tavily_max_queries")         // 상품당 최대 쿼리 수
+  tavilyTimeoutMs       Int   @default(10000) @map("tavily_timeout_ms")      // 타임아웃 (ms)
+  tavilyRetryAttempts   Int   @default(2) @map("tavily_retry_attempts")      // 재시도 횟수
+  tavilyCacheDays       Int   @default(7) @map("tavily_cache_days")          // 캐시 유효기간 (일)
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Scraper Backend Scoring (Fallback Coordinator)
+  // ═══════════════════════════════════════════════════════════════════════════
+  scraperPreferenceThreshold  Float @default(0.7) @map("scraper_preference_threshold")   // 백엔드 선호도 임계값
+  scraperSpeedWeight          Float @default(0.2) @map("scraper_speed_weight")           // 속도 가중치 (0-1)
+  scraperMinAttemptsForScore  Int   @default(3) @map("scraper_min_attempts_for_score")   // 스코어링 최소 시도 횟수
+  scraperTimeoutMs            Int   @default(30000) @map("scraper_timeout_ms")           // 요청 타임아웃 (ms)
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Cache TTL Settings (캐시 유효 시간 설정)
+  // ═══════════════════════════════════════════════════════════════════════════
+  cacheExchangeRateTtlMin     Int   @default(60) @map("cache_exchange_rate_ttl_min")     // 환율 캐시 (분, 기본 1시간)
+  cacheProductTtlHours        Int   @default(24) @map("cache_product_ttl_hours")         // 상품 캐시 (시간, 기본 24시간)
+  cacheRatesTtlMin            Int   @default(5) @map("cache_rates_ttl_min")              // 요율 캐시 (분, 기본 5분)
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Option Price Validation
+  // ═══════════════════════════════════════════════════════════════════════════
+  optionPriceMinKrw     Int   @default(100) @map("option_price_min_krw")     // 옵션 가격 최소값 (원)
+  optionPriceMaxKrw     Int   @default(500000) @map("option_price_max_krw")  // 옵션 가격 최대값 (원)
+  optionPriceMaxPct     Float @default(0.5) @map("option_price_max_pct")     // 기본가 대비 최대 비율
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Shopify Integration (Option D - Hybrid Architecture)
+  // ═══════════════════════════════════════════════════════════════════════════
+  shopifyEnabled              Boolean   @default(false) @map("shopify_enabled")              // 전체 기능 on/off
+  shopifyAutoSync             Boolean   @default(true) @map("shopify_auto_sync")             // 스크래핑 시 자동 동기화
+  shopifyConnectionStatus     String    @default("disconnected") @map("shopify_connection_status")  // connected | disconnected | error
+  shopifyLastSyncAt           DateTime? @map("shopify_last_sync_at")                         // 마지막 동기화 시간
+  shopifyLastError            String?   @map("shopify_last_error")                           // 마지막 에러 메시지
+  shopifySyncedProductCount   Int       @default(0) @map("shopify_synced_product_count")     // 동기화된 상품 수
+  shopifyCanonicalCount       Int       @default(0) @map("shopify_canonical_count")          // Canonical (중복 제거) 수
+
+  createdAt               DateTime @default(now()) @map("created_at")
+  updatedAt               DateTime @updatedAt @map("updated_at")
+
+  @@map("admin_settings")
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// Business Rate Tables (비즈니스 요율 테이블)
+// 어드민에서 직접 수정 가능한 배송료, 관세율, 세금 테이블
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// 카테고리별 추정값 매핑 (무게, 치수, HS Code)
+model CategoryMapping {
+  id                String   @id @default(uuid())
+  category          String   @unique               // "fashion", "beauty", "electronics" 등
+  displayName       String   @map("display_name")  // "패션", "뷰티", "전자제품"
+  aliases           String[] @default([])          // 퍼지 매칭용 별칭 ["cloth", "clothing", "의류"]
+  estimatedWeightKg Float    @default(0.5) @map("estimated_weight_kg")  // 추정 무게 (kg)
+  dimensionL        Float    @default(30) @map("dimension_l")   // 추정 길이 (cm)
+  dimensionW        Float    @default(20) @map("dimension_w")   // 추정 너비 (cm)
+  dimensionH        Float    @default(10) @map("dimension_h")   // 추정 높이 (cm)
+  hsCodePrefix      String   @default("99") @map("hs_code_prefix")  // HS 코드 2자리 (예: "62" = 의류)
+  sortOrder         Int      @default(0) @map("sort_order")
+  isActive          Boolean  @default(true) @map("is_active")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  @@map("category_mappings")
+}
+
+// 국가별 배송료 테이블
+model ShippingRate {
+  id            String   @id @default(uuid())
+  countryCode   String   @unique @map("country_code")   // ISO 코드 (US, JP, CN...)
+  countryName   String   @map("country_name")
+  ratePerKg     Float    @map("rate_per_kg")            // kg당 배송비 (USD)
+  baseRate      Float    @map("base_rate")              // 최소 배송비 (USD)
+  estimatedDays String   @map("estimated_days")         // 예상 배송일 (예: "7-14")
+  isActive      Boolean  @default(true) @map("is_active")
+  sortOrder     Int      @default(0) @map("sort_order") // 표시 순서
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@map("shipping_rates")
+}
+
+// HS Code별 관세율 테이블
+model HsCodeRate {
+  id          String   @id @default(uuid())
+  hsCode      String   @unique @map("hs_code")          // HS 코드 (2-6자리)
+  description String                                    // 설명 (예: "Clothing - Knitted")
+  dutyRate    Float    @map("duty_rate")                // 관세율 (0.05 = 5%)
+  notes       String?                                   // 메모
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("hs_code_rates")
+}
+
+// 국가별 세금 테이블
+model CountryTaxRate {
+  id            String   @id @default(uuid())
+  countryCode   String   @unique @map("country_code")   // ISO 코드
+  countryName   String   @map("country_name")
+  salesTaxRate  Float    @map("sales_tax_rate")         // VAT/GST 세율 (0.10 = 10%)
+  taxName       String   @map("tax_name")               // "VAT", "GST", "Sales Tax"
+  dutyThreshold Float    @map("duty_threshold")         // 관세 면제 기준 (USD)
+  taxThreshold  Float    @map("tax_threshold")          // 세금 면제 기준 (USD)
+  notes         String?                                 // 메모 (예: "Section 321")
+  isActive      Boolean  @default(true) @map("is_active")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@map("country_tax_rates")
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// FTA (Free Trade Agreement) 세율 테이블
+// 원산지-목적지-HS Code 조합에 따른 협정 세율
+// ═══════════════════════════════════════════════════════════════════════════════
+model FtaRate {
+  id                 String    @id @default(uuid())
+  originCountry      String    @map("origin_country")       // 원산지 ISO 코드 (KR, CN, VN 등)
+  destinationCountry String    @map("destination_country")  // 목적지 ISO 코드 (US, JP 등)
+  hsCodePrefix       String    @map("hs_code_prefix")       // HS 코드 접두사 (2-6자리)
+  preferentialRate   Float     @map("preferential_rate")    // 협정 세율 (0.0 = 무관세)
+  ftaName            String    @map("fta_name")             // 협정명 (KORUS, RCEP, CPTPP 등)
+  validFrom          DateTime  @map("valid_from")           // 유효 시작일
+  validUntil         DateTime? @map("valid_until")          // 유효 종료일 (null = 무기한)
+  notes              String?                                // 메모 (특수 조건 등)
+  isActive           Boolean   @default(true) @map("is_active")
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+
+  @@unique([originCountry, destinationCountry, hsCodePrefix, ftaName])
+  @@index([originCountry, destinationCountry])
+  @@index([hsCodePrefix])
+  @@map("fta_rates")
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// 관세청 UNI-PASS API 캐시
+// HS Code 검증 및 세율 조회 결과 캐싱
+// ═══════════════════════════════════════════════════════════════════════════════
+model UnipassCache {
+  id          String   @id @default(uuid())
+  hsCode      String   @unique @map("hs_code")    // 조회한 HS 코드
+  queryType   String   @map("query_type")         // "verify" | "search" | "rate"
+  response    Json                                 // API 응답 전체 (JSON)
+  isValid     Boolean  @default(true) @map("is_valid")  // 유효한 코드인지
+  hsCode6     String?  @map("hs_code_6")          // 6자리 국제 공통 코드
+  description String?                              // 품명
+  dutyRate    Float?   @map("duty_rate")          // 기본 관세율
+  queriedAt   DateTime @default(now()) @map("queried_at")
+  expiresAt   DateTime @map("expires_at")         // 24시간 TTL
+
+  @@index([hsCode])
+  @@index([expiresAt])
+  @@map("unipass_cache")
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// GTIN (바코드) 조회 캐시
+// EAN-Search.org, GS1 GEPIR 등 바코드 기반 상품 정보 캐싱
+// ═══════════════════════════════════════════════════════════════════════════════
+model GTINCache {
+  id            String   @id @default(uuid())
+  gtin          String   @unique                   // GTIN/EAN/UPC 바코드
+  manufacturer  String?                            // 제조사명
+  productName   String?  @map("product_name")      // 상품명
+  countryPrefix String?  @map("country_prefix")    // GS1 국가코드 (원산지 추정용)
+  weightKg      Float?   @map("weight_kg")         // 무게
+  dimensions    Json?                              // { l, w, h } 치수
+  category      String?                            // 카테고리
+  response      Json?                              // 원본 API 응답
+  source        String   @default("ean-search")    // "ean-search" | "gs1-gepir"
+  queriedAt     DateTime @default(now()) @map("queried_at")
+  expiresAt     DateTime @map("expires_at")        // 30일 TTL
+
+  @@index([gtin])
+  @@index([expiresAt])
+  @@map("gtin_cache")
+}
+
+// LLM 사용량 추적 - API 호출, 토큰, 비용 추적
+model LlmUsage {
+  id            String   @id @default(uuid())
+
+  // Provider & Model Info
+  provider      String                    // "gemini", "lm-studio", "openai"
+  model         String                    // "gemini-2.5-flash", "gpt-4o-mini", etc.
+  apiKeyHash    String?  @map("api_key_hash")  // Hash of API key (first 8 chars for identification)
+
+  // Token Usage
+  inputTokens   Int      @map("input_tokens")
+  outputTokens  Int      @map("output_tokens")
+  totalTokens   Int      @map("total_tokens")
+
+  // Cost Calculation (USD)
+  inputCost     Float    @map("input_cost")    // Based on provider pricing
+  outputCost    Float    @map("output_cost")
+  totalCost     Float    @map("total_cost")
+
+  // Request Context
+  sessionId     String?  @map("session_id")
+  actionType    String?  @map("action_type")   // "search", "show_product", etc.
+
+  // Performance
+  latencyMs     Int?     @map("latency_ms")
+  success       Boolean  @default(true)
+  errorMessage  String?  @map("error_message")
+
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  // Individual indexes
+  @@index([provider])
+  @@index([createdAt])
+  @@index([sessionId])
+  // Composite indexes for analytics queries
+  @@index([sessionId, createdAt])    // Session usage history: WHERE sessionId ORDER BY createdAt
+  @@index([provider, createdAt])     // Provider analytics: WHERE provider AND createdAt BETWEEN
+  @@map("llm_usage")
+}
+
+// 외부 API 사용량 추적 - Scraper, Tavily, Naver 등
+model ApiUsage {
+  id            String   @id @default(uuid())
+
+  // Service Identification
+  service       String                    // "browserless", "scrapingbee", "tavily", "naver", "local"
+  operation     String                    // "scrape", "search", "enrich", etc.
+
+  // Request Details
+  endpoint      String?                   // API endpoint or URL scraped
+  method        String   @default("GET")  // HTTP method
+
+  // Response Info
+  statusCode    Int?     @map("status_code")
+  success       Boolean  @default(true)
+  errorMessage  String?  @map("error_message")
+
+  // Performance
+  latencyMs     Int?     @map("latency_ms")
+
+  // Cost Tracking (estimated based on service pricing)
+  costUsd       Float?   @map("cost_usd")  // Estimated cost in USD
+  credits       Int?                       // Credits used (for ScrapingBee)
+
+  // Context
+  sessionId     String?  @map("session_id")
+  productUrl    String?  @map("product_url")  // Related product URL if applicable
+
+  // Metadata (flexible JSON for service-specific data)
+  metadata      Json?                      // Additional service-specific info
+
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  // Indexes for analytics
+  @@index([service])
+  @@index([createdAt])
+  @@index([service, createdAt])           // Service usage over time
+  @@index([service, success])             // Error rate by service
+  @@index([sessionId])
+  @@map("api_usage")
+}
+
+// 스크래퍼 캐시 - HTML 및 파싱 결과 캐싱
+model ScraperCache {
+  id          String    @id @default(uuid())
+  url         String    @unique                    // 원본 URL
+  urlHash     String    @unique @map("url_hash")   // MD5 hash of URL (for quick lookup)
+  contentType String    @map("content_type")       // "html" or "parsed"
+
+  // HTML 캐시 데이터
+  html        String?                              // Raw HTML content (nullable for parsed-only entries)
+  htmlLength  Int?      @map("html_length")        // HTML 길이
+
+  // 파싱 결과 캐시
+  parsedData  Json?     @map("parsed_data")        // Parsed product data as JSON
+  parserUsed  String?   @map("parser_used")        // "structured", "llm", or "fallback"
+
+  // 메타데이터
+  fetchedAt   DateTime  @map("fetched_at")         // 가져온 시간
+  expiresAt   DateTime  @map("expires_at")         // 만료 시간 (24시간 TTL)
+
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  @@index([urlHash])
+  @@index([expiresAt])
+  @@map("scraper_cache")
+}
+
+// Tavily 검색 결과 캐시 - 중복 API 호출 방지
+model TavilyCache {
+  id        String   @id @default(uuid())
+  queryHash String   @unique @map("query_hash")   // MD5 hash of query
+  query     String                                 // 원본 검색어
+  results   Json                                   // Tavily API 응답 결과
+  createdAt DateTime @default(now()) @map("created_at")
+  expiresAt DateTime @map("expires_at")           // 7일 TTL
+
+  @@index([queryHash])
+  @@index([expiresAt])
+  @@map("tavily_cache")
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// Scraper Domain Stats (적응형 학습 데이터 영속화)
+// 도메인별 백엔드 성공률, 응답시간, 선호 백엔드 저장
+// 서버 재시작 시에도 학습 데이터 유지
+// ═══════════════════════════════════════════════════════════════════════════════
+model ScraperDomainStats {
+  id               String   @id @default(uuid())
+  domain           String   @unique               // 도메인명 (e.g., "www.coupang.com")
+  stats            Json                            // { [backend]: { attempts, successes, failures, avgResponseTime, blockRate } }
+  preferredBackend String?  @map("preferred_backend")  // 적응형 학습으로 선택된 최적 백엔드
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@index([domain])
+  @@map("scraper_domain_stats")
+}
+
+// 챗 메타데이터 로깅 - 분석 및 Explainable AI 지원
+model ChatLog {
+  id                String   @id @default(uuid())
+
+  // 요청 컨텍스트
+  sessionId         String   @map("session_id")
+  userId            String?  @map("user_id")
+  userMessage       String   @map("user_message")    // 사용자 입력 (분석용)
+  messageIndex      Int      @map("message_index")   // 대화 내 위치
+
+  // 의도 분류
+  routerUsed        String   @map("router_used")     // "semantic" | "llm"
+  routerConfidence  Float?   @map("router_confidence")
+  actionType        String?  @map("action_type")     // search, show_product 등
+  actionParams      Json?    @map("action_params")   // 추출된 파라미터
+
+  // LLM 정보
+  llmModel          String?  @map("llm_model")
+  reasoning         String?                          // 추론 과정 텍스트
+
+  // 토큰 사용량
+  inputTokens       Int?     @map("input_tokens")    // 입력 토큰 수
+  outputTokens      Int?     @map("output_tokens")   // 출력 토큰 수
+
+  // 도구 사용 정보
+  toolsUsed         Json?    @map("tools_used")      // [{ tool, action, duration, success }]
+
+  // UI 렌더링
+  uiComponentTypes  String[] @map("ui_component_types")
+  productUrls       String[] @map("product_urls")
+
+  // 성능
+  processingTimeMs  Int      @map("processing_time_ms")
+
+  // 상태
+  success           Boolean  @default(true)
+  errorCode         String?  @map("error_code")
+  errorMessage      String?  @map("error_message")
+
+  // 가드레일
+  guardrailWarnings String[] @map("guardrail_warnings")
+
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  @@index([sessionId])
+  @@index([actionType])
+  @@index([createdAt])
+  @@index([success])
+  @@index([sessionId, createdAt])  // 세션별 시간순 조회
+  @@map("chat_logs")
+}
+
+// 관리자 설정/운영 액션 감사 로그
+model AdminAuditLog {
+  id             String   @id @default(uuid())
+  adminUserId    String?  @map("admin_user_id")
+  adminUserEmail String?  @map("admin_user_email")
+  action         String
+  target         String   @default("admin_settings")
+  targetId       String?  @map("target_id")
+  changes        Json
+  requestMeta    Json?    @map("request_meta")
+  createdAt      DateTime @default(now()) @map("created_at")
+
+  adminUser      User?    @relation("AdminAuditActor", fields: [adminUserId], references: [id], onDelete: SetNull)
+
+  @@index([adminUserId])
+  @@index([action])
+  @@index([target])
+  @@index([createdAt])
+  @@map("admin_audit_logs")
+}
+
+// Shopify webhook 수신/처리 관측 로그
+model ShopifyWebhookEvent {
+  id                String   @id @default(uuid())
+  webhookId         String?  @map("webhook_id")
+  topic             String
+  shopDomain        String?  @map("shop_domain")
+  shopifyOrderId    String?  @map("shopify_order_id")
+  quoteId           String?  @map("quote_id")
+  correlationStatus String   @default("UNKNOWN") @map("correlation_status")
+  processingStatus  String   @default("RECEIVED") @map("processing_status")
+  httpStatus        Int?     @map("http_status")
+  processingMs      Int?     @map("processing_ms")
+  errorMessage      String?  @map("error_message")
+  payload           Json?
+  createdAt         DateTime @default(now()) @map("created_at")
+  processedAt       DateTime? @map("processed_at")
+
+  @@index([topic])
+  @@index([shopifyOrderId])
+  @@index([quoteId])
+  @@index([correlationStatus])
+  @@index([processingStatus])
+  @@index([createdAt])
+  @@map("shopify_webhook_events")
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// Sprint 4.1: Resumable SSE Stream State
+// SSE 스트림 중단 시 이벤트 복원을 위한 상태 저장
+// ═══════════════════════════════════════════════════════════════════════════════
+model StreamState {
+  id          String   @id @default(uuid())
+  sessionId   String   @map("session_id")
+  status      String   @default("active")               // "active" | "completed" | "error"
+  events      Json     @default("[]")                    // 저장된 SSE 이벤트 배열
+  lastEventAt DateTime @default(now()) @map("last_event_at")
+  expiresAt   DateTime @map("expires_at")                // TTL (기본 5분)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([sessionId])
+  @@index([expiresAt])
+  @@map("stream_states")
+}
+
+model SessionEventLog {
+  id        String   @id @default(uuid())
+  sessionId String   @map("session_id")
+  eventType String   @map("event_type")
+  payload   Json
+  createdAt DateTime @default(now()) @map("created_at")
+  expiresAt DateTime @map("expires_at")
+
+  @@index([sessionId, createdAt])
+  @@index([expiresAt])
+  @@map("session_event_logs")
+}
+
+model ResearchTask {
+  id                String             @id @default(uuid())
+  userId            String?            @map("user_id")
+  sessionId         String?            @map("session_id")
+  productId         String?            @map("product_id")
+  taskType          String             @default("deep_research") @map("task_type")
+  query             String?
+  title             String?
+  status            ResearchTaskStatus @default(QUEUED)
+  summary           String?
+  result            Json?
+  errorMsg          String?            @map("error_msg")
+  metadata          Json?
+  leaseOwner        String?            @map("lease_owner")
+  leaseExpiresAt    DateTime?          @map("lease_expires_at")
+  heartbeatAt       DateTime?          @map("heartbeat_at")
+  startedAt         DateTime?          @map("started_at")
+  completedAt       DateTime?          @map("completed_at")
+  cancelRequestedAt DateTime?          @map("cancel_requested_at")
+  createdAt         DateTime           @default(now()) @map("created_at")
+  updatedAt         DateTime           @updatedAt @map("updated_at")
+
+  @@index([sessionId, createdAt])
+  @@index([productId])
+  @@index([status, createdAt])
+  @@map("research_tasks")
+}
+
+model ScraplingShadowObservation {
+  id         String   @id @default(uuid())
+  taskId     String?  @map("task_id")
+  url        String
+  domain     String
+  mode       String
+  hardDomain Boolean  @default(false) @map("hard_domain")
+  accepted   Boolean
+  success    Boolean?
+  signal     String?
+  reason     String?
+  durationMs Int?     @map("duration_ms")
+  fields     Json?
+  diagnostics Json?
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([taskId])
+  @@index([domain, createdAt])
+  @@index([url, createdAt])
+  @@map("scrapling_shadow_observations")
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// Sprint 4.2: Long-term User Memory
+// 세션 횡단 구매 패턴, 브랜드 선호도 등 장기 기억
+// ═══════════════════════════════════════════════════════════════════════════════
+model UserMemory {
+  id         String   @id @default(uuid())
+  userId     String   @map("user_id")
+  category   String                        // "brand_preference" | "price_range" | "purchase_pattern" | "style"
+  key        String                        // 구체적 키 (e.g., "favorite_brand", "avg_price")
+  value      Json                          // 값 (유연한 JSON)
+  confidence Float    @default(0.5)        // 신뢰도 (0-1, 미사용 시 감소)
+  lastUsedAt DateTime @default(now()) @map("last_used_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@unique([userId, category, key])
+  @@index([userId])
+  @@index([confidence])
+  @@map("user_memories")
+}
+
+// ============================================================================
+// v6.0 + v2.0 신규 모델 (2026-04-15 ~ 2026-04-19)
+// ============================================================================
+
+// v6.0 — 브랜드 공식 도메인 LLM 추론 캐시 (재추론 비용 절감)
+model BrandOfficialDomain {
+  brandNormalized String    @id @map("brand_normalized")   // lowercase
+  brandDisplay    String    @map("brand_display")
+  officialDomain  String    @map("official_domain")
+  confidence      Float
+  source          String                                      // LLM | MANUAL | SEARCH
+  retailers       String[]
+  verifiedAt      DateTime  @map("verified_at")
+  usageCount      Int       @default(0) @map("usage_count")
+  lastUsedAt      DateTime? @map("last_used_at")
+
+  @@index([confidence])
+  @@map("brand_official_domains")
+}
+
+// v6.0 — Cart-add 시 생성된 Shopify Product 72h TTL 추적
+model ShopifyProductMirror {
+  id                String   @id @default(uuid())
+  productId         String   @unique @map("product_id")
+  sourceUrlHash     String   @unique @map("source_url_hash")
+  shopifyProductId  String   @unique @map("shopify_product_id")
+  shopifyHandle     String   @map("shopify_handle")
+  status            String                                  // ACTIVE | ARCHIVED
+  ttlExpiresAt      DateTime @map("ttl_expires_at")
+  lastAccessedAt    DateTime @map("last_accessed_at")
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  variants          ShopifyVariantMirror[]
+
+  @@index([ttlExpiresAt, status])
+  @@index([sourceUrlHash])
+  @@map("shopify_product_mirrors")
+}
+
+model ShopifyVariantMirror {
+  id                String   @id @default(uuid())
+  mirrorId          String   @map("mirror_id")
+  shopifyVariantId  String   @unique @map("shopify_variant_id")
+  sku               String?
+  optionsJson       Json     @map("options_json")
+  priceKrw          Int      @map("price_krw")
+  createdAt         DateTime @default(now()) @map("created_at")
+
+  mirror            ShopifyProductMirror @relation(fields: [mirrorId], references: [id], onDelete: Cascade)
+
+  @@index([sku])
+  @@index([mirrorId])
+  @@map("shopify_variant_mirrors")
+}
+
+// v6.0 — Shopify 박스 마스터 로컬 미러 (Shopify 조회 API 부재 대응)
+model ShippingBoxMaster {
+  id                 String   @id @default(uuid())
+  shopifyPackageId   String?  @unique @map("shopify_package_id")
+  name               String
+  lengthCm           Float    @map("length_cm")
+  widthCm            Float    @map("width_cm")
+  heightCm           Float    @map("height_cm")
+  maxLoadKg          Float    @map("max_load_kg")
+  volumetricWeightKg Float    @map("volumetric_weight_kg") // (L*W*H)/5000
+  active             Boolean  @default(true)
+  carrierCode        String?  @map("carrier_code")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  @@index([active])
+  @@map("shipping_box_masters")
+}
+
+// v6.0 — 서비스 수수료 cap 룰 (국가/구간별 차등)
+model FeeCapRule {
+  id          String   @id @default(uuid())
+  country     String?                                    // ISO2, null = default
+  priceMinKrw Int?     @map("price_min_krw")
+  priceMaxKrw Int?     @map("price_max_krw")
+  ratePercent Float    @map("rate_percent")             // e.g. 10.0
+  feeMinKrw   Int?     @map("fee_min_krw")
+  feeMaxKrw   Int?     @map("fee_max_krw")
+  priority    Int      @default(0)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([country, priority])
+  @@map("fee_cap_rules")
+}
+
+// v6.0 — Invoice 라인 분리 (HS Code 혼재 합배송 통관)
+model LineItem {
+  id                 String   @id @default(uuid())
+  orderId            String?  @map("order_id")
+  quoteId            String?  @map("quote_id")
+  productId          String   @map("product_id")
+  hsCode             String   @map("hs_code")
+  origin             String                                  // ISO2
+  description        String
+  unitPriceKrw       Int      @map("unit_price_krw")
+  quantity           Int
+  dgClass            String?  @map("dg_class")
+  inspectionRequired Boolean  @default(false) @map("inspection_required")
+  createdAt          DateTime @default(now()) @map("created_at")
+
+  @@index([orderId])
+  @@index([quoteId])
+  @@map("line_items")
+}
+
+// v1.1 Policy Integration — 신한은행 10am 환율 + Admin 조정
+model ExchangeRate {
+  id              String   @id @default(uuid())
+  currencyCode    String   @map("currency_code")
+  baseCurrency    String   @default("KRW") @map("base_currency")
+  shinhanRate     Float    @map("shinhan_rate")
+  adminAdjustment Float    @default(0) @map("admin_adjustment")
+  effectiveRate   Float    @map("effective_rate")
+  capturedAt      DateTime @map("captured_at")
+  expiresAt       DateTime @map("expires_at")
+  source          String   @default("SHINHAN_BANK_10AM")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  @@index([currencyCode, expiresAt])
+  @@map("exchange_rates")
+}
+
+// v1.1 — 지원 통화 목록
+model SupportedCurrency {
+  code              String   @id                                // ISO 4217
+  displayName       String   @map("display_name")
+  symbol            String
+  active            Boolean  @default(true)
+  defaultForCountry String[] @map("default_for_country")
+  sortOrder         Int      @default(0) @map("sort_order")
+
+  @@map("supported_currencies")
+}
+
+// v1.1 — 반품 요청 + SLA 타이머
+model ReturnRequest {
+  id                String    @id @default(uuid())
+  orderId           String    @map("order_id")
+  requestedAt       DateTime  @map("requested_at")
+  approvedAt        DateTime? @map("approved_at")
+  rejectedAt        DateTime? @map("rejected_at")
+  shippingDeadline  DateTime? @map("shipping_deadline")        // approved + 7 cal days
+  arrivalDeadline   DateTime? @map("arrival_deadline")         // shipped + 14 cal days
+  unboxingVideoUrl  String    @map("unboxing_video_url")
+  reason            String
+  internalRuling    String?   @map("internal_ruling")          // DEFECT | ABUSE | WEAR
+  refundAmountUsd   Float?    @map("refund_amount_usd")
+  createdAt         DateTime  @default(now()) @map("created_at")
+
+  @@index([orderId])
+  @@index([shippingDeadline])
+  @@index([arrivalDeadline])
+  @@map("return_requests")
+}
+
+// v1.1 — Detail 검수 문제 발견 시 72h 고객 응답
+model InspectionResponse {
+  id                  String    @id @default(uuid())
+  orderId             String    @map("order_id")
+  sellerCode          String    @map("seller_code")
+  findings            Json                                     // { photos, notes, severity }
+  notifiedAt          DateTime  @map("notified_at")
+  responseDeadline    DateTime  @map("response_deadline")      // notifiedAt + 72h
+  customerChoice      String?   @map("customer_choice")        // SHIP_AS_IS | EXCHANGE | REFUND
+  respondedAt         DateTime? @map("responded_at")
+  defaultApplied      Boolean   @default(false) @map("default_applied")
+  resolution          String?
+  createdAt           DateTime  @default(now()) @map("created_at")
+
+  @@index([responseDeadline, respondedAt])
+  @@index([orderId])
+  @@map("inspection_responses")
+}
+
+// v1.1 — Abandonment 결정 기록
+model AbandonmentLog {
+  id                    String   @id @default(uuid())
+  orderId               String   @unique @map("order_id")
+  detectedAt            DateTime @map("detected_at")
+  customerNotifiedAt    DateTime @map("customer_notified_at")
+  customerChoice        String?  @map("customer_choice")        // PAY_EXTRA | RETURN_TO_KR | ABANDON | null
+  reshipCostUsd         Float    @map("reship_cost_usd")
+  reinspectionFeeKrw    Int      @map("reinspection_fee_krw")
+  sellerReturnFeeKrw    Int      @map("seller_return_fee_krw")
+  productValueKrw       Int      @map("product_value_krw")
+  systemRecommendation  String   @map("system_recommendation")  // ABANDON | RETURN
+  approvedBy            String?  @map("approved_by")
+  approvedAt            DateTime? @map("approved_at")
+  finalDecision         String   @map("final_decision")         // ABANDON | RETURN
+  executedAt            DateTime? @map("executed_at")
+  createdAt             DateTime @default(now()) @map("created_at")
+
+  @@map("abandonment_logs")
+}
+
+// v1.1 — Chargeback Incident + Blacklist (Phase 1)
+model ChargebackIncident {
+  id              String    @id @default(uuid())
+  orderId         String    @map("order_id")
+  userId          String?   @map("user_id")
+  email           String
+  pgProvider      String    @map("pg_provider")                 // PortOne | PayPal
+  pgCaseId        String    @map("pg_case_id")
+  reasonCode      String    @map("reason_code")
+  amountUsd       Float     @map("amount_usd")
+  openedAt        DateTime  @map("opened_at")
+  resolvedAt      DateTime? @map("resolved_at")
+  pgOutcome       String?   @map("pg_outcome")                  // won | lost | pending
+  internalRuling  String?   @map("internal_ruling")             // FAIR | ABUSE | FRAUD
+  adminNote       String?   @map("admin_note")
+  actorId         String?   @map("actor_id")
+  createdAt       DateTime  @default(now()) @map("created_at")
+
+  @@index([email])
+  @@index([userId])
+  @@map("chargeback_incidents")
+}
+
+model BlacklistEntry {
+  id              String    @id @default(uuid())
+  matchType       String    @map("match_type")                  // EMAIL | PAYMENT_HASH | ADDRESS | IP
+  matchValue      String    @map("match_value")
+  severity        String                                         // OBSERVATION | BLOCKED
+  reason          String                                         // ABUSE | FRAUD | MANUAL
+  linkedIncidentId String?  @map("linked_incident_id")
+  expiresAt       DateTime? @map("expires_at")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  createdBy       String    @map("created_by")
+
+  @@unique([matchType, matchValue])
+  @@index([matchType])
+  @@map("blacklist_entries")
+}
+
+// v2.0 — Catalog (브랜드+상품명+SKU 기반 그룹)
+model CatalogEntry {
+  id                String    @id @default(uuid())
+  catalogId         String    @unique @map("catalog_id")        // hash(brand+name+sku)
+  brand             String
+  productName       String    @map("product_name")
+  sku               String?
+  primaryUrl        String?   @map("primary_url")
+  primaryProductId  String?   @map("primary_product_id")
+  imageUrl          String?   @map("image_url")
+  category          String?
+  releaseDate       String?   @map("release_date")
+  season            String?
+  lowestPriceKrw    Int?      @map("lowest_price_krw")
+  lowestPriceScanAt DateTime? @map("lowest_price_scan_at")
+  confidence        Float
+  unmatched         Boolean   @default(false)
+  minScrapeLevel    ScrapeLevel? @map("min_scrape_level")
+  maxScrapeLevel    ScrapeLevel? @map("max_scrape_level")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  matches           CatalogMatch[]
+  scans             ProductCrossPlatformScan[]
+
+  @@index([brand, sku])
+  @@index([unmatched])
+  @@map("catalog_entries")
+}
+
+// v2.0 — Product ↔ Catalog 매칭 (AI + Manual)
+model CatalogMatch {
+  id              String   @id @default(uuid())
+  catalogEntryId  String   @map("catalog_entry_id")
+  productId       String   @map("product_id")
+  matchType       String   @map("match_type")                    // AUTO_EXACT | AUTO_FUZZY | MANUAL
+  confidence      Float
+  matchedBy       String?  @map("matched_by")                     // MANUAL일 때 actor userId
+  matchedAt       DateTime @default(now()) @map("matched_at")
+
+  entry           CatalogEntry @relation(fields: [catalogEntryId], references: [id], onDelete: Cascade)
+  product         Product      @relation(fields: [productId], references: [id])
+
+  @@unique([catalogEntryId, productId])
+  @@index([productId])
+  @@map("catalog_matches")
+}
+
+// v2.0 — Cross-Platform 최저가 스캔 이력
+model ProductCrossPlatformScan {
+  id                 String   @id @default(uuid())
+  catalogEntryId     String   @map("catalog_entry_id")
+  platform           String                                       // coupang | naver | gmarket...
+  url                String
+  priceKrw           Int      @map("price_krw")
+  maxBenefitPriceKrw Int?     @map("max_benefit_price_krw")
+  benefitMethod      String?  @map("benefit_method")
+  observedAt         DateTime @default(now()) @map("observed_at")
+
+  entry              CatalogEntry @relation(fields: [catalogEntryId], references: [id], onDelete: Cascade)
+
+  @@index([catalogEntryId, observedAt])
+  @@map("product_cross_platform_scans")
+}
+
+// v2.0 — AcrossB 국제 배송 Shipment (합배송 박스당 1송장)
+model AcrossBShipment {
+  id                     String    @id @default(uuid())
+  orderId                String    @map("order_id")
+  boxMasterId            String?   @map("box_master_id")
+  acrossbShipmentId      String    @unique @map("acrossb_shipment_id")
+  acrossbTrackingNumber  String    @map("acrossb_tracking_number")
+  carrier                String                                    // YAMATO | FEDEX | UPS | DHL
+  destinationCountry     String    @map("destination_country")     // ISO2
+  weightKg               Float     @map("weight_kg")
+  dimensions             Json
+  packedItems            Json      @map("packed_items")            // [{ productId, qty, hsCode, origin }]
+  createdAt              DateTime  @default(now()) @map("created_at")
+  shippedAt              DateTime? @map("shipped_at")
+  deliveredAt            DateTime? @map("delivered_at")
+  status                 String                                    // CREATED | IN_TRANSIT | DELIVERED | EXCEPTION
+
+  @@index([orderId])
+  @@map("acrossb_shipments")
+}

@@ -1,0 +1,1697 @@
+[
+ {
+  "model": "gemini-2.5-flash-lite",
+  "ext": [
+   0,
+   43
+  ],
+  "agent": 0,
+  "hs": 0,
+  "lat": [
+   0.5531530380249023,
+   0.382277250289917,
+   0.5185830593109131,
+   0.4990520477294922,
+   0.5308258533477783,
+   0.48667383193969727,
+   0.5157711505889893,
+   0.5074949264526367,
+   0.5200870037078857,
+   0.5011351108551025,
+   0.40928173065185547,
+   0.41001319885253906,
+   0.4832131862640381,
+   0.526357889175415,
+   0.7337379455566406,
+   0.49074721336364746,
+   0.6269078254699707,
+   0.6022279262542725,
+   0.6967258453369141,
+   0.696293830871582,
+   0.5231719017028809,
+   0.6623978614807129,
+   0.5630519390106201,
+   0.45301103591918945,
+   0.41759681701660156,
+   0.39350199699401855,
+   0.47955918312072754,
+   0.3492469787597656,
+   0.5216960906982422
+  ],
+  "tin": 0,
+  "tout": 0,
+  "errors": [
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to ne",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to ne",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to ne",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to ne",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to ne",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to ne",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to ne",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to ne",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to ne",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to ne",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to ne",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to ne",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to ne",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to ne",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to ne",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to ne",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to ne",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to ne",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to ne",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to ne",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to ne",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to ne",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to ne",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to ne",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to ne",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to ne",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to ne",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to ne",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to ne"
+  ],
+  "detail": [
+   [
+    "R1 무신사 반팔티(실페이지)",
+    "0/5",
+    {
+     "price_krw": null,
+     "in_stock": null,
+     "dangerous_goods": null,
+     "brand": null,
+     "preorder": null
+    }
+   ],
+   [
+    "R2 쿠팡 스니커즈(실페이지)",
+    "0/5",
+    {
+     "price_krw": null,
+     "in_stock": null,
+     "dangerous_goods": null,
+     "net_weight_kg": null,
+     "food_or_quarantine": null
+    }
+   ],
+   [
+    "S1 K-pop 앨범 예약",
+    "0/7",
+    {
+     "price_krw": null,
+     "in_stock": null,
+     "preorder": null,
+     "net_weight_kg": null,
+     "option_count": null,
+     "domestic_shipping_fee_krw": null,
+     "dangerous_goods": null
+    }
+   ],
+   [
+    "S2 선크림 1+1 기획",
+    "0/5",
+    {
+     "price_krw": null,
+     "in_stock": null,
+     "pack_quantity": null,
+     "dangerous_goods": null,
+     "domestic_shipping_fee_krw": null
+    }
+   ],
+   [
+    "S3 스프레이 선크림(에어로졸)",
+    "0/4",
+    {
+     "price_krw": null,
+     "in_stock": null,
+     "dangerous_goods": null,
+     "domestic_shipping_fee_krw": null
+    }
+   ],
+   [
+    "S4 응원봉(리튬 내장)",
+    "0/4",
+    {
+     "price_krw": null,
+     "in_stock": null,
+     "dangerous_goods": null,
+     "net_weight_kg": null
+    }
+   ],
+   [
+    "S5 일시품절",
+    "0/3",
+    {
+     "price_krw": null,
+     "in_stock": null,
+     "dangerous_goods": null
+    }
+   ],
+   [
+    "S6 라면 멀티팩",
+    "0/6",
+    {
+     "price_krw": null,
+     "in_stock": null,
+     "pack_quantity": null,
+     "net_weight_kg": null,
+     "food_or_quarantine": null,
+     "domestic_shipping_fee_krw": null
+    }
+   ],
+   [
+    "S7 혜택가 함정",
+    "0/4",
+    {
+     "price_krw": null,
+     "in_stock": null,
+     "dangerous_goods": null,
+     "domestic_shipping_fee_krw": null
+    }
+   ],
+   [
+    "A1 URL+텍사스",
+    "FAIL",
+    "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to new users. Please update your code to use models/gemini-3.5-flash-lite for the latest "
+   ],
+   [
+    "A2 한국어 일본",
+    "FAIL",
+    "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to new users. Please update your code to use models/gemini-3.5-flash-lite for the latest "
+   ],
+   [
+    "A3 검색",
+    "FAIL",
+    "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to new users. Please update your code to use models/gemini-3.5-flash-lite for the latest "
+   ],
+   [
+    "A4 주문조회",
+    "FAIL",
+    "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to new users. Please update your code to use models/gemini-3.5-flash-lite for the latest "
+   ],
+   [
+    "A5 취소",
+    "FAIL",
+    "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to new users. Please update your code to use models/gemini-3.5-flash-lite for the latest "
+   ],
+   [
+    "A6 검수응답",
+    "FAIL",
+    "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to new users. Please update your code to use models/gemini-3.5-flash-lite for the latest "
+   ],
+   [
+    "A7 상담원",
+    "FAIL",
+    "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to new users. Please update your code to use models/gemini-3.5-flash-lite for the latest "
+   ],
+   [
+    "A8 문맥 장바구니",
+    "FAIL",
+    "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to new users. Please update your code to use models/gemini-3.5-flash-lite for the latest "
+   ],
+   [
+    "A9 금지품목",
+    "FAIL",
+    "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to new users. Please update your code to use models/gemini-3.5-flash-lite for the latest "
+   ],
+   [
+    "A10 중국어 싱가포르",
+    "FAIL",
+    "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash-lite is no longer available to new users. Please update your code to use models/gemini-3.5-flash-lite for the latest "
+   ],
+   [
+    "HS K-pop album: CD + 72-page phot",
+    "FAIL",
+    ""
+   ],
+   [
+    "HS 100% cotton knitted short-slee",
+    "FAIL",
+    ""
+   ],
+   [
+    "HS Sunscreen cream SPF50 50ml (co",
+    "FAIL",
+    ""
+   ],
+   [
+    "HS Instant ramen noodles with sou",
+    "FAIL",
+    ""
+   ],
+   [
+    "HS Chocolate-coated peanut carame",
+    "FAIL",
+    ""
+   ],
+   [
+    "HS Porcelain coffee mug with prin",
+    "FAIL",
+    ""
+   ],
+   [
+    "HS Silicone smartphone case",
+    "FAIL",
+    ""
+   ],
+   [
+    "HS K-pop LED light stick, built-i",
+    "FAIL",
+    ""
+   ],
+   [
+    "HS Women's genuine leather handba",
+    "FAIL",
+    ""
+   ],
+   [
+    "HS Korean red ginseng extract con",
+    "FAIL",
+    ""
+   ]
+  ]
+ },
+ {
+  "model": "gemini-2.5-flash",
+  "ext": [
+   0,
+   43
+  ],
+  "agent": 0,
+  "hs": 0,
+  "lat": [
+   0.5532419681549072,
+   0.5210249423980713,
+   0.37007999420166016,
+   0.5119609832763672,
+   0.5192961692810059,
+   0.4978518486022949,
+   0.5107409954071045,
+   0.5285239219665527,
+   0.49017906188964844,
+   0.4098339080810547,
+   0.41159486770629883,
+   0.4703238010406494,
+   0.5213789939880371,
+   0.5326688289642334,
+   0.7197141647338867,
+   0.5003776550292969,
+   0.623931884765625,
+   0.6027429103851318,
+   0.6913299560546875,
+   0.710888147354126,
+   0.34885501861572266,
+   0.6990041732788086,
+   0.5162370204925537,
+   0.6243250370025635,
+   0.4122018814086914,
+   0.40474605560302734,
+   0.47780585289001465,
+   0.5287380218505859,
+   0.5178132057189941
+  ],
+  "tin": 0,
+  "tout": 0,
+  "errors": [
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new use",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new use",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new use",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new use",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new use",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new use",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new use",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new use",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new use",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new use",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new use",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new use",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new use",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new use",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new use",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new use",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new use",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new use",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new use",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new use",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new use",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new use",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new use",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new use",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new use",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new use",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new use",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new use",
+   "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new use"
+  ],
+  "detail": [
+   [
+    "R1 무신사 반팔티(실페이지)",
+    "0/5",
+    {
+     "price_krw": null,
+     "in_stock": null,
+     "dangerous_goods": null,
+     "brand": null,
+     "preorder": null
+    }
+   ],
+   [
+    "R2 쿠팡 스니커즈(실페이지)",
+    "0/5",
+    {
+     "price_krw": null,
+     "in_stock": null,
+     "dangerous_goods": null,
+     "net_weight_kg": null,
+     "food_or_quarantine": null
+    }
+   ],
+   [
+    "S1 K-pop 앨범 예약",
+    "0/7",
+    {
+     "price_krw": null,
+     "in_stock": null,
+     "preorder": null,
+     "net_weight_kg": null,
+     "option_count": null,
+     "domestic_shipping_fee_krw": null,
+     "dangerous_goods": null
+    }
+   ],
+   [
+    "S2 선크림 1+1 기획",
+    "0/5",
+    {
+     "price_krw": null,
+     "in_stock": null,
+     "pack_quantity": null,
+     "dangerous_goods": null,
+     "domestic_shipping_fee_krw": null
+    }
+   ],
+   [
+    "S3 스프레이 선크림(에어로졸)",
+    "0/4",
+    {
+     "price_krw": null,
+     "in_stock": null,
+     "dangerous_goods": null,
+     "domestic_shipping_fee_krw": null
+    }
+   ],
+   [
+    "S4 응원봉(리튬 내장)",
+    "0/4",
+    {
+     "price_krw": null,
+     "in_stock": null,
+     "dangerous_goods": null,
+     "net_weight_kg": null
+    }
+   ],
+   [
+    "S5 일시품절",
+    "0/3",
+    {
+     "price_krw": null,
+     "in_stock": null,
+     "dangerous_goods": null
+    }
+   ],
+   [
+    "S6 라면 멀티팩",
+    "0/6",
+    {
+     "price_krw": null,
+     "in_stock": null,
+     "pack_quantity": null,
+     "net_weight_kg": null,
+     "food_or_quarantine": null,
+     "domestic_shipping_fee_krw": null
+    }
+   ],
+   [
+    "S7 혜택가 함정",
+    "0/4",
+    {
+     "price_krw": null,
+     "in_stock": null,
+     "dangerous_goods": null,
+     "domestic_shipping_fee_krw": null
+    }
+   ],
+   [
+    "A1 URL+텍사스",
+    "FAIL",
+    "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.8-flash for the latest features a"
+   ],
+   [
+    "A2 한국어 일본",
+    "FAIL",
+    "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.8-flash for the latest features a"
+   ],
+   [
+    "A3 검색",
+    "FAIL",
+    "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.8-flash for the latest features a"
+   ],
+   [
+    "A4 주문조회",
+    "FAIL",
+    "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.8-flash for the latest features a"
+   ],
+   [
+    "A5 취소",
+    "FAIL",
+    "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.8-flash for the latest features a"
+   ],
+   [
+    "A6 검수응답",
+    "FAIL",
+    "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.8-flash for the latest features a"
+   ],
+   [
+    "A7 상담원",
+    "FAIL",
+    "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.8-flash for the latest features a"
+   ],
+   [
+    "A8 문맥 장바구니",
+    "FAIL",
+    "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.8-flash for the latest features a"
+   ],
+   [
+    "A9 금지품목",
+    "FAIL",
+    "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.8-flash for the latest features a"
+   ],
+   [
+    "A10 중국어 싱가포르",
+    "FAIL",
+    "404 {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.8-flash for the latest features a"
+   ],
+   [
+    "HS K-pop album: CD + 72-page phot",
+    "FAIL",
+    ""
+   ],
+   [
+    "HS 100% cotton knitted short-slee",
+    "FAIL",
+    ""
+   ],
+   [
+    "HS Sunscreen cream SPF50 50ml (co",
+    "FAIL",
+    ""
+   ],
+   [
+    "HS Instant ramen noodles with sou",
+    "FAIL",
+    ""
+   ],
+   [
+    "HS Chocolate-coated peanut carame",
+    "FAIL",
+    ""
+   ],
+   [
+    "HS Porcelain coffee mug with prin",
+    "FAIL",
+    ""
+   ],
+   [
+    "HS Silicone smartphone case",
+    "FAIL",
+    ""
+   ],
+   [
+    "HS K-pop LED light stick, built-i",
+    "FAIL",
+    ""
+   ],
+   [
+    "HS Women's genuine leather handba",
+    "FAIL",
+    ""
+   ],
+   [
+    "HS Korean red ginseng extract con",
+    "FAIL",
+    ""
+   ]
+  ]
+ },
+ {
+  "model": "gemini-3-flash-preview",
+  "ext": [
+   42,
+   43
+  ],
+  "agent": 10,
+  "hs": 10,
+  "lat": [
+   11.5744047164917,
+   7.7518720626831055,
+   3.765885829925537,
+   11.010668992996216,
+   5.014400959014893,
+   5.866707801818848,
+   3.805384874343872,
+   4.30243992805481,
+   6.699859857559204,
+   2.6216399669647217,
+   2.0998589992523193,
+   1.5760557651519775,
+   1.4735727310180664,
+   2.080329179763794,
+   2.261353015899658,
+   1.797189712524414,
+   2.196916103363037,
+   2.628966808319092,
+   2.293642044067383,
+   4.247658014297485,
+   2.542695999145508,
+   3.4369730949401855,
+   3.596769094467163,
+   3.295621156692505,
+   2.7603373527526855,
+   4.513911724090576,
+   3.474876880645752,
+   4.063147783279419,
+   3.663172960281372
+  ],
+  "tin": 8466,
+  "tout": 15502,
+  "errors": [],
+  "detail": [
+   [
+    "R1 무신사 반팔티(실페이지)",
+    "4/5",
+    {
+     "price_krw": 23920,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "brand": "이스케이프프롬 (ESCAPEFROM)",
+     "preorder": false
+    }
+   ],
+   [
+    "R2 쿠팡 스니커즈(실페이지)",
+    "5/5",
+    {
+     "price_krw": 11900,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "net_weight_kg": 0.48,
+     "food_or_quarantine": true
+    }
+   ],
+   [
+    "S1 K-pop 앨범 예약",
+    "7/7",
+    {
+     "price_krw": 19800,
+     "in_stock": true,
+     "preorder": true,
+     "net_weight_kg": 0.45,
+     "option_count": 3,
+     "domestic_shipping_fee_krw": 0,
+     "dangerous_goods": "none"
+    }
+   ],
+   [
+    "S2 선크림 1+1 기획",
+    "5/5",
+    {
+     "price_krw": 22000,
+     "in_stock": true,
+     "pack_quantity": 2,
+     "dangerous_goods": "none",
+     "domestic_shipping_fee_krw": 0
+    }
+   ],
+   [
+    "S3 스프레이 선크림(에어로졸)",
+    "4/4",
+    {
+     "price_krw": 18500,
+     "in_stock": true,
+     "dangerous_goods": "aerosol",
+     "domestic_shipping_fee_krw": 3000
+    }
+   ],
+   [
+    "S4 응원봉(리튬 내장)",
+    "4/4",
+    {
+     "price_krw": 89000,
+     "in_stock": true,
+     "dangerous_goods": "lithium_battery",
+     "net_weight_kg": 0.28
+    }
+   ],
+   [
+    "S5 일시품절",
+    "3/3",
+    {
+     "price_krw": 71200,
+     "in_stock": false,
+     "dangerous_goods": "none"
+    }
+   ],
+   [
+    "S6 라면 멀티팩",
+    "6/6",
+    {
+     "price_krw": 4480,
+     "in_stock": true,
+     "pack_quantity": 5,
+     "net_weight_kg": 0.6,
+     "food_or_quarantine": true,
+     "domestic_shipping_fee_krw": 3000
+    }
+   ],
+   [
+    "S7 혜택가 함정",
+    "4/4",
+    {
+     "price_krw": 63200,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "domestic_shipping_fee_krw": 0
+    }
+   ]
+  ]
+ },
+ {
+  "model": "gemini-3.1-flash-lite",
+  "ext": [
+   42,
+   43
+  ],
+  "agent": 10,
+  "hs": 9,
+  "lat": [
+   1.9436619281768799,
+   1.5798931121826172,
+   1.6093738079071045,
+   1.7233238220214844,
+   1.7915799617767334,
+   1.6925160884857178,
+   1.9243102073669434,
+   1.7983179092407227,
+   1.5407540798187256,
+   1.2042219638824463,
+   1.1352131366729736,
+   1.0888421535491943,
+   1.0568389892578125,
+   1.1038181781768799,
+   1.0019631385803223,
+   1.0752031803131104,
+   1.1231322288513184,
+   0.9894468784332275,
+   1.1909141540527344,
+   1.4190163612365723,
+   1.3990538120269775,
+   1.2677321434020996,
+   1.1627027988433838,
+   1.2806870937347412,
+   1.2281980514526367,
+   1.2505638599395752,
+   1.3013689517974854,
+   1.1854121685028076,
+   1.2766430377960205
+  ],
+  "tin": 8466,
+  "tout": 2046,
+  "errors": [],
+  "detail": [
+   [
+    "R1 무신사 반팔티(실페이지)",
+    "4/5",
+    {
+     "price_krw": 23920,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "brand": "이스케이프프롬",
+     "preorder": false
+    }
+   ],
+   [
+    "R2 쿠팡 스니커즈(실페이지)",
+    "5/5",
+    {
+     "price_krw": 11900,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "net_weight_kg": 0.48,
+     "food_or_quarantine": true
+    }
+   ],
+   [
+    "S1 K-pop 앨범 예약",
+    "7/7",
+    {
+     "price_krw": 19800,
+     "in_stock": true,
+     "preorder": true,
+     "net_weight_kg": 0.45,
+     "option_count": 3,
+     "domestic_shipping_fee_krw": 0,
+     "dangerous_goods": "none"
+    }
+   ],
+   [
+    "S2 선크림 1+1 기획",
+    "5/5",
+    {
+     "price_krw": 22000,
+     "in_stock": true,
+     "pack_quantity": 2,
+     "dangerous_goods": "none",
+     "domestic_shipping_fee_krw": 0
+    }
+   ],
+   [
+    "S3 스프레이 선크림(에어로졸)",
+    "4/4",
+    {
+     "price_krw": 18500,
+     "in_stock": true,
+     "dangerous_goods": "aerosol",
+     "domestic_shipping_fee_krw": 3000
+    }
+   ],
+   [
+    "S4 응원봉(리튬 내장)",
+    "4/4",
+    {
+     "price_krw": 89000,
+     "in_stock": true,
+     "dangerous_goods": "lithium_battery",
+     "net_weight_kg": 0.28
+    }
+   ],
+   [
+    "S5 일시품절",
+    "3/3",
+    {
+     "price_krw": 71200,
+     "in_stock": false,
+     "dangerous_goods": "none"
+    }
+   ],
+   [
+    "S6 라면 멀티팩",
+    "6/6",
+    {
+     "price_krw": 4480,
+     "in_stock": true,
+     "pack_quantity": 5,
+     "net_weight_kg": 0.6,
+     "food_or_quarantine": true,
+     "domestic_shipping_fee_krw": 3000
+    }
+   ],
+   [
+    "S7 혜택가 함정",
+    "4/4",
+    {
+     "price_krw": 63200,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "domestic_shipping_fee_krw": 0
+    }
+   ],
+   [
+    "HS K-pop LED light stick, built-i",
+    "FAIL",
+    "854370"
+   ]
+  ]
+ },
+ {
+  "model": "gemini-3.5-flash-lite",
+  "ext": [
+   42,
+   43
+  ],
+  "agent": 10,
+  "hs": 8,
+  "lat": [
+   1.6121752262115479,
+   1.7499289512634277,
+   1.7398240566253662,
+   1.7400641441345215,
+   1.9206106662750244,
+   1.6425261497497559,
+   1.6968600749969482,
+   2.1502511501312256,
+   1.5893888473510742,
+   1.271925926208496,
+   1.1085309982299805,
+   0.9197530746459961,
+   0.9761831760406494,
+   1.1236181259155273,
+   0.9897317886352539,
+   0.9479117393493652,
+   1.1647708415985107,
+   1.1772770881652832,
+   1.5937447547912598,
+   1.3955540657043457,
+   1.121032953262329,
+   1.0260159969329834,
+   1.3474221229553223,
+   1.047274112701416,
+   0.9597618579864502,
+   1.217942237854004,
+   1.5011332035064697,
+   1.4505908489227295,
+   1.1691222190856934
+  ],
+  "tin": 8466,
+  "tout": 2091,
+  "errors": [],
+  "detail": [
+   [
+    "R1 무신사 반팔티(실페이지)",
+    "4/5",
+    {
+     "price_krw": 23920,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "brand": "이스케이프프롬",
+     "preorder": false
+    }
+   ],
+   [
+    "R2 쿠팡 스니커즈(실페이지)",
+    "5/5",
+    {
+     "price_krw": 11900,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "net_weight_kg": 0.48,
+     "food_or_quarantine": true
+    }
+   ],
+   [
+    "S1 K-pop 앨범 예약",
+    "7/7",
+    {
+     "price_krw": 19800,
+     "in_stock": true,
+     "preorder": true,
+     "net_weight_kg": 0.45,
+     "option_count": 3,
+     "domestic_shipping_fee_krw": 0,
+     "dangerous_goods": "none"
+    }
+   ],
+   [
+    "S2 선크림 1+1 기획",
+    "5/5",
+    {
+     "price_krw": 22000,
+     "in_stock": true,
+     "pack_quantity": 2,
+     "dangerous_goods": "none",
+     "domestic_shipping_fee_krw": 0
+    }
+   ],
+   [
+    "S3 스프레이 선크림(에어로졸)",
+    "4/4",
+    {
+     "price_krw": 18500,
+     "in_stock": true,
+     "dangerous_goods": "aerosol",
+     "domestic_shipping_fee_krw": 3000
+    }
+   ],
+   [
+    "S4 응원봉(리튬 내장)",
+    "4/4",
+    {
+     "price_krw": 89000,
+     "in_stock": true,
+     "dangerous_goods": "lithium_battery",
+     "net_weight_kg": 0.28
+    }
+   ],
+   [
+    "S5 일시품절",
+    "3/3",
+    {
+     "price_krw": 71200,
+     "in_stock": false,
+     "dangerous_goods": "none"
+    }
+   ],
+   [
+    "S6 라면 멀티팩",
+    "6/6",
+    {
+     "price_krw": 4480,
+     "in_stock": true,
+     "pack_quantity": 5,
+     "net_weight_kg": 0.6,
+     "food_or_quarantine": true,
+     "domestic_shipping_fee_krw": 3000
+    }
+   ],
+   [
+    "S7 혜택가 함정",
+    "4/4",
+    {
+     "price_krw": 63200,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "domestic_shipping_fee_krw": 0
+    }
+   ],
+   [
+    "HS Chocolate-coated peanut carame",
+    "FAIL",
+    "170490"
+   ],
+   [
+    "HS K-pop LED light stick, built-i",
+    "FAIL",
+    "851829"
+   ]
+  ]
+ },
+ {
+  "model": "gemini-3.5-flash",
+  "ext": [
+   42,
+   43
+  ],
+  "agent": 10,
+  "hs": 10,
+  "lat": [
+   6.862689733505249,
+   6.926409006118774,
+   4.653449058532715,
+   5.479928970336914,
+   4.076594352722168,
+   4.781419038772583,
+   5.003156900405884,
+   4.367791175842285,
+   4.797493934631348,
+   2.0956461429595947,
+   2.3704447746276855,
+   1.7456378936767578,
+   1.8104989528656006,
+   2.0296010971069336,
+   2.1709108352661133,
+   2.3709287643432617,
+   1.932926893234253,
+   2.2921550273895264,
+   2.223008871078491,
+   6.3379621505737305,
+   2.975486993789673,
+   3.8027079105377197,
+   3.2237260341644287,
+   3.549177885055542,
+   2.842665910720825,
+   5.025529861450195,
+   5.511713027954102,
+   3.960801839828491,
+   3.8660619258880615
+  ],
+  "tin": 8466,
+  "tout": 16514,
+  "errors": [],
+  "detail": [
+   [
+    "R1 무신사 반팔티(실페이지)",
+    "4/5",
+    {
+     "price_krw": 23920,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "brand": "이스케이프프롬",
+     "preorder": false
+    }
+   ],
+   [
+    "R2 쿠팡 스니커즈(실페이지)",
+    "5/5",
+    {
+     "price_krw": 11900,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "net_weight_kg": 0.48,
+     "food_or_quarantine": true
+    }
+   ],
+   [
+    "S1 K-pop 앨범 예약",
+    "7/7",
+    {
+     "price_krw": 19800,
+     "in_stock": true,
+     "preorder": true,
+     "net_weight_kg": 0.45,
+     "option_count": 3,
+     "domestic_shipping_fee_krw": 0,
+     "dangerous_goods": "none"
+    }
+   ],
+   [
+    "S2 선크림 1+1 기획",
+    "5/5",
+    {
+     "price_krw": 22000,
+     "in_stock": true,
+     "pack_quantity": 2,
+     "dangerous_goods": "none",
+     "domestic_shipping_fee_krw": 0
+    }
+   ],
+   [
+    "S3 스프레이 선크림(에어로졸)",
+    "4/4",
+    {
+     "price_krw": 18500,
+     "in_stock": true,
+     "dangerous_goods": "aerosol",
+     "domestic_shipping_fee_krw": 3000
+    }
+   ],
+   [
+    "S4 응원봉(리튬 내장)",
+    "4/4",
+    {
+     "price_krw": 89000,
+     "in_stock": true,
+     "dangerous_goods": "lithium_battery",
+     "net_weight_kg": 0.28
+    }
+   ],
+   [
+    "S5 일시품절",
+    "3/3",
+    {
+     "price_krw": 71200,
+     "in_stock": false,
+     "dangerous_goods": "none"
+    }
+   ],
+   [
+    "S6 라면 멀티팩",
+    "6/6",
+    {
+     "price_krw": 4480,
+     "in_stock": true,
+     "pack_quantity": 5,
+     "net_weight_kg": 0.6,
+     "food_or_quarantine": true,
+     "domestic_shipping_fee_krw": 3000
+    }
+   ],
+   [
+    "S7 혜택가 함정",
+    "4/4",
+    {
+     "price_krw": 63200,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "domestic_shipping_fee_krw": 0
+    }
+   ]
+  ]
+ },
+ {
+  "model": "gemini-3.6-flash",
+  "ext": [
+   42,
+   43
+  ],
+  "agent": 10,
+  "hs": 10,
+  "lat": [
+   6.854820013046265,
+   9.24576997756958,
+   3.9736151695251465,
+   6.558579921722412,
+   7.3066041469573975,
+   3.833655834197998,
+   3.559025764465332,
+   7.177627801895142,
+   6.420377016067505,
+   2.793315887451172,
+   2.59725284576416,
+   2.4339349269866943,
+   2.44635272026062,
+   2.288907051086426,
+   3.3694610595703125,
+   3.9324400424957275,
+   3.0922608375549316,
+   3.2207279205322266,
+   2.8181540966033936,
+   5.435454368591309,
+   3.1232028007507324,
+   3.4796459674835205,
+   4.551746129989624,
+   4.622779130935669,
+   4.462652921676636,
+   3.8505289554595947,
+   8.565623998641968,
+   3.8313260078430176,
+   4.900752782821655
+  ],
+  "tin": 8466,
+  "tout": 16910,
+  "errors": [],
+  "detail": [
+   [
+    "R1 무신사 반팔티(실페이지)",
+    "4/5",
+    {
+     "price_krw": 23920,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "brand": "이스케이프프롬",
+     "preorder": false
+    }
+   ],
+   [
+    "R2 쿠팡 스니커즈(실페이지)",
+    "5/5",
+    {
+     "price_krw": 11900,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "net_weight_kg": 0.48,
+     "food_or_quarantine": true
+    }
+   ],
+   [
+    "S1 K-pop 앨범 예약",
+    "7/7",
+    {
+     "price_krw": 19800,
+     "in_stock": true,
+     "preorder": true,
+     "net_weight_kg": 0.45,
+     "option_count": 3,
+     "domestic_shipping_fee_krw": 0,
+     "dangerous_goods": "none"
+    }
+   ],
+   [
+    "S2 선크림 1+1 기획",
+    "5/5",
+    {
+     "price_krw": 22000,
+     "in_stock": true,
+     "pack_quantity": 2,
+     "dangerous_goods": "none",
+     "domestic_shipping_fee_krw": 0
+    }
+   ],
+   [
+    "S3 스프레이 선크림(에어로졸)",
+    "4/4",
+    {
+     "price_krw": 18500,
+     "in_stock": true,
+     "dangerous_goods": "aerosol",
+     "domestic_shipping_fee_krw": 3000
+    }
+   ],
+   [
+    "S4 응원봉(리튬 내장)",
+    "4/4",
+    {
+     "price_krw": 89000,
+     "in_stock": true,
+     "dangerous_goods": "lithium_battery",
+     "net_weight_kg": 0.28
+    }
+   ],
+   [
+    "S5 일시품절",
+    "3/3",
+    {
+     "price_krw": 71200,
+     "in_stock": false,
+     "dangerous_goods": "none"
+    }
+   ],
+   [
+    "S6 라면 멀티팩",
+    "6/6",
+    {
+     "price_krw": 4480,
+     "in_stock": true,
+     "pack_quantity": 5,
+     "net_weight_kg": 0.6,
+     "food_or_quarantine": true,
+     "domestic_shipping_fee_krw": 3000
+    }
+   ],
+   [
+    "S7 혜택가 함정",
+    "4/4",
+    {
+     "price_krw": 63200,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "domestic_shipping_fee_krw": 0
+    }
+   ]
+  ]
+ },
+ {
+  "model": "gemini-3.7-flash",
+  "ext": [
+   42,
+   43
+  ],
+  "agent": 10,
+  "hs": 10,
+  "lat": [
+   7.365355968475342,
+   6.414826154708862,
+   3.879747152328491,
+   3.379755973815918,
+   3.9792330265045166,
+   5.4205710887908936,
+   3.4513137340545654,
+   3.3887360095977783,
+   3.8579261302948,
+   1.909116268157959,
+   2.063019037246704,
+   2.31109619140625,
+   2.409968852996826,
+   1.9406142234802246,
+   2.3786959648132324,
+   1.9762439727783203,
+   2.1352598667144775,
+   5.723663091659546,
+   2.7225799560546875,
+   3.351809024810791,
+   2.4399778842926025,
+   2.4997167587280273,
+   3.1398227214813232,
+   3.959779977798462,
+   4.749078989028931,
+   3.392153739929199,
+   6.137355804443359,
+   3.2631099224090576,
+   3.876136064529419
+  ],
+  "tin": 8466,
+  "tout": 11472,
+  "errors": [],
+  "detail": [
+   [
+    "R1 무신사 반팔티(실페이지)",
+    "4/5",
+    {
+     "price_krw": 23920,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "brand": "이스케이프프롬",
+     "preorder": false
+    }
+   ],
+   [
+    "R2 쿠팡 스니커즈(실페이지)",
+    "5/5",
+    {
+     "price_krw": 11900,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "net_weight_kg": 0.48,
+     "food_or_quarantine": true
+    }
+   ],
+   [
+    "S1 K-pop 앨범 예약",
+    "7/7",
+    {
+     "price_krw": 19800,
+     "in_stock": true,
+     "preorder": true,
+     "net_weight_kg": 0.45,
+     "option_count": 3,
+     "domestic_shipping_fee_krw": 0,
+     "dangerous_goods": "none"
+    }
+   ],
+   [
+    "S2 선크림 1+1 기획",
+    "5/5",
+    {
+     "price_krw": 22000,
+     "in_stock": true,
+     "pack_quantity": 2,
+     "dangerous_goods": "none",
+     "domestic_shipping_fee_krw": 0
+    }
+   ],
+   [
+    "S3 스프레이 선크림(에어로졸)",
+    "4/4",
+    {
+     "price_krw": 18500,
+     "in_stock": true,
+     "dangerous_goods": "aerosol",
+     "domestic_shipping_fee_krw": 3000
+    }
+   ],
+   [
+    "S4 응원봉(리튬 내장)",
+    "4/4",
+    {
+     "price_krw": 89000,
+     "in_stock": true,
+     "dangerous_goods": "lithium_battery",
+     "net_weight_kg": 0.28
+    }
+   ],
+   [
+    "S5 일시품절",
+    "3/3",
+    {
+     "price_krw": 71200,
+     "in_stock": false,
+     "dangerous_goods": "none"
+    }
+   ],
+   [
+    "S6 라면 멀티팩",
+    "6/6",
+    {
+     "price_krw": 4480,
+     "in_stock": true,
+     "pack_quantity": 5,
+     "net_weight_kg": 0.6,
+     "food_or_quarantine": true,
+     "domestic_shipping_fee_krw": 3000
+    }
+   ],
+   [
+    "S7 혜택가 함정",
+    "4/4",
+    {
+     "price_krw": 63200,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "domestic_shipping_fee_krw": 0
+    }
+   ]
+  ]
+ },
+ {
+  "model": "gemini-3.8-flash",
+  "ext": [
+   42,
+   43
+  ],
+  "agent": 10,
+  "hs": 10,
+  "lat": [
+   37.928672790527344,
+   57.80931997299194,
+   9.559177160263062,
+   9.790673017501831,
+   9.463334798812866,
+   7.4549009799957275,
+   9.051961183547974,
+   8.587133884429932,
+   8.28656792640686,
+   3.874203681945801,
+   3.8809380531311035,
+   5.7717061042785645,
+   2.7637929916381836,
+   2.652804136276245,
+   4.540347337722778,
+   3.3698322772979736,
+   2.9303958415985107,
+   5.4889068603515625,
+   4.2791290283203125,
+   10.52904200553894,
+   3.29335618019104,
+   4.608058929443359,
+   6.2018609046936035,
+   5.765065908432007,
+   5.122148036956787,
+   4.752756834030151,
+   11.65072774887085,
+   6.105844974517822,
+   8.09001898765564
+  ],
+  "tin": 8466,
+  "tout": 21068,
+  "errors": [],
+  "detail": [
+   [
+    "R1 무신사 반팔티(실페이지)",
+    "4/5",
+    {
+     "price_krw": 23920,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "brand": "이스케이프프롬",
+     "preorder": false
+    }
+   ],
+   [
+    "R2 쿠팡 스니커즈(실페이지)",
+    "5/5",
+    {
+     "price_krw": 11900,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "net_weight_kg": 0.48,
+     "food_or_quarantine": true
+    }
+   ],
+   [
+    "S1 K-pop 앨범 예약",
+    "7/7",
+    {
+     "price_krw": 19800,
+     "in_stock": true,
+     "preorder": true,
+     "net_weight_kg": 0.45,
+     "option_count": 3,
+     "domestic_shipping_fee_krw": 0,
+     "dangerous_goods": "none"
+    }
+   ],
+   [
+    "S2 선크림 1+1 기획",
+    "5/5",
+    {
+     "price_krw": 22000,
+     "in_stock": true,
+     "pack_quantity": 2,
+     "dangerous_goods": "none",
+     "domestic_shipping_fee_krw": 0
+    }
+   ],
+   [
+    "S3 스프레이 선크림(에어로졸)",
+    "4/4",
+    {
+     "price_krw": 18500,
+     "in_stock": true,
+     "dangerous_goods": "aerosol",
+     "domestic_shipping_fee_krw": 3000
+    }
+   ],
+   [
+    "S4 응원봉(리튬 내장)",
+    "4/4",
+    {
+     "price_krw": 89000,
+     "in_stock": true,
+     "dangerous_goods": "lithium_battery",
+     "net_weight_kg": 0.28
+    }
+   ],
+   [
+    "S5 일시품절",
+    "3/3",
+    {
+     "price_krw": 71200,
+     "in_stock": false,
+     "dangerous_goods": "none"
+    }
+   ],
+   [
+    "S6 라면 멀티팩",
+    "6/6",
+    {
+     "price_krw": 4480,
+     "in_stock": true,
+     "pack_quantity": 5,
+     "net_weight_kg": 0.6,
+     "food_or_quarantine": true,
+     "domestic_shipping_fee_krw": 3000
+    }
+   ],
+   [
+    "S7 혜택가 함정",
+    "4/4",
+    {
+     "price_krw": 63200,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "domestic_shipping_fee_krw": 0
+    }
+   ]
+  ]
+ },
+ {
+  "model": "gemini-3.1-pro-preview",
+  "ext": [
+   42,
+   43
+  ],
+  "agent": 10,
+  "hs": 10,
+  "lat": [
+   12.4413161277771,
+   3.664896011352539,
+   10.661452054977417,
+   12.051111936569214,
+   9.973602771759033,
+   10.660721063613892,
+   15.015923976898193,
+   11.532385110855103,
+   11.713157176971436,
+   4.3960771560668945,
+   6.343301773071289,
+   3.593729019165039,
+   4.362005949020386,
+   3.744016170501709,
+   5.514424085617065,
+   3.846782922744751,
+   3.9612770080566406,
+   4.68117094039917,
+   4.612096071243286,
+   9.01517105102539,
+   4.661622762680054,
+   8.89961290359497,
+   10.349925756454468,
+   6.768522024154663,
+   5.999813079833984,
+   10.079085111618042,
+   11.71114706993103,
+   11.812772989273071,
+   7.756135940551758
+  ],
+  "tin": 8466,
+  "tout": 18640,
+  "errors": [],
+  "detail": [
+   [
+    "R1 무신사 반팔티(실페이지)",
+    "4/5",
+    {
+     "price_krw": 23920,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "brand": "이스케이프프롬",
+     "preorder": false
+    }
+   ],
+   [
+    "R2 쿠팡 스니커즈(실페이지)",
+    "5/5",
+    {
+     "price_krw": 11900,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "net_weight_kg": 0.48,
+     "food_or_quarantine": true
+    }
+   ],
+   [
+    "S1 K-pop 앨범 예약",
+    "7/7",
+    {
+     "price_krw": 19800,
+     "in_stock": true,
+     "preorder": true,
+     "net_weight_kg": 0.45,
+     "option_count": 3,
+     "domestic_shipping_fee_krw": 0,
+     "dangerous_goods": "none"
+    }
+   ],
+   [
+    "S2 선크림 1+1 기획",
+    "5/5",
+    {
+     "price_krw": 22000,
+     "in_stock": true,
+     "pack_quantity": 2,
+     "dangerous_goods": "none",
+     "domestic_shipping_fee_krw": 0
+    }
+   ],
+   [
+    "S3 스프레이 선크림(에어로졸)",
+    "4/4",
+    {
+     "price_krw": 18500,
+     "in_stock": true,
+     "dangerous_goods": "aerosol",
+     "domestic_shipping_fee_krw": 3000
+    }
+   ],
+   [
+    "S4 응원봉(리튬 내장)",
+    "4/4",
+    {
+     "price_krw": 89000,
+     "in_stock": true,
+     "dangerous_goods": "lithium_battery",
+     "net_weight_kg": 0.28
+    }
+   ],
+   [
+    "S5 일시품절",
+    "3/3",
+    {
+     "price_krw": 71200,
+     "in_stock": false,
+     "dangerous_goods": "none"
+    }
+   ],
+   [
+    "S6 라면 멀티팩",
+    "6/6",
+    {
+     "price_krw": 4480,
+     "in_stock": true,
+     "pack_quantity": 5,
+     "net_weight_kg": 0.6,
+     "food_or_quarantine": true,
+     "domestic_shipping_fee_krw": 3000
+    }
+   ],
+   [
+    "S7 혜택가 함정",
+    "4/4",
+    {
+     "price_krw": 63200,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "domestic_shipping_fee_krw": 0
+    }
+   ]
+  ]
+ }
+]

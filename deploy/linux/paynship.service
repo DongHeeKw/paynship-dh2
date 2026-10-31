@@ -1,0 +1,39 @@
+# Ubuntu 24.04. Review paths and resource limits before installing.
+[Unit]
+Description=PayNShip purchasing service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=paynship
+Group=paynship
+WorkingDirectory=/srv/paynship/current
+Environment=NODE_ENV=production
+Environment=PATH=/opt/node/bin:/usr/bin:/bin
+EnvironmentFile=/etc/paynship/app.env
+ExecStartPre=/opt/node/bin/node /srv/paynship/current/scripts/check-ops-env.mjs production
+ExecStart=/opt/node/bin/node /srv/paynship/current/node_modules/next/dist/bin/next start --hostname 127.0.0.1 --port 3000
+Restart=on-failure
+RestartSec=5
+TimeoutStartSec=60
+TimeoutStopSec=30
+KillSignal=SIGTERM
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/srv/paynship/current/.next/cache
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+CapabilityBoundingSet=
+LockPersonality=true
+LimitNOFILE=16384
+MemoryHigh=1536M
+MemoryMax=2G
+TasksMax=256
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,51 @@
+# Replace __DOMAIN__ and certificate paths. Never install placeholders.
+# A direct Internet -> Nginx -> loopback Node topology; see runbook for CDN setup.
+limit_req_zone $binary_remote_addr zone=paynship_api:10m rate=10r/s;
+limit_req_zone $binary_remote_addr zone=paynship_hook:10m rate=20r/s;
+limit_conn_zone $binary_remote_addr zone=paynship_conn:10m;
+log_format paynship_safe '$remote_addr [$time_local] "$request_method $uri $server_protocol" $status $body_bytes_sent';
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name __DOMAIN__;
+    location /.well-known/acme-challenge/ { root /var/www/letsencrypt; }
+    location / { return 308 https://$host$request_uri; }
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name __DOMAIN__;
+    ssl_certificate /etc/letsencrypt/live/__DOMAIN__/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/__DOMAIN__/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    server_tokens off;
+    client_max_body_size 8k;
+    client_body_timeout 10s;
+    client_header_timeout 10s;
+    keepalive_timeout 30s;
+    limit_conn paynship_conn 20;
+
+    # Access log format deliberately omits query strings, cookies and authorization.
+    access_log /var/log/nginx/paynship.access.log paynship_safe;
+    error_log /var/log/nginx/paynship.error.log warn;
+
+    location ^~ /api/webhooks/ {
+        client_max_body_size 256k;
+        limit_req zone=paynship_hook burst=40 nodelay;
+        limit_req_status 429;
+        proxy_pass http://127.0.0.1:3000;
+        include /etc/nginx/snippets/paynship-proxy.conf;
+    }
+    location ^~ /api/ {
+        limit_req zone=paynship_api burst=20 nodelay;
+        limit_req_status 429;
+        proxy_pass http://127.0.0.1:3000;
+        include /etc/nginx/snippets/paynship-proxy.conf;
+    }
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        include /etc/nginx/snippets/paynship-proxy.conf;
+    }
+}

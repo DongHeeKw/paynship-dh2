@@ -1,0 +1,230 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-11T15:18:58.263Z",
+  "operatorOnly": true,
+  "concurrency": 1,
+  "maxProducts": 10,
+  "retries": 0,
+  "products": [
+    {
+      "sourceUrl": "https://www.musinsa.com/products/5132111",
+      "retrievedAt": "2026-10-11T15:18:56.189Z",
+      "fields": {},
+      "missingFields": [
+        "name",
+        "price",
+        "priceCurrency",
+        "sku",
+        "countryOfOrigin",
+        "material",
+        "packagedWeightKg",
+        "packagedDimensionsCm",
+        "hsCode"
+      ],
+      "customsStatus": "review_required",
+      "robotsStatus": 200,
+      "fetchStatus": "robots_blocked"
+    },
+    {
+      "sourceUrl": "https://www.yes24.com/product/goods/13137546",
+      "retrievedAt": "2026-10-11T15:18:56.291Z",
+      "pageSha256": "a5150d9f80ae9d981a3a33584dc6b11e24fdd09697a26c96b6ae45d992f667f8",
+      "fields": {
+        "name": {
+          "value": "소년이 온다",
+          "source": "jsonld.Product.name",
+          "sourceUrl": "https://www.yes24.com/product/goods/13137546",
+          "retrievedAt": "2026-10-11T15:18:56.291Z",
+          "pageSha256": "a5150d9f80ae9d981a3a33584dc6b11e24fdd09697a26c96b6ae45d992f667f8",
+          "status": "observed"
+        },
+        "sku": {
+          "value": "13137546",
+          "source": "jsonld.Product.sku",
+          "sourceUrl": "https://www.yes24.com/product/goods/13137546",
+          "retrievedAt": "2026-10-11T15:18:56.291Z",
+          "pageSha256": "a5150d9f80ae9d981a3a33584dc6b11e24fdd09697a26c96b6ae45d992f667f8",
+          "status": "observed"
+        },
+        "price": {
+          "value": "13500",
+          "source": "jsonld.Product.offers.price",
+          "sourceUrl": "https://www.yes24.com/product/goods/13137546",
+          "retrievedAt": "2026-10-11T15:18:56.291Z",
+          "pageSha256": "a5150d9f80ae9d981a3a33584dc6b11e24fdd09697a26c96b6ae45d992f667f8",
+          "status": "observed"
+        },
+        "priceCurrency": {
+          "value": "KRW",
+          "source": "jsonld.Product.offers.priceCurrency",
+          "sourceUrl": "https://www.yes24.com/product/goods/13137546",
+          "retrievedAt": "2026-10-11T15:18:56.291Z",
+          "pageSha256": "a5150d9f80ae9d981a3a33584dc6b11e24fdd09697a26c96b6ae45d992f667f8",
+          "status": "observed"
+        },
+        "availability": {
+          "value": "https://schema.org/InStock",
+          "source": "jsonld.Product.offers.availability",
+          "sourceUrl": "https://www.yes24.com/product/goods/13137546",
+          "retrievedAt": "2026-10-11T15:18:56.291Z",
+          "pageSha256": "a5150d9f80ae9d981a3a33584dc6b11e24fdd09697a26c96b6ae45d992f667f8",
+          "status": "observed"
+        }
+      },
+      "missingFields": [
+        "countryOfOrigin",
+        "material",
+        "packagedWeightKg",
+        "packagedDimensionsCm",
+        "hsCode"
+      ],
+      "customsStatus": "review_required",
+      "finalUrl": "https://www.yes24.com/product/goods/13137546",
+      "httpStatus": 200,
+      "fetchStatus": "fetched",
+      "responseBytes": 643713,
+      "robotsStatus": 200
+    },
+    {
+      "sourceUrl": "https://www.yes24.com/product/goods/90164265",
+      "retrievedAt": "2026-10-11T15:18:57.154Z",
+      "pageSha256": "3397c80ae5d37c6d67707494e4f3c81be0b28f9d422600cf8080e3f4be84d046",
+      "fields": {
+        "name": {
+          "value": "소년이 온다",
+          "source": "jsonld.Product.name",
+          "sourceUrl": "https://www.yes24.com/product/goods/90164265",
+          "retrievedAt": "2026-10-11T15:18:57.154Z",
+          "pageSha256": "3397c80ae5d37c6d67707494e4f3c81be0b28f9d422600cf8080e3f4be84d046",
+          "status": "observed"
+        },
+        "sku": {
+          "value": "90164265",
+          "source": "jsonld.Product.sku",
+          "sourceUrl": "https://www.yes24.com/product/goods/90164265",
+          "retrievedAt": "2026-10-11T15:18:57.154Z",
+          "pageSha256": "3397c80ae5d37c6d67707494e4f3c81be0b28f9d422600cf8080e3f4be84d046",
+          "status": "observed"
+        },
+        "price": {
+          "value": "11700",
+          "source": "jsonld.Product.offers.price",
+          "sourceUrl": "https://www.yes24.com/product/goods/90164265",
+          "retrievedAt": "2026-10-11T15:18:57.154Z",
+          "pageSha256": "3397c80ae5d37c6d67707494e4f3c81be0b28f9d422600cf8080e3f4be84d046",
+          "status": "observed"
+        },
+        "priceCurrency": {
+          "value": "KRW",
+          "source": "jsonld.Product.offers.priceCurrency",
+          "sourceUrl": "https://www.yes24.com/product/goods/90164265",
+          "retrievedAt": "2026-10-11T15:18:57.154Z",
+          "pageSha256": "3397c80ae5d37c6d67707494e4f3c81be0b28f9d422600cf8080e3f4be84d046",
+          "status": "observed"
+        },
+        "availability": {
+          "value": "https://schema.org/SoldOut",
+          "source": "jsonld.Product.offers.availability",
+          "sourceUrl": "https://www.yes24.com/product/goods/90164265",
+          "retrievedAt": "2026-10-11T15:18:57.154Z",
+          "pageSha256": "3397c80ae5d37c6d67707494e4f3c81be0b28f9d422600cf8080e3f4be84d046",
+          "status": "observed"
+        }
+      },
+      "missingFields": [
+        "countryOfOrigin",
+        "material",
+        "packagedWeightKg",
+        "packagedDimensionsCm",
+        "hsCode"
+      ],
+      "customsStatus": "review_required",
+      "finalUrl": "https://www.yes24.com/product/goods/90164265",
+      "httpStatus": 200,
+      "fetchStatus": "fetched",
+      "responseBytes": 354328,
+      "robotsStatus": 200
+    },
+    {
+      "sourceUrl": "https://product.kyobobook.co.kr/detail/S000000610612",
+      "retrievedAt": "2026-10-11T15:18:57.547Z",
+      "fields": {},
+      "missingFields": [
+        "name",
+        "price",
+        "priceCurrency",
+        "sku",
+        "countryOfOrigin",
+        "material",
+        "packagedWeightKg",
+        "packagedDimensionsCm",
+        "hsCode"
+      ],
+      "customsStatus": "review_required",
+      "robotsStatus": 200,
+      "httpStatus": 200,
+      "fetchStatus": "fetch_failed",
+      "failure": "unsupported_content_type"
+    },
+    {
+      "sourceUrl": "https://www.yes24.com/product/goods/108422348",
+      "retrievedAt": "2026-10-11T15:18:57.612Z",
+      "pageSha256": "cab955efd47c22ef39c4ef5b748b3c8763803c2092cbc615b864a37e979ad994",
+      "fields": {
+        "name": {
+          "value": "채식주의자",
+          "source": "jsonld.Product.name",
+          "sourceUrl": "https://www.yes24.com/product/goods/108422348",
+          "retrievedAt": "2026-10-11T15:18:57.612Z",
+          "pageSha256": "cab955efd47c22ef39c4ef5b748b3c8763803c2092cbc615b864a37e979ad994",
+          "status": "observed"
+        },
+        "sku": {
+          "value": "108422348",
+          "source": "jsonld.Product.sku",
+          "sourceUrl": "https://www.yes24.com/product/goods/108422348",
+          "retrievedAt": "2026-10-11T15:18:57.612Z",
+          "pageSha256": "cab955efd47c22ef39c4ef5b748b3c8763803c2092cbc615b864a37e979ad994",
+          "status": "observed"
+        },
+        "price": {
+          "value": "15300",
+          "source": "jsonld.Product.offers.price",
+          "sourceUrl": "https://www.yes24.com/product/goods/108422348",
+          "retrievedAt": "2026-10-11T15:18:57.612Z",
+          "pageSha256": "cab955efd47c22ef39c4ef5b748b3c8763803c2092cbc615b864a37e979ad994",
+          "status": "observed"
+        },
+        "priceCurrency": {
+          "value": "KRW",
+          "source": "jsonld.Product.offers.priceCurrency",
+          "sourceUrl": "https://www.yes24.com/product/goods/108422348",
+          "retrievedAt": "2026-10-11T15:18:57.612Z",
+          "pageSha256": "cab955efd47c22ef39c4ef5b748b3c8763803c2092cbc615b864a37e979ad994",
+          "status": "observed"
+        },
+        "availability": {
+          "value": "https://schema.org/InStock",
+          "source": "jsonld.Product.offers.availability",
+          "sourceUrl": "https://www.yes24.com/product/goods/108422348",
+          "retrievedAt": "2026-10-11T15:18:57.612Z",
+          "pageSha256": "cab955efd47c22ef39c4ef5b748b3c8763803c2092cbc615b864a37e979ad994",
+          "status": "observed"
+        }
+      },
+      "missingFields": [
+        "countryOfOrigin",
+        "material",
+        "packagedWeightKg",
+        "packagedDimensionsCm",
+        "hsCode"
+      ],
+      "customsStatus": "review_required",
+      "finalUrl": "https://www.yes24.com/product/goods/108422348",
+      "httpStatus": 200,
+      "fetchStatus": "fetched",
+      "responseBytes": 443782,
+      "robotsStatus": 200
+    }
+  ]
+}

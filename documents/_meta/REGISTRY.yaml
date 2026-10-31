@@ -1,0 +1,54 @@
+version: 2
+updated_at: "2026-10-12"
+metadata:
+  description: "Current URL purchasing service documentation"
+  source_of_truth_note: "Registered current docs define scope; archives and old research are historical."
+current:
+  - id: product
+    path: documents/PRODUCT_SPECIFICATION.md
+    update_triggers: ["app/**", "components/purchases/**", "lib/purchases/**", "lib/dev-preview/**", "prisma/**"]
+  - id: authentication
+    path: documents/Features/Auth/Spec.md
+    update_triggers: ["app/login/**", "app/auth/**", "app/dev/preview/**", "components/site/SignInForm.tsx", "components/site/PreviewModeLink.tsx", "contexts/AuthContext.tsx", "lib/auth/**", "lib/supabase/**", "lib/dev-preview/**"]
+  - id: feature_status
+    path: documents/Features/STATUS.md
+    update_triggers: ["app/**", "lib/**", "prisma/**", "tests/**"]
+  - id: product_evidence
+    path: documents/Features/Product-Data-Pipeline/Spec.md
+    update_triggers: ["lib/purchases/product-url.ts", "lib/purchases/product-link-info.ts", "lib/purchases/product-preview.ts", "lib/purchases/intake-draft.ts", "lib/purchases/categories.ts", "lib/purchases/countries.ts", "lib/purchases/review*.ts", "lib/purchases/quote.ts", "components/purchases/ProductPreview.tsx", "components/purchases/ProductRequestFields.tsx", "components/purchases/PurchaseForm.tsx", "components/purchases/UrlIntake.tsx", "app/purchase/page.tsx", "lib/product-evidence/**", "scripts/product-samples/**", "data/samples/**"]
+  - id: country_customs
+    path: documents/Reference/COUNTRY_CUSTOMS.md
+    update_triggers: ["lib/customs/**", "lib/purchases/schemas.ts", "lib/purchases/profile.ts", "lib/purchases/recipient-review.ts", "components/purchases/DeliveryForm.tsx", "components/purchases/DeliveryAddressFields.tsx", "components/purchases/RecipientCustomsFields.tsx", "components/purchases/delivery-form-data.ts"]
+  - id: purchase_requests
+    path: documents/Features/Order-Checkout/Spec.md
+    update_triggers: ["app/purchase/**", "components/purchases/UrlIntake.tsx", "components/purchases/PurchaseForm.tsx", "app/dev/preview/**", "app/api/purchases/**", "app/api/admin/purchases/**", "app/api/webhooks/**", "lib/purchases/**", "lib/dev-preview/**"]
+  - id: security
+    path: documents/Reference/SECURITY.md
+    update_triggers: ["middleware.ts", "app/dev/preview/**", "lib/dev-preview/**", "lib/security/**", "lib/auth/**", "lib/supabase/**", "lib/purchases/**", "lib/customs/**", "lib/api/**", "prisma/**", "scripts/security/**", "deploy/linux/**"]
+  - id: operations
+    path: documents/Reference/OPERATIONS.md
+    update_triggers: ["app/admin/**", "lib/purchases/**"]
+  - id: deployment
+    path: documents/Reference/Deployment/DEPLOYMENT.md
+    update_triggers: ["package.json", ".env.example", "prisma/sql/**", "scripts/**", "deploy/**", ".github/workflows/**", "next.config.*", "vercel.json"]
+  - id: linux_release
+    path: documents/Reference/Deployment/LINUX_RELEASE.md
+    update_triggers: ["deploy/linux/**", "scripts/predeploy-check.mjs", "scripts/security/db-smoke.sql", ".github/workflows/**", "prisma/sql/**"]
+  - id: documentation_policy
+    path: documents/_meta/DOC_GOVERNANCE.md
+    update_triggers: ["AGENTS.md", "CLAUDE.md", "documents/_meta/**", "docs/plans/**"]
+reference:
+  - id: naver_product_lookup
+    path: data/samples/naver-product-evidence-2026-10-12.json
+    scope: ["dated operator lookup", "robots-blocked Naver URL", "unknown product facts"]
+  - id: security_checks
+    path: documents/Reference/Testing/SECURITY_CHECKS.md
+    scope: ["executed local verification", "ZAP scope and residual alerts", "DB CI evidence"]
+  - id: tax_and_customs
+    path: documents/Reference/TAX_AND_CUSTOMS.md
+    scope: ["official legal sources", "export VAT", "destination policy"]
+legacy:
+  - id: archives
+    path: documents/Archive/
+  - id: historical_decisions
+    path: documents/Journal/

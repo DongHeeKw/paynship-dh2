@@ -1,0 +1,70 @@
+{
+  "name": "paynship",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit",
+    "postinstall": "prisma generate",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio",
+    "test": "vitest",
+    "test:ci": "vitest --run",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "test:watch": "vitest --watch",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "docs:check": "node scripts/docs-check.mjs",
+    "ops:check": "node scripts/check-ops-env.mjs",
+    "predeploy:check": "node scripts/predeploy-check.mjs",
+    "db:migrate:purchase": "prisma db execute --schema prisma/schema.prisma --file prisma/sql/2026-10-11-purchase-flow.sql",
+    "security:zap": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/security/zap-scan.ps1",
+    "product:samples": "node scripts/product-samples/collect.mjs",
+    "product:samples:db": "node scripts/product-samples/create-db.mjs",
+    "product:evidence:test": "node --test lib/product-evidence/evidence.test.mjs"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.0",
+    "@supabase/ssr": "^0.5.2",
+    "@supabase/supabase-js": "^2.48.1",
+    "@upstash/ratelimit": "^2.0.7",
+    "@upstash/redis": "^1.35.8",
+    "next": "^15.5.27",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "resend": "^6.32.1",
+    "zod": "^3.24.1"
+  },
+  "overrides": {
+    "next": {
+      "postcss": "^8.5.23"
+    }
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.57.0",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^16.3.0",
+    "@types/node": "^22.10.2",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitest/coverage-v8": "^4.1.11",
+    "@vitest/ui": "^4.1.11",
+    "eslint": "^9.17.0",
+    "eslint-config-next": "^15.5.27",
+    "jsdom": "^27.3.0",
+    "postcss": "^8.4.49",
+    "prisma": "^6.19.0",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.2",
+    "vitest": "^4.1.11"
+  }
+}

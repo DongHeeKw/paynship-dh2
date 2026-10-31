@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-12T01:22:35.746Z",
+  "operatorOnly": true,
+  "concurrency": 1,
+  "maxProducts": 1,
+  "retries": 0,
+  "products": [
+    {
+      "sourceUrl": "https://brand.naver.com/kinox/products/5912828061",
+      "retrievedAt": "2026-10-12T01:22:35.748Z",
+      "fields": {},
+      "missingFields": [
+        "name",
+        "price",
+        "priceCurrency",
+        "sku",
+        "countryOfOrigin",
+        "material",
+        "packagedWeightKg",
+        "packagedDimensionsCm",
+        "hsCode"
+      ],
+      "customsStatus": "review_required",
+      "robotsStatus": 200,
+      "fetchStatus": "robots_blocked"
+    }
+  ]
+}

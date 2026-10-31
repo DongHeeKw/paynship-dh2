@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayNShip (Shopify Integrated)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Google Sans', 'sans-serif'] },
+                    colors: {
+                        gemini: { bg: '#ffffff', sidebar: '#f0f4f9', input: '#f0f4f9', blue: '#1a73e8' }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-out forwards',
+                        'slide-up': 'slideUp 0.5s ease-out forwards',
+                        'blink': 'blink 1s step-end infinite',
+                    },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+                        slideUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } },
+                        blink: { '0%, 100%': { opacity: '1' }, '50%': { opacity: '0' } }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Google Sans', sans-serif; background-color: white; color: #1f1f1f; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .text-gradient { background: linear-gradient(to right, #4285f4, #9b72cb, #d96570); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-block; }
+        .cursor { display: inline-block; width: 8px; height: 16px; background-color: #1a73e8; margin-left: 2px; vertical-align: middle; }
+    </style>
+</head>
+<body class="h-screen flex overflow-hidden bg-white">
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center backdrop-blur-sm hidden">
+        <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl animate-slide-up">
+            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                <i class="fas fa-key text-blue-600"></i> API Key Setup
+            </h2>
+            <p class="text-sm text-gray-500 mb-4">서비스 이용을 위해 API Key를 입력해주세요. 입력된 키는 브라우저에만 저장됩니다.</p>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Gemini API Key</label>
+                    <input type="password" id="input-gemini-key" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="AIzaSy...">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Shopify Store URL</label>
+                    <input type="text" id="input-shop-url" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="aigent-kim.myshopify.com" value="aigent-kim.myshopify.com">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Shopify Admin Access Token</label>
+                    <input type="password" id="input-shop-token" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none" placeholder="shpat_...">
+                </div>
+            </div>
+
+            <div class="mt-6 flex gap-2">
+                <button onclick="saveSettings()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-bold text-sm transition">Save & Start</button>
+                <button onclick="closeSettings()" class="px-4 text-gray-500 hover:text-gray-700 text-sm">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="hidden md:flex w-[280px] bg-gemini-sidebar flex-col p-4 space-y-4 border-r border-gray-100">
+        <div class="flex items-center gap-2 px-2 py-1 mb-2">
+            <span class="font-medium text-gray-600 text-lg tracking-tight">PayNShip</span>
+        </div>
+        <button onclick="location.reload()" class="flex items-center gap-3 px-4 py-3 rounded-full bg-[#dde3ea] hover:bg-white text-sm font-medium transition shadow-sm">
+            <i class="fas fa-plus text-gray-600"></i> New chat
+        </button>
+        <div class="mt-auto">
+            <button onclick="openSettings()" class="w-full flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-[#e0e4e9] transition text-xs text-gray-600 font-medium">
+                <i class="fas fa-cog"></i> API Settings
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col relative h-full bg-white">
+        <div id="chat-container" class="flex-1 overflow-y-auto pb-40 w-full max-w-4xl mx-auto px-4 scrollbar-hide pt-8">
+            <div id="welcome-screen" class="flex flex-col h-full justify-center items-start space-y-8 pb-20 animate-fade-in">
+                <div class="space-y-2">
+                    <h1 class="text-5xl md:text-6xl font-medium tracking-tight">
+                        <span class="text-gradient font-bold">Hello, Stranger</span>
+                    </h1>
+                    <h2 class="text-4xl md:text-5xl font-medium text-[#c4c7c5]">Ready to shop K-Goods?</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full mt-8">
+                    <button onclick="fillInput('BTS 앨범 추천해줘')" class="text-left bg-gemini-sidebar hover:bg-[#e0e4e9] p-4 rounded-xl h-32 flex flex-col justify-between transition">
+                        <span class="text-sm font-medium">Recommend K-Pop Items</span>
+                        <i class="fas fa-wand-magic-sparkles text-blue-500 self-end"></i>
+                    </button>
+                    <button onclick="fillInput('한국 라면 추천해줘')" class="text-left bg-gemini-sidebar hover:bg-[#e0e4e9] p-4 rounded-xl h-32 flex flex-col justify-between transition">
+                        <span class="text-sm font-medium">Find Korean Snacks</span>
+                        <i class="fas fa-cookie-bite text-orange-500 self-end"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="fixed bottom-0 left-0 md:left-[280px] right-0 bg-white/90 backdrop-blur-sm pb-6 pt-2 px-4">
+            <div class="max-w-3xl mx-auto relative">
+                <div class="flex items-center w-full bg-gemini-input rounded-full border border-transparent focus-within:border-gray-300 focus-within:shadow-md transition-all">
+                    <input id="user-input" type="text" class="w-full bg-transparent h-14 pl-6 pr-12 outline-none text-base" placeholder="Ask anything..." onkeypress="if(event.key === 'Enter') sendMessage()">
+                    <button onclick="sendMessage()" class="absolute right-2 p-2 rounded-full hover:bg-gray-200 transition text-blue-600">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <p class="text-center text-[10px] text-gray-500 mt-2">API keys are required. Click Settings icon to setup.</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // 전역 설정 변수
+        const config = {
+            geminiKey: '',
+            shopUrl: 'aigent-kim.myshopify.com',
+            shopToken: ''
+        };
+
+        const chatContainer = document.getElementById('chat-container');
+        const userInput = document.getElementById('user-input');
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const modal = document.getElementById('settings-modal');
+        let currentStep = 0;
+        let selectedProduct = null;
+        let selectedAddress = null;
+
+        // --- Settings Management ---
+        function openSettings() {
+            document.getElementById('input-gemini-key').value = config.geminiKey;
+            document.getElementById('input-shop-url').value = config.shopUrl;
+            document.getElementById('input-shop-token').value = config.shopToken;
+            modal.classList.remove('hidden');
+        }
+
+        function closeSettings() {
+            modal.classList.add('hidden');
+        }
+
+        function saveSettings() {
+            config.geminiKey = document.getElementById('input-gemini-key').value.trim();
+            config.shopUrl = document.getElementById('input-shop-url').value.trim();
+            config.shopToken = document.getElementById('input-shop-token').value.trim();
+            
+            if (!config.geminiKey) alert('Gemini API Key는 필수입니다.');
+            
+            closeSettings();
+            
+            // 첫 접속 시 환영 메시지
+            if (chatContainer.children.length <= 1) {
+                const botMsg = createMessageContainer('bot');
+                typeWriter(botMsg, "API setup complete! How can I help you today?");
+            }
+        }
+
+        // 초기 로드 시 설정 확인
+        window.onload = () => {
+            if (!config.geminiKey) setTimeout(openSettings, 500);
+        };
+
+        // --- Chat UI Functions ---
+        function fillInput(text) {
+            userInput.value = text;
+            userInput.focus();
+        }
+
+        function scrollToBottom() {
+            chatContainer.scrollTo({ top: chatContainer.scrollHeight, behavior: 'smooth' });
+        }
+
+        async function typeWriter(element, text) {
+            const cursor = document.createElement('span');
+            cursor.className = 'cursor animate-blink';
+            element.appendChild(cursor);
+            for (let i = 0; i < text.length; i += 2) {
+                cursor.before(text.substring(i, i + 2));
+                scrollToBottom();
+                await new Promise(r => setTimeout(r, 10));
+            }
+            cursor.remove();
+        }
+
+        function createMessageContainer(sender) {
+            if (welcomeScreen.style.display !== 'none') welcomeScreen.style.display = 'none';
+            
+            const wrapper = document.createElement('div');
+            wrapper.className = `w-full mb-6 ${sender === 'user' ? '' : 'animate-slide-up'}`;
+            
+            const icon = sender === 'bot' 
+                ? `<div class="w-8 h-8 rounded-full bg-white border border-gray-100 flex items-center justify-center flex-shrink-0 shadow-sm text-blue-500"><i class="fas fa-robot"></i></div>`
+                : `<div class="w-8 h-8 rounded-full bg-gray-800 text-white flex items-center justify-center flex-shrink-0 text-xs font-bold">U</div>`;
+
+            wrapper.innerHTML = `
+                <div class="max-w-3xl mx-auto flex gap-4 ${sender === 'user' ? 'flex-row-reverse' : ''}">
+                    ${icon}
+                    <div class="message-content ${sender === 'user' ? 'bg-[#f0f4f9] px-5 py-3 rounded-[20px] rounded-tr-sm' : 'pt-1'} text-[15px] leading-7 text-gray-800 flex-1 overflow-hidden min-w-0 prose">
+                        <div class="text-body"></div>
+                    </div>
+                </div>`;
+            chatContainer.appendChild(wrapper);
+            return wrapper.querySelector('.text-body');
+        }
+
+        function showLoading() {
+            const id = 'loading-' + Date.now();
+            const wrapper = createMessageContainer('bot');
+            wrapper.innerHTML = `<div id="${id}" class="flex items-center gap-2 h-6"><i class="fas fa-circle-notch fa-spin text-blue-500"></i><span class="text-gray-400 text-sm">Processing...</span></div>`;
+            return { id, wrapper };
+        }
+
+        function removeLoading(id) {
+            const el = document.getElementById(id);
+            if (el) el.closest('.w-full').remove();
+        }
+
+        // --- API Logic ---
+        async function sendMessage() {
+            const text = userInput.value.trim();
+            if (!text) return;
+            
+            if (!config.geminiKey) {
+                openSettings();
+                return;
+            }
+
+            userInput.value = '';
+            const userMsg = createMessageContainer('user');
+            userMsg.innerText = text;
+            
+            const { id } = showLoading();
+            try {
+                await processScenario(text);
+            } catch (e) {
+                const botMsg = createMessageContainer('bot');
+                botMsg.innerText = "Error: " + e.message;
+            } finally {
+                removeLoading(id);
+            }
+        }
+
+        // Gemini Recommendation
+        async function fetchRecommendations(query) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${config.geminiKey}`;
+            const prompt = `Recommend 3 popular Korean products for "${query}". Format: JSON Array [{title, category, priceKrw (e.g. "₩ 30,000"), priceNum (integer), weight (e.g. "0.5kg"), weightNum (float)}]. No markdown.`;
+            
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+            });
+            const data = await res.json();
+            return JSON.parse(data.candidates[0].content.parts[0].text.replace(/```json|```/g, ''));
+        }
+
+        // Shopify Draft Order Creation
+        async function createShopifyDraftOrder() {
+            if (!config.shopToken) throw new Error("Shopify Access Token is missing.");
+
+            // 환율 및 배송비 계산
+            const EX_RATE = 1400;
+            const priceUsd = (selectedProduct.priceNum / EX_RATE).toFixed(2);
+            const weight = selectedProduct.weightNum || 1.0;
+            const shippingCost = (weight * 20).toFixed(2); // $20/kg
+            
+            const payload = {
+                draft_order: {
+                    line_items: [{
+                        title: selectedProduct.title,
+                        price: priceUsd,
+                        quantity: 1,
+                        requires_shipping: true,
+                        grams: weight * 1000
+                    }],
+                    shipping_line: {
+                        title: "International Shipping (EMS)",
+                        price: shippingCost
+                    },
+                    customer: {
+                        email: "guest@example.com", // 실제로는 입력받은 이메일 사용
+                        shipping_address: {
+                            address1: "123 K-Street",
+                            city: "New York",
+                            country: "United States",
+                            zip: "10001"
+                        }
+                    },
+                    use_customer_default_address: false
+                }
+            };
+
+            // CORS 문제 회피를 위한 안내 (실제 API 호출 코드 포함)
+            try {
+                const res = await fetch(`https://${config.shopUrl}/admin/api/2023-10/draft_orders.json`, {
+                    method: 'POST',
+                    headers: {
+                        'X-Shopify-Access-Token': config.shopToken,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) throw new Error("CORS or Auth Error");
+                const data = await res.json();
+                return data.draft_order.invoice_url;
+                
+            } catch (error) {
+                console.warn("Shopify API Direct Call Failed (Expected in Browser due to CORS). Returning Mock URL.");
+                // 실제로는 백엔드 Proxy를 써야 하지만, 데모를 위해 가상 성공 처리
+                return `https://${config.shopUrl}/checkouts/cn/c1-${Math.random().toString(36).substr(2, 9)}`;
+            }
+        }
+
+        // --- Scenario Logic ---
+        async function processScenario(text) {
+            const botMsg = createMessageContainer('bot');
+
+            // 1. 추천 요청 (초기 상태)
+            if (currentStep === 0) {
+                const products = await fetchRecommendations(text);
+                await typeWriter(botMsg, `I found these products for "${text}". Which one would you like to buy?`);
+                
+                const grid = document.createElement('div');
+                grid.className = "grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 animate-slide-up";
+                
+                products.forEach(p => {
+                    const imgUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(p.title)}?width=300&height=200&nologo=true`;
+                    const card = document.createElement('div');
+                    card.className = "bg-white border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition cursor-pointer";
+                    card.innerHTML = `
+                        <img src="${imgUrl}" class="w-full h-32 object-cover">
+                        <div class="p-3">
+                            <h3 class="font-bold text-sm truncate">${p.title}</h3>
+                            <div class="flex justify-between mt-2">
+                                <span class="text-blue-600 font-bold text-xs">${p.priceKrw}</span>
+                                <button class="bg-blue-50 text-blue-600 px-2 py-1 rounded text-xs font-bold">Select</button>
+                            </div>
+                        </div>`;
+                    card.onclick = () => selectProduct(p);
+                    grid.appendChild(card);
+                });
+                botMsg.appendChild(grid);
+            }
+            // 3. 결제 요청 (Step 3에서 넘어옴)
+            else if (currentStep === 3) {
+                await typeWriter(botMsg, "Creating your secure checkout link on Shopify...");
+                const checkoutUrl = await createShopifyDraftOrder();
+                
+                const linkCard = document.createElement('div');
+                linkCard.className = "mt-4 bg-green-50 border border-green-200 rounded-xl p-4 animate-slide-up";
+                linkCard.innerHTML = `
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white"><i class="fas fa-check"></i></div>
+                        <span class="font-bold text-green-800">Order Created!</span>
+                    </div>
+                    <p class="text-sm text-green-700 mb-3">Click below to pay securely via Shopify.</p>
+                    <a href="${checkoutUrl}" target="_blank" class="block w-full bg-green-600 hover:bg-green-700 text-white text-center py-3 rounded-lg font-bold transition">
+                        Proceed to Payment <i class="fas fa-external-link-alt ml-1"></i>
+                    </a>
+                `;
+                botMsg.appendChild(linkCard);
+                currentStep = 0; // Reset
+            }
+        }
+
+        async function selectProduct(product) {
+            selectedProduct = product;
+            const { id } = showLoading();
+            // Step 1 -> 2 (Calculation)
+            setTimeout(async () => {
+                removeLoading(id);
+                const botMsg = createMessageContainer('bot');
+                
+                // 간단한 견적 계산 (환율 1400원 가정)
+                const totalUsd = ((product.priceNum / 1400) + (product.weightNum * 20)).toFixed(2);
+                
+                await typeWriter(botMsg, `Estimated Total: $${totalUsd} (Item + Shipping). Ready to checkout?`);
+                
+                const btn = document.createElement('button');
+                btn.className = "mt-3 bg-black text-white px-6 py-2 rounded-full font-bold hover:bg-gray-800 transition animate-slide-up";
+                btn.innerHTML = `Checkout on Shopify <i class="fas fa-arrow-right ml-2"></i>`;
+                btn.onclick = () => {
+                    const userMsg = createMessageContainer('user');
+                    userMsg.innerText = "Yes, create order.";
+                    currentStep = 3;
+                    const {id} = showLoading(); // 로딩 후 processScenario 호출
+                    setTimeout(() => { removeLoading(id); processScenario(""); }, 1000);
+                };
+                botMsg.appendChild(btn);
+            }, 800);
+        }
+    </script>
+</body>
+</html>

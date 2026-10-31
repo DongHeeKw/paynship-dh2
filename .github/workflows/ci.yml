@@ -1,0 +1,112 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: ['**']
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ci-only-postgres
+          POSTGRES_DB: paynship_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d paynship_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      # Disposable local CI service only. These are never production credentials.
+      DATABASE_URL: postgresql://postgres:ci-only-postgres@localhost:5432/paynship_ci
+      DIRECT_URL: postgresql://postgres:ci-only-postgres@localhost:5432/paynship_ci
+      PGHOST: localhost
+      PGPORT: 5432
+      PGUSER: postgres
+      PGPASSWORD: ci-only-postgres
+      PGDATABASE: paynship_ci
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-not-a-real-auth-key
+      PII_ENCRYPTION_KEY: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    steps:
+      - name: Checkout full migration baseline history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup supported Node runtime
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install pinned dependencies
+        run: npm ci
+
+      - name: Install PostgreSQL 16 client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client-16
+
+      - name: Initialize disposable historical baseline
+        run: |
+          git show 5c7e7abadb81367588a7fd380a602771eb5f693a:prisma/schema.prisma > "$RUNNER_TEMP/pre-purchase.prisma"
+          npx --no-install prisma migrate diff --from-empty --to-schema-datamodel "$RUNNER_TEMP/pre-purchase.prisma" --script > "$RUNNER_TEMP/legacy-baseline.sql"
+          psql -X -v ON_ERROR_STOP=1 --single-transaction -f "$RUNNER_TEMP/legacy-baseline.sql"
+          psql -X -v ON_ERROR_STOP=1 -c 'CREATE ROLE anon NOLOGIN; CREATE ROLE authenticated NOLOGIN;'
+
+      - name: Apply purchase migration with checksum ledger
+        run: |
+          cat > "$RUNNER_TEMP/ci.pg_service.conf" <<'CONF'
+          [paynship-migration]
+          host=localhost
+          port=5432
+          dbname=paynship_ci
+          user=postgres
+          CONF
+          export PGSERVICEFILE="$RUNNER_TEMP/ci.pg_service.conf"
+          export PGSERVICE=paynship-migration
+          export PAYNSHIP_MIGRATION_EXPECTED_SHA256="$(sha256sum prisma/sql/2026-10-11-purchase-flow.sql | cut -d ' ' -f 1)"
+          bash deploy/linux/apply-purchase-migration.sh --apply
+          bash deploy/linux/apply-purchase-migration.sh --apply
+          psql -X -v ON_ERROR_STOP=1 -f deploy/linux/runtime-role.sql
+
+      - name: Real PostgreSQL RLS and application privilege smoke
+        env:
+          PGOPTIONS: -c paynship.ephemeral_ci=true
+        run: psql -X -v ON_ERROR_STOP=1 -f scripts/security/db-smoke.sql
+
+      - name: Choose documentation diff base
+        env:
+          CI_DOCS_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          if [[ "$CI_DOCS_BASE_SHA" =~ ^[0-9a-f]{40}$ ]] && git cat-file -e "$CI_DOCS_BASE_SHA^{commit}" 2>/dev/null; then
+            echo "DOCS_CHECK_BASE_REF=$CI_DOCS_BASE_SHA" >> "$GITHUB_ENV"
+          else
+            echo "DOCS_CHECK_BASE_REF=HEAD^" >> "$GITHUB_ENV"
+          fi
+
+      - name: Type check
+        run: npm run type-check
+
+      - name: Documentation synchronization
+        run: npm run docs:check
+
+      - name: Unit security and policy checks
+        run: npm run test:ci
+
+      - name: Offline product evidence fixtures
+        run: npm run product:evidence:test
+
+      - name: Production build
+        run: npm run build

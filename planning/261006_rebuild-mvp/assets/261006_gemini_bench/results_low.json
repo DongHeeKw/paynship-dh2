@@ -1,0 +1,1011 @@
+[
+ {
+  "model": "gemini-3-flash-preview",
+  "ext": [
+   42,
+   43
+  ],
+  "agent": 10,
+  "hs": 10,
+  "lat": [
+   3.7456490993499756,
+   3.9587152004241943,
+   4.741974115371704,
+   3.3606081008911133,
+   2.2800352573394775,
+   4.302209138870239,
+   5.245199203491211,
+   1.9191718101501465,
+   2.5411438941955566,
+   1.501128911972046,
+   1.8946030139923096,
+   1.4593780040740967,
+   1.596207857131958,
+   1.6692190170288086,
+   1.5927989482879639,
+   1.9264278411865234,
+   1.8946199417114258,
+   1.445167064666748,
+   1.6808593273162842,
+   3.608581066131592,
+   3.049730062484741,
+   3.321132183074951,
+   5.063104152679443,
+   2.665895938873291,
+   2.9795048236846924,
+   3.6291823387145996,
+   3.832015037536621,
+   3.546477794647217,
+   7.331445693969727
+  ],
+  "tin": 8466,
+  "tout": 6847,
+  "errors": [],
+  "detail": [
+   [
+    "R1 무신사 반팔티(실페이지)",
+    "4/5",
+    {
+     "price_krw": 23920,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "brand": "이스케이프프롬",
+     "preorder": false
+    }
+   ],
+   [
+    "R2 쿠팡 스니커즈(실페이지)",
+    "5/5",
+    {
+     "price_krw": 11900,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "net_weight_kg": 0.48,
+     "food_or_quarantine": true
+    }
+   ],
+   [
+    "S1 K-pop 앨범 예약",
+    "7/7",
+    {
+     "price_krw": 19800,
+     "in_stock": true,
+     "preorder": true,
+     "net_weight_kg": 0.45,
+     "option_count": 3,
+     "domestic_shipping_fee_krw": 0,
+     "dangerous_goods": "none"
+    }
+   ],
+   [
+    "S2 선크림 1+1 기획",
+    "5/5",
+    {
+     "price_krw": 22000,
+     "in_stock": true,
+     "pack_quantity": 2,
+     "dangerous_goods": "none",
+     "domestic_shipping_fee_krw": 0
+    }
+   ],
+   [
+    "S3 스프레이 선크림(에어로졸)",
+    "4/4",
+    {
+     "price_krw": 18500,
+     "in_stock": true,
+     "dangerous_goods": "aerosol",
+     "domestic_shipping_fee_krw": 3000
+    }
+   ],
+   [
+    "S4 응원봉(리튬 내장)",
+    "4/4",
+    {
+     "price_krw": 89000,
+     "in_stock": true,
+     "dangerous_goods": "lithium_battery",
+     "net_weight_kg": 0.28
+    }
+   ],
+   [
+    "S5 일시품절",
+    "3/3",
+    {
+     "price_krw": 71200,
+     "in_stock": false,
+     "dangerous_goods": "none"
+    }
+   ],
+   [
+    "S6 라면 멀티팩",
+    "6/6",
+    {
+     "price_krw": 4480,
+     "in_stock": true,
+     "pack_quantity": 5,
+     "net_weight_kg": 0.6,
+     "food_or_quarantine": true,
+     "domestic_shipping_fee_krw": 3000
+    }
+   ],
+   [
+    "S7 혜택가 함정",
+    "4/4",
+    {
+     "price_krw": 63200,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "domestic_shipping_fee_krw": 0
+    }
+   ]
+  ]
+ },
+ {
+  "model": "gemini-3.1-flash-lite",
+  "ext": [
+   41,
+   43
+  ],
+  "agent": 10,
+  "hs": 9,
+  "lat": [
+   1.9693796634674072,
+   2.0937728881835938,
+   1.950650930404663,
+   1.8708040714263916,
+   1.9193079471588135,
+   1.928943157196045,
+   1.989151954650879,
+   1.7206017971038818,
+   1.8114368915557861,
+   1.4796175956726074,
+   1.5491917133331299,
+   1.3901491165161133,
+   1.438208818435669,
+   1.5462629795074463,
+   1.2353219985961914,
+   1.5601379871368408,
+   1.5745139122009277,
+   1.5655949115753174,
+   1.8401100635528564,
+   1.7308120727539062,
+   1.666471004486084,
+   1.3689191341400146,
+   1.5140600204467773,
+   1.3591609001159668,
+   1.510469913482666,
+   1.617854118347168,
+   1.7233531475067139,
+   1.7605619430541992,
+   1.6570260524749756
+  ],
+  "tin": 8466,
+  "tout": 5431,
+  "errors": [],
+  "detail": [
+   [
+    "R1 무신사 반팔티(실페이지)",
+    "4/5",
+    {
+     "price_krw": 23920,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "brand": "이스케이프프롬",
+     "preorder": false
+    }
+   ],
+   [
+    "R2 쿠팡 스니커즈(실페이지)",
+    "5/5",
+    {
+     "price_krw": 11900,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "net_weight_kg": 0.48,
+     "food_or_quarantine": true
+    }
+   ],
+   [
+    "S1 K-pop 앨범 예약",
+    "7/7",
+    {
+     "price_krw": 19800,
+     "in_stock": true,
+     "preorder": true,
+     "net_weight_kg": 0.45,
+     "option_count": 3,
+     "domestic_shipping_fee_krw": 0,
+     "dangerous_goods": "none"
+    }
+   ],
+   [
+    "S2 선크림 1+1 기획",
+    "4/5",
+    {
+     "price_krw": 22000,
+     "in_stock": true,
+     "pack_quantity": 2,
+     "dangerous_goods": "none",
+     "domestic_shipping_fee_krw": 2500
+    }
+   ],
+   [
+    "S3 스프레이 선크림(에어로졸)",
+    "4/4",
+    {
+     "price_krw": 18500,
+     "in_stock": true,
+     "dangerous_goods": "aerosol",
+     "domestic_shipping_fee_krw": 3000
+    }
+   ],
+   [
+    "S4 응원봉(리튬 내장)",
+    "4/4",
+    {
+     "price_krw": 89000,
+     "in_stock": true,
+     "dangerous_goods": "lithium_battery",
+     "net_weight_kg": 0.28
+    }
+   ],
+   [
+    "S5 일시품절",
+    "3/3",
+    {
+     "price_krw": 71200,
+     "in_stock": false,
+     "dangerous_goods": "none"
+    }
+   ],
+   [
+    "S6 라면 멀티팩",
+    "6/6",
+    {
+     "price_krw": 4480,
+     "in_stock": true,
+     "pack_quantity": 5,
+     "net_weight_kg": 0.6,
+     "food_or_quarantine": true,
+     "domestic_shipping_fee_krw": 3000
+    }
+   ],
+   [
+    "S7 혜택가 함정",
+    "4/4",
+    {
+     "price_krw": 63200,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "domestic_shipping_fee_krw": 0
+    }
+   ],
+   [
+    "HS K-pop LED light stick, built-i",
+    "FAIL",
+    "950590"
+   ]
+  ]
+ },
+ {
+  "model": "gemini-3.5-flash-lite",
+  "ext": [
+   42,
+   43
+  ],
+  "agent": 10,
+  "hs": 10,
+  "lat": [
+   1.815079927444458,
+   1.6938250064849854,
+   1.605963945388794,
+   1.6828320026397705,
+   1.4292428493499756,
+   1.935439109802246,
+   1.982192039489746,
+   1.4099929332733154,
+   1.2701070308685303,
+   1.5403900146484375,
+   1.1200737953186035,
+   1.029038906097412,
+   1.2552928924560547,
+   1.6147091388702393,
+   0.8299398422241211,
+   1.2390871047973633,
+   1.0320281982421875,
+   1.5792388916015625,
+   1.5992450714111328,
+   1.7199320793151855,
+   1.2606642246246338,
+   1.4385309219360352,
+   1.3103630542755127,
+   1.139660120010376,
+   1.1001641750335693,
+   1.0224640369415283,
+   3.6762611865997314,
+   1.1027140617370605,
+   1.0570330619812012
+  ],
+  "tin": 8466,
+  "tout": 2838,
+  "errors": [],
+  "detail": [
+   [
+    "R1 무신사 반팔티(실페이지)",
+    "4/5",
+    {
+     "price_krw": 23920,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "brand": "이스케이프프롬",
+     "preorder": false
+    }
+   ],
+   [
+    "R2 쿠팡 스니커즈(실페이지)",
+    "5/5",
+    {
+     "price_krw": 11900,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "net_weight_kg": 0.48,
+     "food_or_quarantine": true
+    }
+   ],
+   [
+    "S1 K-pop 앨범 예약",
+    "7/7",
+    {
+     "price_krw": 19800,
+     "in_stock": true,
+     "preorder": true,
+     "net_weight_kg": 0.45,
+     "option_count": 3,
+     "domestic_shipping_fee_krw": 0,
+     "dangerous_goods": "none"
+    }
+   ],
+   [
+    "S2 선크림 1+1 기획",
+    "5/5",
+    {
+     "price_krw": 22000,
+     "in_stock": true,
+     "pack_quantity": 2,
+     "dangerous_goods": "none",
+     "domestic_shipping_fee_krw": 0
+    }
+   ],
+   [
+    "S3 스프레이 선크림(에어로졸)",
+    "4/4",
+    {
+     "price_krw": 18500,
+     "in_stock": true,
+     "dangerous_goods": "aerosol",
+     "domestic_shipping_fee_krw": 3000
+    }
+   ],
+   [
+    "S4 응원봉(리튬 내장)",
+    "4/4",
+    {
+     "price_krw": 89000,
+     "in_stock": true,
+     "dangerous_goods": "lithium_battery",
+     "net_weight_kg": 0.28
+    }
+   ],
+   [
+    "S5 일시품절",
+    "3/3",
+    {
+     "price_krw": 71200,
+     "in_stock": false,
+     "dangerous_goods": "none"
+    }
+   ],
+   [
+    "S6 라면 멀티팩",
+    "6/6",
+    {
+     "price_krw": 4480,
+     "in_stock": true,
+     "pack_quantity": 5,
+     "net_weight_kg": 0.6,
+     "food_or_quarantine": true,
+     "domestic_shipping_fee_krw": 3000
+    }
+   ],
+   [
+    "S7 혜택가 함정",
+    "4/4",
+    {
+     "price_krw": 63200,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "domestic_shipping_fee_krw": 0
+    }
+   ]
+  ]
+ },
+ {
+  "model": "gemini-3.5-flash",
+  "ext": [
+   42,
+   43
+  ],
+  "agent": 10,
+  "hs": 10,
+  "lat": [
+   2.2846319675445557,
+   2.129211902618408,
+   2.591661214828491,
+   3.4992311000823975,
+   3.179744005203247,
+   2.5494940280914307,
+   2.660828113555908,
+   3.253811836242676,
+   3.031378746032715,
+   1.8339059352874756,
+   1.911412000656128,
+   1.4384489059448242,
+   1.4552366733551025,
+   1.8246638774871826,
+   1.868204116821289,
+   1.5614838600158691,
+   1.4699981212615967,
+   2.200659990310669,
+   1.8158340454101562,
+   3.0833451747894287,
+   1.777651071548462,
+   2.752696990966797,
+   2.1106927394866943,
+   1.9928462505340576,
+   2.033205986022949,
+   2.1429717540740967,
+   3.4236388206481934,
+   2.8659400939941406,
+   2.2070131301879883
+  ],
+  "tin": 8466,
+  "tout": 6795,
+  "errors": [],
+  "detail": [
+   [
+    "R1 무신사 반팔티(실페이지)",
+    "4/5",
+    {
+     "price_krw": 23920,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "brand": "이스케이프프롬",
+     "preorder": false
+    }
+   ],
+   [
+    "R2 쿠팡 스니커즈(실페이지)",
+    "5/5",
+    {
+     "price_krw": 11900,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "net_weight_kg": 0.48,
+     "food_or_quarantine": true
+    }
+   ],
+   [
+    "S1 K-pop 앨범 예약",
+    "7/7",
+    {
+     "price_krw": 19800,
+     "in_stock": true,
+     "preorder": true,
+     "net_weight_kg": 0.45,
+     "option_count": 3,
+     "domestic_shipping_fee_krw": 0,
+     "dangerous_goods": "none"
+    }
+   ],
+   [
+    "S2 선크림 1+1 기획",
+    "5/5",
+    {
+     "price_krw": 22000,
+     "in_stock": true,
+     "pack_quantity": 2,
+     "dangerous_goods": "none",
+     "domestic_shipping_fee_krw": 0
+    }
+   ],
+   [
+    "S3 스프레이 선크림(에어로졸)",
+    "4/4",
+    {
+     "price_krw": 18500,
+     "in_stock": true,
+     "dangerous_goods": "aerosol",
+     "domestic_shipping_fee_krw": 3000
+    }
+   ],
+   [
+    "S4 응원봉(리튬 내장)",
+    "4/4",
+    {
+     "price_krw": 89000,
+     "in_stock": true,
+     "dangerous_goods": "lithium_battery",
+     "net_weight_kg": 0.28
+    }
+   ],
+   [
+    "S5 일시품절",
+    "3/3",
+    {
+     "price_krw": 71200,
+     "in_stock": false,
+     "dangerous_goods": "none"
+    }
+   ],
+   [
+    "S6 라면 멀티팩",
+    "6/6",
+    {
+     "price_krw": 4480,
+     "in_stock": true,
+     "pack_quantity": 5,
+     "net_weight_kg": 0.6,
+     "food_or_quarantine": true,
+     "domestic_shipping_fee_krw": 3000
+    }
+   ],
+   [
+    "S7 혜택가 함정",
+    "4/4",
+    {
+     "price_krw": 63200,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "domestic_shipping_fee_krw": 0
+    }
+   ]
+  ]
+ },
+ {
+  "model": "gemini-3.6-flash",
+  "ext": [
+   42,
+   43
+  ],
+  "agent": 10,
+  "hs": 9,
+  "lat": [
+   2.6044631004333496,
+   2.1898560523986816,
+   2.003972053527832,
+   2.3667538166046143,
+   2.38999080657959,
+   2.349198818206787,
+   2.249315023422241,
+   2.237977981567383,
+   2.164637804031372,
+   2.785102128982544,
+   2.042495012283325,
+   1.909118413925171,
+   2.2597618103027344,
+   2.5004727840423584,
+   1.8613080978393555,
+   2.133190870285034,
+   1.7369091510772705,
+   2.448941946029663,
+   2.2482621669769287,
+   3.1709561347961426,
+   2.2710421085357666,
+   2.8780250549316406,
+   2.361790180206299,
+   3.301816940307617,
+   2.007437229156494,
+   2.71199107170105,
+   3.956719160079956,
+   1.8024308681488037,
+   3.0481631755828857
+  ],
+  "tin": 8466,
+  "tout": 4612,
+  "errors": [],
+  "detail": [
+   [
+    "R1 무신사 반팔티(실페이지)",
+    "4/5",
+    {
+     "price_krw": 23920,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "brand": "이스케이프프롬",
+     "preorder": false
+    }
+   ],
+   [
+    "R2 쿠팡 스니커즈(실페이지)",
+    "5/5",
+    {
+     "price_krw": 11900,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "net_weight_kg": 0.48,
+     "food_or_quarantine": true
+    }
+   ],
+   [
+    "S1 K-pop 앨범 예약",
+    "7/7",
+    {
+     "price_krw": 19800,
+     "in_stock": true,
+     "preorder": true,
+     "net_weight_kg": 0.45,
+     "option_count": 3,
+     "domestic_shipping_fee_krw": 0,
+     "dangerous_goods": "none"
+    }
+   ],
+   [
+    "S2 선크림 1+1 기획",
+    "5/5",
+    {
+     "price_krw": 22000,
+     "in_stock": true,
+     "pack_quantity": 2,
+     "dangerous_goods": "none",
+     "domestic_shipping_fee_krw": 0
+    }
+   ],
+   [
+    "S3 스프레이 선크림(에어로졸)",
+    "4/4",
+    {
+     "price_krw": 18500,
+     "in_stock": true,
+     "dangerous_goods": "aerosol",
+     "domestic_shipping_fee_krw": 3000
+    }
+   ],
+   [
+    "S4 응원봉(리튬 내장)",
+    "4/4",
+    {
+     "price_krw": 89000,
+     "in_stock": true,
+     "dangerous_goods": "lithium_battery",
+     "net_weight_kg": 0.28
+    }
+   ],
+   [
+    "S5 일시품절",
+    "3/3",
+    {
+     "price_krw": 71200,
+     "in_stock": false,
+     "dangerous_goods": "none"
+    }
+   ],
+   [
+    "S6 라면 멀티팩",
+    "6/6",
+    {
+     "price_krw": 4480,
+     "in_stock": true,
+     "pack_quantity": 5,
+     "net_weight_kg": 0.6,
+     "food_or_quarantine": true,
+     "domestic_shipping_fee_krw": 3000
+    }
+   ],
+   [
+    "S7 혜택가 함정",
+    "4/4",
+    {
+     "price_krw": 63200,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "domestic_shipping_fee_krw": 0
+    }
+   ],
+   [
+    "HS K-pop LED light stick, built-i",
+    "FAIL",
+    "950590"
+   ]
+  ]
+ },
+ {
+  "model": "gemini-3.7-flash",
+  "ext": [
+   42,
+   43
+  ],
+  "agent": 10,
+  "hs": 10,
+  "lat": [
+   4.203923940658569,
+   2.4525997638702393,
+   2.7969970703125,
+   5.589085817337036,
+   2.7199647426605225,
+   2.7882909774780273,
+   4.991591215133667,
+   3.670430898666382,
+   3.3795831203460693,
+   2.1807217597961426,
+   2.4911890029907227,
+   2.2381751537323,
+   1.943253755569458,
+   1.8064780235290527,
+   2.896533966064453,
+   2.074359893798828,
+   1.8101270198822021,
+   5.279550790786743,
+   2.0385890007019043,
+   3.834613084793091,
+   2.267780065536499,
+   2.2832109928131104,
+   2.464893102645874,
+   6.768168210983276,
+   2.46075701713562,
+   2.799683094024658,
+   2.964359998703003,
+   5.595104694366455,
+   3.1193928718566895
+  ],
+  "tin": 8466,
+  "tout": 5129,
+  "errors": [],
+  "detail": [
+   [
+    "R1 무신사 반팔티(실페이지)",
+    "4/5",
+    {
+     "price_krw": 23920,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "brand": "이스케이프프롬(ESCAPEFROM)",
+     "preorder": false
+    }
+   ],
+   [
+    "R2 쿠팡 스니커즈(실페이지)",
+    "5/5",
+    {
+     "price_krw": 11900,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "net_weight_kg": 0.48,
+     "food_or_quarantine": true
+    }
+   ],
+   [
+    "S1 K-pop 앨범 예약",
+    "7/7",
+    {
+     "price_krw": 19800,
+     "in_stock": true,
+     "preorder": true,
+     "net_weight_kg": 0.45,
+     "option_count": 3,
+     "domestic_shipping_fee_krw": 0,
+     "dangerous_goods": "none"
+    }
+   ],
+   [
+    "S2 선크림 1+1 기획",
+    "5/5",
+    {
+     "price_krw": 22000,
+     "in_stock": true,
+     "pack_quantity": 2,
+     "dangerous_goods": "none",
+     "domestic_shipping_fee_krw": 0
+    }
+   ],
+   [
+    "S3 스프레이 선크림(에어로졸)",
+    "4/4",
+    {
+     "price_krw": 18500,
+     "in_stock": true,
+     "dangerous_goods": "aerosol",
+     "domestic_shipping_fee_krw": 3000
+    }
+   ],
+   [
+    "S4 응원봉(리튬 내장)",
+    "4/4",
+    {
+     "price_krw": 89000,
+     "in_stock": true,
+     "dangerous_goods": "lithium_battery",
+     "net_weight_kg": 0.28
+    }
+   ],
+   [
+    "S5 일시품절",
+    "3/3",
+    {
+     "price_krw": 71200,
+     "in_stock": false,
+     "dangerous_goods": "none"
+    }
+   ],
+   [
+    "S6 라면 멀티팩",
+    "6/6",
+    {
+     "price_krw": 4480,
+     "in_stock": true,
+     "pack_quantity": 5,
+     "net_weight_kg": 0.6,
+     "food_or_quarantine": true,
+     "domestic_shipping_fee_krw": 3000
+    }
+   ],
+   [
+    "S7 혜택가 함정",
+    "4/4",
+    {
+     "price_krw": 63200,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "domestic_shipping_fee_krw": 0
+    }
+   ]
+  ]
+ },
+ {
+  "model": "gemini-3.8-flash",
+  "ext": [
+   42,
+   43
+  ],
+  "agent": 10,
+  "hs": 9,
+  "lat": [
+   3.5438451766967773,
+   3.6605961322784424,
+   3.820981979370117,
+   2.647449016571045,
+   3.231107234954834,
+   3.0101852416992188,
+   11.688262939453125,
+   3.3608670234680176,
+   2.5207700729370117,
+   3.1354269981384277,
+   4.6626973152160645,
+   3.1656579971313477,
+   2.275500774383545,
+   2.96872615814209,
+   3.8134310245513916,
+   3.6704208850860596,
+   2.522998094558716,
+   6.244888067245483,
+   3.2897658348083496,
+   5.766661882400513,
+   9.789177179336548,
+   3.62089204788208,
+   2.7094428539276123,
+   3.8109240531921387,
+   3.3002419471740723,
+   9.45130705833435,
+   14.687543869018555,
+   6.24138617515564,
+   7.578487873077393
+  ],
+  "tin": 8466,
+  "tout": 4691,
+  "errors": [],
+  "detail": [
+   [
+    "R1 무신사 반팔티(실페이지)",
+    "4/5",
+    {
+     "price_krw": 23920,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "brand": "이스케이프프롬",
+     "preorder": false
+    }
+   ],
+   [
+    "R2 쿠팡 스니커즈(실페이지)",
+    "5/5",
+    {
+     "price_krw": 11900,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "net_weight_kg": 0.48,
+     "food_or_quarantine": true
+    }
+   ],
+   [
+    "S1 K-pop 앨범 예약",
+    "7/7",
+    {
+     "price_krw": 19800,
+     "in_stock": true,
+     "preorder": true,
+     "net_weight_kg": 0.45,
+     "option_count": 3,
+     "domestic_shipping_fee_krw": 0,
+     "dangerous_goods": "none"
+    }
+   ],
+   [
+    "S2 선크림 1+1 기획",
+    "5/5",
+    {
+     "price_krw": 22000,
+     "in_stock": true,
+     "pack_quantity": 2,
+     "dangerous_goods": "none",
+     "domestic_shipping_fee_krw": 0
+    }
+   ],
+   [
+    "S3 스프레이 선크림(에어로졸)",
+    "4/4",
+    {
+     "price_krw": 18500,
+     "in_stock": true,
+     "dangerous_goods": "aerosol",
+     "domestic_shipping_fee_krw": 3000
+    }
+   ],
+   [
+    "S4 응원봉(리튬 내장)",
+    "4/4",
+    {
+     "price_krw": 89000,
+     "in_stock": true,
+     "dangerous_goods": "lithium_battery",
+     "net_weight_kg": 0.28
+    }
+   ],
+   [
+    "S5 일시품절",
+    "3/3",
+    {
+     "price_krw": 71200,
+     "in_stock": false,
+     "dangerous_goods": "none"
+    }
+   ],
+   [
+    "S6 라면 멀티팩",
+    "6/6",
+    {
+     "price_krw": 4480,
+     "in_stock": true,
+     "pack_quantity": 5,
+     "net_weight_kg": 0.6,
+     "food_or_quarantine": true,
+     "domestic_shipping_fee_krw": 3000
+    }
+   ],
+   [
+    "S7 혜택가 함정",
+    "4/4",
+    {
+     "price_krw": 63200,
+     "in_stock": true,
+     "dangerous_goods": "none",
+     "domestic_shipping_fee_krw": 0
+    }
+   ],
+   [
+    "HS K-pop LED light stick, built-i",
+    "FAIL",
+    "950590"
+   ]
+  ]
+ }
+]
