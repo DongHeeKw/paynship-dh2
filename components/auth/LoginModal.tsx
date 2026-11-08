@@ -11,12 +11,20 @@ interface LoginModalProps {
 
 export function LoginModal({ isOpen, onClose, reason }: LoginModalProps) {
   const { signIn } = useAuth();
+  const [submitting, setSubmitting] = React.useState(false);
+  const [error, setError] = React.useState('');
 
   if (!isOpen) return null;
 
   const handleSignIn = async () => {
-    await signIn();
-    // OAuth redirect will handle the rest
+    setSubmitting(true);
+    setError('');
+    try {
+      await signIn();
+    } catch {
+      setError('Google 로그인을 시작하지 못했습니다. 설정을 확인한 뒤 다시 시도해 주세요.');
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -65,7 +73,8 @@ export function LoginModal({ isOpen, onClose, reason }: LoginModalProps) {
           {/* Sign in button */}
           <button
             onClick={handleSignIn}
-            className="w-full flex items-center justify-center gap-3 px-6 py-3 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors shadow-sm"
+            disabled={submitting}
+            className="w-full flex items-center justify-center gap-3 px-6 py-3 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 transition-colors shadow-sm disabled:opacity-60"
           >
             {/* Google icon */}
             <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -86,8 +95,9 @@ export function LoginModal({ isOpen, onClose, reason }: LoginModalProps) {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
               />
             </svg>
-            <span className="text-gray-700 font-medium">Google로 로그인</span>
+            <span className="text-gray-700 font-medium">{submitting ? 'Google 로그인으로 이동 중…' : 'Google로 로그인'}</span>
           </button>
+          {error && <p role="alert" className="error-message">{error}</p>}
 
           {/* Benefits */}
           <div className="mt-8 text-left space-y-3">

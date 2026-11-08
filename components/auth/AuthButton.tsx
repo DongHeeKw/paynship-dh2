@@ -1,19 +1,21 @@
 'use client';
 
 import { createClient } from '@/lib/supabase/client';
-import { buildOAuthRedirectTo } from '@/lib/auth/oauth-client';
 import { User } from '@supabase/supabase-js';
 import { useState, useEffect } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface AuthButtonProps {
   className?: string;
 }
 
 export function AuthButton({ className }: AuthButtonProps) {
+  const { signIn } = useAuth();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [showMenu, setShowMenu] = useState(false);
   const [avatarError, setAvatarError] = useState(false);
+  const [signInError, setSignInError] = useState('');
 
   useEffect(() => {
     const supabase = createClient();
@@ -42,13 +44,14 @@ export function AuthButton({ className }: AuthButtonProps) {
 
   const handleSignIn = async () => {
     setLoading(true);
-    const supabase = createClient();
-    await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: buildOAuthRedirectTo(),
-      },
-    });
+    setSignInError('');
+    try {
+      await signIn();
+    } catch (error) {
+      console.error('Google sign-in could not start:', error);
+      setSignInError('Google sign-in could not start. Check the provider setup and try again.');
+      setLoading(false);
+    }
   };
 
   const handleSignOut = async () => {
@@ -120,10 +123,12 @@ export function AuthButton({ className }: AuthButtonProps) {
   }
 
   return (
+    <>
     <button
-      onClick={handleSignIn}
+      onClick={() => void handleSignIn()}
       className={`flex h-10 w-10 items-center justify-center rounded-2xl border border-[var(--chat-border)] bg-[var(--chat-panel)] shadow-[0_12px_24px_rgba(38,33,28,0.08)] transition-all hover:bg-[var(--chat-panel-strong)] hover:border-[var(--chat-border-strong)] hover:shadow-[0_18px_32px_rgba(38,33,28,0.12)] hover:scale-[1.02] active:scale-95 ${className}`}
       title="Sign in with Google"
+      aria-label="Sign in with Google"
     >
       <svg className="w-5 h-5" viewBox="0 0 24 24">
         <path
@@ -144,5 +149,7 @@ export function AuthButton({ className }: AuthButtonProps) {
         />
       </svg>
     </button>
+    {signInError && <p role="alert" className="error-message">{signInError}</p>}
+    </>
   );
 }

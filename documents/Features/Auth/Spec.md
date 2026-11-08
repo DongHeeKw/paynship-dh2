@@ -16,7 +16,9 @@ URL·도착국의 초기 확인과 서비스 절차 안내에는 로그인하지
 
 진입·종료는 전체 페이지 이동으로 인증 상태와 미리보기 메모리의 경계를 새로 만듭니다. 미리보기에 관리자·결제·webhook 동작이나 실제 API로 이어지는 fallback은 없습니다.
 
-Google OAuth 설정은 미리보기에 필요하지 않습니다. 현재 실제 로그인 화면은 Google을 사용합니다. Supabase Auth 사용자는 OAuth 첫 로그인에 생성되며, 앱 PostgreSQL `users` 행은 로그인만으로 생성되지 않고 배송 프로필 저장 등 첫 DB 작업에서 생성됩니다. Supabase Auth의 사용자 목록과 앱 DB의 사용자 행을 구분해서 확인합니다.
+Google OAuth 설정은 미리보기에 필요하지 않습니다. 현재 고객 대상은 global이므로 가입·로그인 마찰이 낮은 Google을 유일한 1차 제공자로 사용합니다. 로그인 시작 오류와 OAuth callback 실패를 화면에 설명합니다. Supabase Auth 사용자는 OAuth 첫 로그인에 생성되며, 앱 PostgreSQL `users` 행은 로그인만으로 생성되지 않고 배송 프로필 저장 등 첫 DB 작업에서 생성됩니다. Supabase Auth의 사용자 목록과 앱 DB의 사용자 행을 구분해서 확인합니다.
+
+Kakao는 한국 고객 비중과 이메일 제공 동의를 확인한 뒤 추가할 수 있습니다. 서버에서 이메일·확인 상태가 필요한 흐름과 맞지 않는 계정은 사용하지 못할 수 있으므로 실제 Kakao 앱과 이메일 scope를 staging에서 확인합니다. GitHub 로그인은 개발자 대상이 아닌 일반 구매 고객에게 추가 이점이 적어 기본 가입 수단으로 두지 않습니다. 현재 Supabase 내장 provider 목록에는 Naver가 없으므로 별도 인증 통합과 운영 검토 전까지 버튼을 표시하거나 지원한다고 안내하지 않습니다.
 
 Vercel·Tailscale·localhost를 함께 시험하는 Google Cloud Web OAuth client, Supabase provider, redirect URL 설정은 [두 배포 환경과 Google 로그인](../../Reference/Deployment/DEPLOYMENT.md#두-배포-환경과-google-로그인)에 정리되어 있습니다. 운영 DB는 실제 배포의 `/api/health?deep=true`로 앱의 DB 자격 증명을 사용한 읽기 연결을 확인하고, 테이블·migration은 Supabase SQL Editor에서 읽기 전용으로 확인합니다. 로그인만 시험하는 단계에서는 실제 고객 정보나 배송 주소를 쓰지 않습니다.
 

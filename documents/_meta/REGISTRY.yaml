@@ -9,7 +9,7 @@ current:
     update_triggers: ["app/**", "components/purchases/**", "lib/purchases/**", "lib/dev-preview/**", "prisma/**"]
   - id: authentication
     path: documents/Features/Auth/Spec.md
-    update_triggers: ["app/login/**", "app/auth/**", "app/dev/preview/**", "components/site/SignInForm.tsx", "components/site/PreviewModeLink.tsx", "contexts/AuthContext.tsx", "lib/auth/**", "lib/supabase/**", "lib/dev-preview/**"]
+    update_triggers: ["app/login/**", "app/auth/**", "app/dev/preview/**", "components/site/SignInForm.tsx", "components/site/SignInForm.test.tsx", "components/site/PreviewModeLink.tsx", "components/auth/AuthButton.tsx", "components/auth/LoginModal.tsx", "components/auth/LoginEnforcementModal.tsx", "contexts/AuthContext.tsx", "lib/auth/**", "lib/supabase/**", "lib/dev-preview/**"]
   - id: feature_status
     path: documents/Features/STATUS.md
     update_triggers: ["app/**", "lib/**", "prisma/**", "tests/**"]

@@ -18,16 +18,18 @@ export function LoginEnforcementModal() {
   const { isGated, activeTier, reason, clear } = useAuthGate();
   const { signIn } = useAuth();
   const [submitting, setSubmitting] = React.useState(false);
+  const [error, setError] = React.useState('');
 
   if (!isGated) return null;
 
   const handleSignIn = async () => {
     setSubmitting(true);
+    setError('');
     try {
       await signIn();
       // OAuth redirect가 페이지 이탈시킴. clear는 redirect 후 onAuthStateChange에서 처리.
-    } catch (e) {
-      console.error('signIn failed', e);
+    } catch {
+      setError('Google 로그인을 시작하지 못했습니다. Supabase 제공자 설정을 확인한 뒤 다시 시도해 주세요.');
       setSubmitting(false);
     }
   };
@@ -76,6 +78,7 @@ export function LoginEnforcementModal() {
           >
             {submitting ? '이동 중…' : 'Google로 계속하기'}
           </button>
+          {error && <p role="alert" className="error-message">{error}</p>}
 
           <p className="mt-6 text-xs text-gray-400">
             계속하면 <a href="/terms" className="underline">이용약관</a> 및{' '}
