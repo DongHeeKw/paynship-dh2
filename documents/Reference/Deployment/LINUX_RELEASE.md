@@ -157,6 +157,8 @@ Supabase Auth Site URL·허용 redirect에 실제 도메인과 `/auth/callback`�
 
 ## 4. DB 백업·변경 이력·신규 SQL
 
+테스트 화면만 확인하려면 실제 앱 스키마 설치 전에 [분리된 demo fixture SQL](../../../prisma/sql/2026-11-08-demo-data.sql)을 Supabase SQL Editor에서 실행할 수 있습니다. 이것은 실제 앱 migration이 아니며 `demo_*` 테이블만 만들고 허구 데이터의 공개 읽기를 허용합니다. 빈 DB에 적용하는 과거 기본 스키마·purchase migration을 대체하지 않으며, production 고객 DB에는 demo fixture를 넣지 않습니다.
+
 기존 DB에 신규 6개 테이블을 추가하는 [purchase SQL](../../../prisma/sql/2026-10-11-purchase-flow.sql)입니다. 이미 신규 테이블이 있는 DB나 비어 있는 DB에 무조건 재실행하지 않습니다. 먼저 테이블·컬럼·제약을 점검합니다. `prisma db push`, `migrate reset`, `DROP SCHEMA`, 기존 주문 삭제를 출시 절차로 사용하지 않습니다.
 
 migration 계정의 비밀은 root만 읽는 libpq service/password 파일로 제공하고 `PGSERVICEFILE`, `PGSERVICE`, `PGPASSFILE`로 지정합니다. 서비스에는 실제 DB 호스트·이름·사용자·TLS 설정을 넣고 password 파일 권한은 0600으로 설정합니다. [PostgreSQL service 파일](https://www.postgresql.org/docs/16/libpq-pgservice.html)

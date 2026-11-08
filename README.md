@@ -33,7 +33,7 @@ npm.cmd run dev -- --hostname 127.0.0.1 --port 3000
 | `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN` | 여러 서버가 공유하는 API 요청 제한 |
 | `SHOPIFY_STORE_DOMAIN`, `SHOPIFY_ADMIN_ACCESS_TOKEN`, `SHOPIFY_WEBHOOK_SECRET` | 외부 결제와 서명 webhook |
 
-키와 실제 고객 데이터는 커밋하지 않습니다. 실제 계정·DB·결제·배송 연결 검증과 운영 계약은 별도입니다.
+키와 실제 고객 데이터는 커밋하지 않습니다. Vercel·Tailscale을 각각 시험하는 Google 로그인 설정과 실제 DB 연결 확인 순서는 [배포·로그인·DB 점검 안내](documents/Reference/Deployment/DEPLOYMENT.md#두-배포-환경과-google-로그인)를 따릅니다. 실제 계정·DB·결제·배송 연결 검증과 운영 계약은 별도입니다.
 
 ## 구현 범위
 

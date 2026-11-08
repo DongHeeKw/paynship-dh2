@@ -6,6 +6,7 @@
 | --- | --- | --- |
 | 고객 화면 | 흑백 URL·도착국 입력, 로그인 전 판매처·상품 번호·정규 URL과 수집 상태 확인, 인증 후 배송정보·요청·CS | URL 파싱은 상품 실재·가격·통관 승인이 아님; 실제 계정과 DB 흐름 확인 |
 | 개발 미리보기 | development·명시적 플래그·loopback에서 가상 고객 화면, 유효한 공개 초안 1회 읽기 후 변경은 메모리만 사용; 예제는 직접 선택 | 새로고침 시 변경·새 주문·문의 초기화, 원래 공개 초안 재사용 가능; production 404; 실제 API·인증·DB·발주·결제·배송 검증과 구분 |
+| Supabase 데모 페이지 | `/demo`가 `demo_products`, `demo_customers`, `demo_shipments`를 anon 읽기로 표시; 별도 SQL은 synthetic fixture만 seed | [demo SQL](../../prisma/sql/2026-11-08-demo-data.sql)을 Supabase SQL Editor에서 수동 적용해야 함; Auth 사용자가 아니고 실상품·실고객·결제·배송과 무관 |
 | AI | 대화·모델 호출·스크래퍼 에이전트 제거 | AI 키 불필요 |
 | URL | 정확한 HTTPS 판매처·상품 경로 allowlist | 상품 실재·가격·옵션은 운영자가 확인 |
 | 상품 샘플 | 운영자 CLI·robots/응답 제한·공개 페이지 증거·SQLite/JSON 샘플; 입력 Naver Brand URL의 정규화·robots 차단 기록 | Naver 상품 페이지는 요청하지 않음, 상품명·가격·통관 필드 미확인; 차단·누락은 검토 필요 |

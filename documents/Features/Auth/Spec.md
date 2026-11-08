@@ -16,6 +16,10 @@ URL·도착국의 초기 확인과 서비스 절차 안내에는 로그인하지
 
 진입·종료는 전체 페이지 이동으로 인증 상태와 미리보기 메모리의 경계를 새로 만듭니다. 미리보기에 관리자·결제·webhook 동작이나 실제 API로 이어지는 fallback은 없습니다.
 
-Google OAuth 설정은 미리보기에 필요하지 않습니다. 현재 실제 로그인 화면은 Google을 사용합니다. Supabase의 이메일 테스트 계정을 별도 테스트 클라이언트에서 사용할 수는 있지만, 계정 생성만으로 현재 UI 로그인이나 서버 인증이 생략되지는 않습니다. 실제 데이터로 확인하려면 Auth·DB와 인증된 세션을 준비해야 합니다. 미리보기 통과는 실제 사용자 소유권·DB·제공자 통합 검증을 뜻하지 않습니다.
+Google OAuth 설정은 미리보기에 필요하지 않습니다. 현재 실제 로그인 화면은 Google을 사용합니다. Supabase Auth 사용자는 OAuth 첫 로그인에 생성되며, 앱 PostgreSQL `users` 행은 로그인만으로 생성되지 않고 배송 프로필 저장 등 첫 DB 작업에서 생성됩니다. Supabase Auth의 사용자 목록과 앱 DB의 사용자 행을 구분해서 확인합니다.
+
+Vercel·Tailscale·localhost를 함께 시험하는 Google Cloud Web OAuth client, Supabase provider, redirect URL 설정은 [두 배포 환경과 Google 로그인](../../Reference/Deployment/DEPLOYMENT.md#두-배포-환경과-google-로그인)에 정리되어 있습니다. 운영 DB는 실제 배포의 `/api/health?deep=true`로 앱의 DB 자격 증명을 사용한 읽기 연결을 확인하고, 테이블·migration은 Supabase SQL Editor에서 읽기 전용으로 확인합니다. 로그인만 시험하는 단계에서는 실제 고객 정보나 배송 주소를 쓰지 않습니다.
+
+Supabase의 이메일 테스트 계정을 별도 테스트 클라이언트에서 사용할 수는 있지만, 계정 생성만으로 현재 UI 로그인이나 서버 인증이 생략되지는 않습니다. 실제 데이터로 확인하려면 Auth·DB와 인증된 세션을 준비해야 합니다. 미리보기 통과는 실제 사용자 소유권·DB·제공자 통합 검증을 뜻하지 않습니다.
 
 [보안 기준](../../Reference/SECURITY.md)과 [실행 설정](../../Reference/Deployment/DEPLOYMENT.md)을 함께 확인합니다. 계정 복구, 운영자 MFA, 해지·개인정보 삭제는 출시 전 운영 검증에 포함합니다.

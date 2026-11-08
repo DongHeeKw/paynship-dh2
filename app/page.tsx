@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import SiteShell from '@/components/site/SiteShell';
 import UrlIntake from '@/components/purchases/UrlIntake';
 
@@ -11,7 +12,7 @@ export default function Home() {
       <h1>From Korea<br />to your door.</h1>
       <p className="home-description">Found something you want? Start with the product link.</p>
       <UrlIntake />
-      <p className="home-note">Sign in to save your delivery details and follow your request.</p>
+      <p className="home-note">Sign in to save your delivery details and follow your request. <Link href="/demo">View sample database data</Link>.</p>
     </section>
     <ol className="process-list" aria-label="How it works">
       <li><span>01</span><h2>Send a link</h2><p>Tell us which product, option, and quantity you want.</p></li>
