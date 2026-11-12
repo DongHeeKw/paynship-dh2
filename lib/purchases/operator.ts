@@ -14,6 +14,7 @@ import type { PurchaseQuote } from './quote';
 import { openReview, sealReview } from './review-storage';
 import { reviewRecipient } from './recipient-review';
 import { purchaseEventFields } from './event-record';
+import { SERVICE_FEE_POLICY } from './service-fee';
 
 export async function getOperatorPurchase(id: string, actorId: string) {
   await purchaseTransaction(async tx => {
@@ -48,9 +49,10 @@ export async function updateOperatorPurchase(id: string, actorId: string, input:
       if (fulfilled) throw new PurchaseError(409, 'A fulfilment hold must resume its existing stage through support resolution.');
       const original = row.quote as unknown as PurchaseQuote;
       reviewRecipient(row, action.review.recipientEvidence);
-      const reviewed = calculatePurchaseQuote(action.review, row.quantity, original.quoteVersion);
-      const moneyFields = ['productCents', 'domesticShippingCents', 'serviceFeeCents', 'internationalShippingCents', 'insuranceCents', 'dutyCents', 'taxCents', 'totalCents'] as const;
-      if (moneyFields.some(field => reviewed[field] !== original[field])) throw new PurchaseError(409, 'Paid amounts are immutable. A changed cost requires support and refund resolution.');
+      if (original.serviceFeePolicy && original.serviceFeePolicy !== SERVICE_FEE_POLICY.id) throw new PurchaseError(409, 'This historical fee policy requires a separate review.');
+      const reviewed = calculatePurchaseQuote(action.review, row.quantity, original.quoteVersion, Date.now(), original.serviceFeePolicy ? 'CURRENT' : 'LEGACY');
+      const moneyFields = ['productCents', 'domesticShippingCents', 'serviceFeeCents', 'internationalShippingCents', 'insuranceCents', 'dutyCents', 'taxCents', 'clearanceCents', 'totalCents'] as const;
+      if (moneyFields.some(field => (reviewed[field] ?? 0) !== (original[field] ?? 0))) throw new PurchaseError(409, 'Paid amounts are immutable. A changed cost requires support and refund resolution.');
       data = { status: 'PAID', review: sealReview({ ...action.review, destination: row.destination, reviewedBy: actorId, reviewedAt: new Date().toISOString() }, id) };
       message = 'Held payment customs evidence reviewed; approved amounts preserved.';
     } else if (action.action === 'resume') {
@@ -63,9 +65,10 @@ export async function updateOperatorPurchase(id: string, actorId: string, input:
       message = `Operator resolved hold: ${action.reason}`;
     } else if (action.action === 'quote') {
       if (!['REVIEW_REQUIRED', 'QUOTED'].includes(row.status)) throw new PurchaseError(409, 'Quotes can only be changed before payment starts.');
+      if (['US', 'CN', 'JP'].includes(row.destination) && !action.review.verifiedImportCharges) throw new PurchaseError(422, 'USA, China and Japan quotes require verified duty, tax and clearance amounts from current destination-specific evidence. A generic percentage calculation is insufficient.');
       const quote = calculatePurchaseQuote(action.review, row.quantity, row.version + 1);
       reviewRecipient(row, action.review.recipientEvidence);
-      data = { status: 'QUOTED', review: sealReview({ ...action.review, destination: row.destination, reviewedBy: actorId, reviewedAt: new Date().toISOString() }, id),
+      data = { status: 'QUOTED', review: sealReview({ ...action.review, serviceFeeCents: quote.serviceFeeCents, destination: row.destination, reviewedBy: actorId, reviewedAt: new Date().toISOString() }, id),
         quote: { ...quote }, quoteExpiresAt: new Date(Math.min(Date.now() + 86400000, Date.parse(action.review.rulesValidUntil), Date.parse(action.review.recipientEvidence.validUntil))) };
       message = 'Product, destination requirements and costs reviewed. A payment quote is available.';
     } else if (action.action === 'reject') {

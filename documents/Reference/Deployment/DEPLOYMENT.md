@@ -35,7 +35,7 @@ Remove-Item Env:PAYNSHIP_DEV_PREVIEW -ErrorAction SilentlyContinue
 npm.cmd run dev
 ```
 
-`.env` 또는 `.env.local`에 플래그를 직접 설정했다면 해당 값도 `0`으로 변경해야 합니다. 이 플래그는 서버 전용이며 `NEXT_PUBLIC_` 접두사를 붙이지 않습니다. 실제 로그인 화면은 현재 Google을 사용합니다. 실데이터 시험에는 Supabase 인증 세션·DB·암호화 키 설정이 필요합니다.
+`.env` 또는 `.env.local`에 플래그를 직접 설정했다면 해당 값도 `0`으로 변경해야 합니다. 이 플래그는 서버 전용이며 `NEXT_PUBLIC_` 접두사를 붙이지 않습니다. 실제 로그인 화면은 이메일·Google과 설정 후 활성화되는 Apple·Naver를 제공합니다. 실데이터 시험에는 Supabase 인증 세션·DB·암호화 키 설정이 필요합니다.
 
 ## 환경
 
@@ -48,6 +48,9 @@ npm.cmd run dev
 | `NEXT_PUBLIC_APP_URL` | 정확한 앱 origin, 로컬은 `http://localhost:3000` |
 | `PAYNSHIP_DEV_PREVIEW` | 선택 사항, development·loopback에서 `1`일 때만 가상 UI; 서버 전용 |
 | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Auth 프로젝트 |
+| `NEXT_PUBLIC_APPLE_AUTH_ENABLED` | Apple 연결 검증 후 `true`로 계정 버튼 활성화; 변경 후 재빌드 필요 |
+| `NEXT_PUBLIC_NAVER_AUTH_ENABLED` | Naver 연결 검증 후 `true`로 계정 버튼 활성화; 변경 후 재빌드 필요 |
+| `NAVER_AUTH_ENABLED` | 서버 전용, `true`로 `/auth/naver/userinfo` 활성화; production Redis 필요 |
 | `PII_ENCRYPTION_KEY` | 64자리 hex, 서버 전용·안전한 보관과 백업 |
 | `ADMIN_SUPER_ADMINS`, `ADMIN_OPERATORS`, `ADMIN_VIEWERS` | DB isAdmin 계정의 이메일 또는 ID, CSV |
 | `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN` | production에서 필수 |
@@ -69,7 +72,7 @@ Vercel과 Tailscale 서버는 서로 다른 배포 환경입니다. 두 주소�
 | 기존 Tailscale 주소 | `http://100.106.125.36:3001` |
 | 로컬 개발 | `http://localhost:3000` |
 
-Tailscale 주소는 tailnet 안에서만 접근 가능하고 위 예시는 HTTP입니다. 계정 UI는 일반 HTTP IP에서 이메일·Google 입력과 동작을 막으므로 로그인에는 tailnet에서 HTTPS를 활성화하고 Tailscale Serve가 제공하는 HTTPS 도메인을 사용하세요. Google의 Web OAuth는 일반적으로 HTTPS origin을 요구하며 raw HTTP IP는 허용되지 않을 수 있습니다. HTTPS origin을 쓰기로 바꾸면 `NEXT_PUBLIC_APP_URL`, Supabase 허용 URL, Google origin에 동일한 새 origin을 반영합니다. 두 서버를 동시에 운영할 경우 각 서버에 서로 다른 환경변수를 설정하고 각각 재시작·재배포합니다. `.env` 파일을 서로 덮어쓰거나 한 서버에서 두 앱 설정을 공유하지 않습니다.
+Tailscale 주소는 tailnet 안에서만 접근 가능하고 위 예시는 HTTP입니다. 계정 UI는 일반 HTTP IP에서 이메일·소셜 로그인 입력과 동작을 막으므로 로그인에는 tailnet에서 HTTPS를 활성화하고 Tailscale Serve가 제공하는 HTTPS 도메인을 사용하세요. Google의 Web OAuth는 일반적으로 HTTPS origin을 요구하며 raw HTTP IP는 허용되지 않을 수 있습니다. HTTPS origin을 쓰기로 바꾸면 `NEXT_PUBLIC_APP_URL`, Supabase 허용 URL, Google origin에 동일한 새 origin을 반영합니다. 두 서버를 동시에 운영할 경우 각 서버에 서로 다른 환경변수를 설정하고 각각 재시작·재배포합니다. `.env` 파일을 서로 덮어쓰거나 한 서버에서 두 앱 설정을 공유하지 않습니다.
 
 1. **Google Cloud Console**에서 Google Auth Platform 프로젝트를 선택하거나 새 프로젝트를 만듭니다. Branding에 표시할 앱 이름과 지원 이메일을 설정합니다. 테스트 단계에서는 Audience를 External로 두고 본인 Google 계정을 Test users에 추가합니다. 테스트가 끝나고 누구나 로그인해야 할 때만 공개 전환과 필요한 Google 검증을 검토합니다.
 2. **Google Cloud Console → Clients**에서 OAuth client를 만들고 앱 종류로 **Web application**을 선택합니다. Authorized JavaScript origins에는 실제 HTTPS Vercel origin과, Tailscale Serve HTTPS를 쓰는 경우 그 HTTPS origin을 각각 추가합니다. localhost를 쓰는 개발 환경은 `http://localhost:3000`도 추가합니다. origin에는 경로나 callback path를 넣지 않습니다.
@@ -83,9 +86,9 @@ Tailscale 주소는 tailnet 안에서만 접근 가능하고 위 예시는 HTTP�
 6. 두 앱 환경에 올바른 `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`가 각각 설정되어 있는지 확인하고 해당 서버를 재배포하거나 재시작합니다. 공개 anon/publishable key는 앱에 쓰지만 `service_role` key와 DB 암호는 브라우저 환경변수로 절대 노출하지 않습니다.
 7. 각 HTTPS 주소에서 `/signup`의 이메일 가입·확인 메일·`/login`의 이메일 로그인과 **Continue with Google**을 각각 시험합니다. 동의 화면에서 본인 테스트 계정을 선택한 뒤 같은 주소의 앱으로 돌아오고 로그인 상태가 보이는지 확인합니다. callback으로 돌아왔는데 교환이 실패하면 로그인 화면이 오류와 제공자/redirect 설정 확인 안내를 표시합니다. 실패하면 주소창·Google/Supabase 오류 문구, Supabase Auth Logs, Vercel Function Logs 또는 Tailscale 서버 로그를 확인합니다. 로그인 redirect URI 불일치는 보통 Google Client의 Supabase callback 누락, origin 불일치는 Google Authorized JavaScript origins 누락, 로그인 후 잘못된 호스트로 이동하는 증상은 해당 서버의 `NEXT_PUBLIC_APP_URL` 불일치입니다.
 
-추가 provider는 고객 분포와 실제 전환 근거가 있을 때 하나씩 시험합니다. Kakao는 지원되지만 유효한 이메일이 필요한 서비스 흐름에 맞춰 Kakao 이메일 scope·동의와 Supabase 설정을 검증해야 합니다. GitHub는 개발자 계정에 편중되어 일반 글로벌 구매자 인증에는 기본 선택으로 권하지 않습니다. Naver는 Supabase의 현재 내장 social provider가 아니므로 표준 `signInWithOAuth({ provider })` 목록에 임의로 추가하지 않습니다. 별도 provider 통합을 검토하기 전에는 로그인 버튼을 표시하지 않습니다. Supabase가 기본 제공하는 [social login provider](https://supabase.com/docs/guides/auth/social-login)와 [Kakao 설정](https://supabase.com/docs/guides/auth/social-login/auth-kakao)을 참고합니다.
+Apple·Naver는 아래 별도 설정을 마친 후 활성화합니다. UI에서 세 제공자를 볼 수 있어도 비활성 버튼은 연결 완료를 의미하지 않습니다.
 
-Supabase Auth와 앱 PostgreSQL은 서로 다른 확인 대상입니다. Auth health `HTTP 200`은 Supabase Auth endpoint에 도달했다는 뜻일 뿐, DB 연결·스키마·로그인 사용자의 앱 `users` 행을 증명하지 않습니다. 이 프로젝트는 Google 로그인 시 Supabase Auth 사용자를 만들고, 앱 DB의 `users` 행은 배송 프로필 저장 등 DB 작업을 처음 수행할 때 생성합니다. 따라서 로그인만 한 직후 `public.users` 행이 없는 것은 예상된 동작입니다.
+Supabase Auth와 앱 PostgreSQL은 서로 다른 확인 대상입니다. Auth health `HTTP 200`은 Supabase Auth endpoint에 도달했다는 뜻일 뿐, DB 연결·스키마·로그인 사용자의 앱 `users` 행을 증명하지 않습니다. 이 프로젝트는 소셜 로그인 시 Supabase Auth 사용자를 만들고, 앱 DB의 `users` 행은 배송 프로필 저장 등 DB 작업을 처음 수행할 때 생성합니다. 따라서 로그인만 한 직후 `public.users` 행이 없는 것은 예상된 동작입니다.
 
 DB를 실제로 확인할 때는 먼저 Supabase Dashboard → **SQL Editor**에서 읽기 전용 쿼리만 실행합니다:
 
@@ -107,6 +110,39 @@ Vercel은 HTTP 500이어도 Tailscale의 HTTP 200 응답과 독립된 배포입�
 Build Logs가 아니라 Runtime Logs에 위 오류가 있으면 소스 코드 빌드 실패가 아니라 환경변수 누락으로 프로세스가 시작되지 않은 것입니다. Vercel 환경변수 변경은 이미 생성된 deployment에 소급 적용되지 않으므로 반드시 새 배포가 필요합니다. Vercel Dashboard에서 해당 deployment의 **Runtime Logs / Build Logs**를 열어 첫 예외와 누락 환경변수를 확인하고, Tailscale 서버 설정과 별도로 점검합니다. 로그를 공유할 때 URL·토큰·쿠키·DB 주소·Google Client Secret은 가리고 오류 메시지와 환경변수 이름만 공유합니다.
 
 서버 DB 계정은 신뢰된 앱 역할이고 browser anon/authenticated 역할에는 앱 테이블 권한을 주지 않습니다.
+
+### Apple·Naver 연결 (2026-11-12)
+
+Google은 위 설정을 유지합니다. Apple·Naver 버튼은 기본적으로 비활성이고 준비 중 안내를 표시합니다. 먼저 테스트 환경의 제공자 설정을 완료한 뒤 해당 환경의 공개 플래그를 `true`로 설정하고 재배포하여 시험합니다. 플래그만 설정해도 외부 계정이 연결되는 것은 아닙니다. 실제 Google·Apple·Naver 로그인이나 관리자 콘솔 설정은 이 코드 변경으로 수행하지 않았습니다.
+
+**Apple:** Apple Developer에서 Sign in with Apple을 켠 App ID와 연결된 웹 Services ID를 준비합니다. Services ID의 웹 도메인에는 Supabase 프로젝트 도메인, Return URL에는 Supabase callback을 등록합니다. 서명 `.p8` 키·Key ID·Team ID로 만든 client secret과 Services ID를 Supabase Apple provider에 설정합니다. 웹 Services ID를 Client IDs의 첫 항목으로 둡니다. secret은 만료 전에, 늦어도 6개월마다 교체하고 `.p8`은 별도로 안전하게 보관합니다. Hide My Email을 시험하고 이메일 relay용 발신 도메인도 설정합니다. 이후 Vercel의 해당 환경에 `NEXT_PUBLIC_APPLE_AUTH_ENABLED=true`를 추가해 재배포합니다. [Supabase Apple 설정](https://supabase.com/docs/guides/auth/social-sign-in/auth-apple)
+
+**Naver:** Naver Developers에 로그인 앱을 등록하고 제공 정보에서 이메일을 필수로 요청합니다. Supabase Auth Providers → New Provider → Manual configuration에서 다음 설정을 사용합니다:
+
+| 항목 | 값 |
+| --- | --- |
+| Provider type / identifier | OAuth2 / `custom:naver` |
+| Client ID / Client Secret | 해당 Naver 앱의 값; Supabase에만 저장 |
+| Authorization URL | `https://nid.naver.com/oauth2/authorize` |
+| Token URL | `https://nid.naver.com/oauth2/token` |
+| UserInfo URL | `https://<실제-앱-호스트>/auth/naver/userinfo` |
+| Scopes | `openid`, `profile` |
+| PKCE | 활성화 유지 |
+| Email optional | 비활성화 (`false`) |
+
+Supabase 생성 화면에 표시된 **Callback URL**을 그대로 Naver 앱의 Callback URL에 등록합니다. 이 URL은 앱의 `/auth/callback`이나 `/auth/naver/userinfo`와 역할이 다릅니다. Naver의 사용자 동의 항목과 앱 검수·테스터 설정도 완료합니다. Supabase custom provider 구성과 Naver endpoint/동의 기준은 [Supabase](https://supabase.com/docs/guides/auth/custom-oauth-providers), [Naver discovery](https://nid.naver.com/.well-known/openid-configuration), [Naver 로그인 개발 가이드](https://developers.naver.com/docs/login/devguide), [프로필 API](https://developers.naver.com/docs/login/profile/profile.md), [앱 검수](https://developers.naver.com/docs/login/verify/verify.md)를 확인합니다.
+
+Naver 원본 프로필은 중첩 구조이고 이메일 확인 여부를 증명하지 않으므로 위 앱 adapter를 사용합니다. Naver OIDC ID token만으로 이 앱의 이메일 요건을 충족한다고 가정하지 않습니다. adapter는 Supabase 서버에서 접근 가능한 HTTPS 배포에 있어야 하며 Vercel Deployment Protection이나 사설 tailnet으로 차단된 주소를 사용하면 로그인할 수 없습니다. endpoint를 먼저 배포하고 테스트 환경에 서버 `NAVER_AUTH_ENABLED=true`와 공유 Redis 두 변수를 구성합니다. 이후 `NEXT_PUBLIC_NAVER_AUTH_ENABLED=true`로 재배포해 로그인·이메일 확인을 시험합니다. 공개 운영 환경은 이 시험을 마친 뒤 켭니다. Naver Client Secret이나 Apple `.p8` 키는 Vercel 공개 변수·Git·브라우저에 넣지 않습니다.
+
+**확인 메일:** Supabase Email provider의 **Confirm email을 켠 상태로 유지**하고 SMTP를 설정합니다. Auth → Email Templates → Confirm signup의 확인 링크를 아래처럼 변경합니다. 이 링크는 Naver에서 처음 받은 미확인 이메일과 이메일 가입 모두에 사용됩니다. `Site URL`은 이 환경의 정식 HTTPS origin이어야 합니다. Preview 시험은 별도 테스트 Supabase 프로젝트와 해당 Site URL을 사용하는 것이 안전합니다.
+
+```html
+<a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&amp;type=email&amp;next=/orders">Confirm email</a>
+```
+
+Supabase 허용 redirect에도 해당 앱의 `/auth/confirm`을 추가하고 기존 `/auth/callback`을 유지합니다. `/auth/confirm`은 Supabase `verifyOtp`와 서버 `getUser()`로 확인한 후 허용된 내부 화면으로 이동합니다. provider가 `provider_email_needs_verification`을 반환하면 메일 확인 안내가 표시됩니다. 메일 확인을 생략하거나 `email_verified`를 강제로 `true`로 바꾸지 않습니다. 상품 초안은 원래 브라우저 탭에 남으므로 확인 후 그 탭으로 돌아옵니다. [Supabase 서버 이메일 확인 안내](https://supabase.com/docs/guides/auth/server-side/nextjs)
+
+각 제공자에서 성공·동의 거절·만료 링크·원래 사이트 복귀를 시험합니다. Naver 신규 계정은 확인 메일 전 private API가 거절되고 확인 후에만 접근 가능한지 확인합니다. Apple은 이메일 숨기기 계정도 시험합니다. 같은 이메일의 기존 계정이 있을 때는 Supabase의 실제 계정 연결 결과를 확인하고 앱 코드에서 이메일만으로 계정을 병합하지 않습니다. 이메일 가입과 Google 로그인도 재검사합니다.
 
 ## DB SQL 적용
 
@@ -148,4 +184,4 @@ production 환경 점검은 `npm.cmd run ops:check -- production`입니다. 실�
 
 Git/Vercel 연결 저장소는 `DongHeeKw/paynship-dh2`인지 확인합니다. Three.js `three`와 개발용 `@types/three` 의존성을 lockfile에 추가했으며 기존 `prisma generate && next build`를 사용합니다. Vercel 설정·기존 Supabase demo SQL·DB schema를 변경하지 않습니다. 홈 장면은 외부 CDN이나 추가 환경변수를 요구하지 않습니다.
 
-Vercel에서 `/`, `/purchase`, `/orders`, `/settings/delivery`, `/login`, `/signup`을 검토합니다. `/orders`와 배송정보 게스트 화면은 설명만 표시하고 실제 개인 데이터는 인증이 필요합니다. `/demo`는 기존 synthetic Supabase 데이터 페이지이고 `/dev/preview`는 로컬 development 전용이므로 Vercel에서는 사용할 수 없습니다. 로컬 `.env`를 업로드하지 말고 Vercel의 Production/Preview 환경변수를 각각 확인합니다. Email provider·이메일 확인·SMTP·Google 및 허용 callback은 실제 프로젝트에서 따로 검증합니다. [입문 안내](../BEGINNER_GUIDE.md)를 참고하세요.
+Vercel에서 `/`, `/purchase`, `/orders`, `/settings/delivery`, `/login`, `/signup`을 검토합니다. `/orders`와 배송정보 게스트 화면은 설명만 표시하고 실제 개인 데이터는 인증이 필요합니다. `/demo`는 기존 synthetic Supabase 데이터 페이지이고 `/dev/preview`는 로컬 development 전용이므로 Vercel에서는 사용할 수 없습니다. 로컬 `.env`를 업로드하지 말고 Vercel의 Production/Preview 환경변수를 각각 확인합니다. Email provider·이메일 확인·SMTP·Google·Apple·Naver 및 허용 callback은 실제 프로젝트에서 따로 검증합니다. [입문 안내](../BEGINNER_GUIDE.md)를 참고하세요.

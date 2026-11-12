@@ -1,5 +1,38 @@
 import { test, expect } from '@playwright/test';
 
+test('a guest sees the approved service fee without guessed shipping or tax', async ({ page }) => {
+  await page.goto('/purchase');
+  await page.getByLabel('Product link', { exact: true }).fill('https://www.musinsa.com/products/123');
+  await page.getByLabel('Destination country', { exact: true }).selectOption('JP');
+  const costs = page.getByRole('region', { name: 'Before you place a request.' });
+  await costs.getByLabel('Seller’s unit price in KRW (optional)').fill('100000');
+  await expect(costs.locator('div').filter({ has: page.locator('dt', { hasText: /^PayNShip service fee$/ }) }).locator('dd')).toHaveText('₩15,000');
+  await expect(costs.locator('.cost-subtotal dd')).toHaveText('₩115,000');
+  await expect(costs.locator('.cost-total dd')).toHaveText('Not ready yet');
+  await costs.getByLabel('Seller’s unit price in KRW (optional)').fill('20000');
+  await page.getByLabel('Quantity', { exact: true }).fill('2');
+  await expect(costs.locator('.cost-subtotal dd')).toHaveText('₩50,000');
+  await expect(costs).toContainText('Based on the price you entered.');
+  await page.getByLabel('Options', { exact: true }).fill('Blue, medium');
+  await expect(costs.getByLabel('Seller’s unit price in KRW (optional)')).toHaveValue('');
+});
+
+test('all requested social options are visible and unconfigured providers stay inactive', async ({ page }) => {
+  for (const route of ['/login', '/signup']) {
+    await page.goto(route);
+    await expect(page.getByRole('button', { name: 'Continue with Google' })).toBeEnabled();
+    await expect(page.getByRole('button', { name: 'Continue with Apple' })).toBeDisabled();
+    await expect(page.getByRole('button', { name: 'Continue with Naver' })).toBeDisabled();
+  }
+});
+
+test('Naver email confirmation errors become guidance without exposing provider details', async ({ page }) => {
+  await page.goto('/auth/callback?next=%2Fpurchase#error=access_denied&error_code=provider_email_needs_verification&error_description=sensitive-provider-message');
+  await expect(page.getByRole('main')).toContainText('Check your email to finish signing in.');
+  await expect(page.getByRole('main')).not.toContainText('sensitive-provider-message');
+  await expect(page).toHaveURL(/\/login\?error=callback&next=%2Fpurchase$/);
+});
+
 test('a guest can prepare a product when WebGL is unavailable', async ({ page }) => {
   await page.addInitScript(() => {
     const getContext = HTMLCanvasElement.prototype.getContext;

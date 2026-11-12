@@ -48,4 +48,11 @@ describe('customer confirmation and OAuth callback', () => {
     const response = await GET(new Request('https://proxy.invalid/auth/callback?code=valid-code&next=%2Forders'));
     expect(response.headers.get('location')).toBe('https://paynship.example/orders');
   });
+
+  it('shows email verification guidance without treating an OAuth error as authentication', async () => {
+    const response = await GET(new Request('https://paynship.example/auth/callback?error=access_denied&error_code=provider_email_needs_verification&error_description=sensitive&code=unused&next=%2Fpurchase'));
+    expect(response.headers.get('location')).toBe('https://paynship.example/login?notice=confirm-email&next=%2Fpurchase');
+    expect(mocks.exchangeCodeForSession).not.toHaveBeenCalled();
+    expect(mocks.getUser).not.toHaveBeenCalled();
+  });
 });

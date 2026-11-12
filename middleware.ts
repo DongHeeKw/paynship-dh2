@@ -64,7 +64,9 @@ export async function middleware(request: NextRequest) {
   }
   // Route handlers verify their own user and can refresh response cookies.
   // Browser SSR needs the session refresh here; avoid two Auth lookups per API.
-  if (api || machine || liveness) return respond(NextResponse.next());
+  // Supabase calls this bearer-token adapter before a browser session exists.
+  // Its handler independently validates the token and applies shared quotas.
+  if (api || machine || liveness || path === '/auth/naver/userinfo') return respond(NextResponse.next());
   return respond(await updateSession(request));
 }
 

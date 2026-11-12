@@ -1,0 +1,17 @@
+.cost-preview { border: 1px solid #bbc8c3; border-radius: 18px; background: #f4f8f2; padding: 24px; color: #203448; display: grid; gap: 18px; }
+.cost-preview-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.cost-eyebrow { color: #426650; font-size: 11px; font-weight: 700; letter-spacing: .12em; }
+.cost-preview h2 { margin: 5px 0 0; font-size: 24px; line-height: 1.2; }
+.cost-preview p { margin: 0; line-height: 1.6; }
+.cost-badge { background: #254c3c; color: #fff; padding: 7px 12px; border-radius: 100px; font-size: 12px; font-weight: 700; }
+.cost-lines { display: grid; gap: 0; margin: 0; }
+.cost-lines > div { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; padding: 10px 0; }
+.cost-lines dt { font-size: 14px; }
+.cost-lines dd { margin: 0; text-align: right; flex-shrink: 0; font-size: 14px; font-variant-numeric: tabular-nums; }
+.cost-subtotal { border-top: 1px solid #bbc8c3; border-bottom: 1px solid #bbc8c3; font-weight: 600; }
+.cost-lines .cost-total { border-top: 2px solid #254c3c; padding-top: 15px; margin-top: 8px; font-weight: 700; }
+.cost-note, .cost-preview small, .cost-preview details { color: #465960; font-size: 13px; }
+.cost-preview summary { cursor: pointer; font-weight: 600; }
+.cost-preview details p { margin-top: 10px; }
+.cost-preview input, .cost-preview select { width: 100%; min-height: 44px; }
+@media (max-width: 480px) { .cost-preview { padding: 18px; } .cost-preview h2 { font-size: 21px; } .cost-lines dt, .cost-lines dd { font-size: 12px; } }

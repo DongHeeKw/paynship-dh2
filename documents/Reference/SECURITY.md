@@ -75,4 +75,10 @@ GitHub CI의 임시 PostgreSQL 16 smoke는 DB 권한·RLS·제약과 정상 CRUD
 
 ## 계정·게스트 표현 변경 (2026-11-12)
 
-이메일 가입/로그인은 Supabase Auth를 사용하고 비밀번호를 앱 데이터베이스나 로그에 저장하지 않습니다. 서버 callback은 교환 후 사용자·확인 이메일을 재검증하며 내부 허용 경로로만 복귀합니다. 이메일·Google은 HTTPS 또는 정확한 loopback 개발 origin만 허용하고 일반 HTTP IP 입력·동작을 막습니다. 계정·callback 경로는 private, no-store입니다. 게스트 요청/주소 화면은 정적 설명·예시만 표시하며 기존 고객 API의 사용자·소유권·암호화·할당량 검사는 그대로 유지합니다. 기존 Supabase demo 테이블의 synthetic 공개 데이터와 고객 개인정보는 분리합니다.
+이메일 가입/로그인은 Supabase Auth를 사용하고 비밀번호를 앱 데이터베이스나 로그에 저장하지 않습니다. 서버 callback은 교환 후 사용자·확인 이메일을 재검증하며 내부 허용 경로로만 복귀합니다. 이메일·Google·Apple·Naver는 HTTPS 또는 정확한 loopback 개발 origin만 허용하고 일반 HTTP IP 입력·동작을 막습니다. 계정·callback 경로는 private, no-store입니다. 게스트 요청/주소 화면은 정적 설명·예시만 표시하며 기존 고객 API의 사용자·소유권·암호화·할당량 검사는 그대로 유지합니다. 기존 Supabase demo 테이블의 synthetic 공개 데이터와 고객 개인정보는 분리합니다.
+
+Google·Apple은 내장 Supabase OAuth, Naver는 `custom:naver`를 사용합니다. Apple·Naver 공개 활성화 플래그는 UI 설정일 뿐 인증 증거가 아닙니다. 제공자 Client Secret과 Apple 서명 키는 브라우저 변수에 넣지 않으며 Naver Client ID/Secret은 Supabase에만 설정합니다. Apple 웹 로그인 secret의 만료·교체를 운영 일정으로 관리합니다.
+
+`GET /auth/naver/userinfo`는 서버 플래그가 켜졌을 때만 Naver Bearer 토큰을 받아 고정 HTTPS 프로필 endpoint에 전달합니다. 임의 fetch·리디렉션·사용자가 지정한 host를 허용하지 않습니다. 토큰/응답 크기·timeout·공유 요청 제한을 적용하고 production Redis 장애는 차단합니다. 반환값은 확인한 Naver ID와 이메일, `email_verified: false`로 한정하고 프로필·토큰의 저장/로그·DB 접근·세션 발급은 수행하지 않습니다. 이 경로는 Supabase의 서버 간 프로필 조회용이며 고객 API 인증을 대체하지 않습니다.
+
+Naver 프로필의 이메일을 자체적으로 검증됐다고 간주하지 않습니다. Supabase Confirm email을 켜고 확인 메일 발송을 구성해야 합니다. `provider_email_needs_verification`은 확인 안내로 처리하고 확인 전 개인 기능은 거절합니다. 주소·계정 연결 권한을 브라우저의 provider 이름이나 이메일 문자열만으로 부여하지 않습니다. 실제 제공자 연결과 확인 메일 검증은 배포 환경에서 별도로 수행합니다.

@@ -1,15 +1,18 @@
 version: 2
-updated_at: "2026-11-12"
+updated_at: "2026-11-13"
 metadata:
   description: "Current URL purchasing service documentation"
   source_of_truth_note: "Registered current docs define scope; archives and old research are historical."
 current:
+  - id: pricing
+    path: documents/Features/Pricing/Spec.md
+    update_triggers: ["lib/purchases/service-fee.ts", "lib/purchases/money.ts", "lib/purchases/public-estimate.ts", "lib/purchases/quote.ts", "lib/purchases/review-schema.ts", "lib/purchases/operator.ts", "lib/purchases/payment-provider.ts", "components/purchases/CostPreview.tsx", "components/purchases/ReviewImportCharges.tsx", "components/purchases/QuoteSummary.tsx", "data/catalog/**"]
   - id: product
     path: documents/PRODUCT_SPECIFICATION.md
     update_triggers: ["app/**", "components/home/**", "components/site/**", "components/purchases/**", "lib/purchases/**", "lib/dev-preview/**", "prisma/**"]
   - id: authentication
     path: documents/Features/Auth/Spec.md
-    update_triggers: ["app/login/**", "app/signup/**", "app/auth/**", "components/site/AccountPanel.tsx", "components/site/account.css", "app/dev/preview/**", "components/site/SignInForm.tsx", "components/site/SignInForm.test.tsx", "components/site/PreviewModeLink.tsx", "components/auth/AuthButton.tsx", "components/auth/LoginModal.tsx", "components/auth/LoginEnforcementModal.tsx", "contexts/AuthContext.tsx", "lib/auth/**", "lib/supabase/**", "lib/dev-preview/**"]
+    update_triggers: ["app/login/**", "app/signup/**", "app/auth/**", "components/site/AccountPanel.tsx", "components/site/account.css", "app/dev/preview/**", "components/site/SignInForm.tsx", "components/site/SignInForm.test.ts", "components/site/SocialProviderMark.tsx", "components/site/PreviewModeLink.tsx", "components/auth/AuthButton.tsx", "components/auth/LoginModal.tsx", "components/auth/LoginEnforcementModal.tsx", "contexts/AuthContext.tsx", "lib/auth/**", "lib/supabase/**", "lib/dev-preview/**"]
   - id: feature_status
     path: documents/Features/STATUS.md
     update_triggers: ["app/**", "lib/**", "prisma/**", "tests/**", "components/home/**", "components/site/**", "components/purchases/**", "e2e/public-journey.spec.ts"]

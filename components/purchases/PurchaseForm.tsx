@@ -8,6 +8,7 @@ import { getProductPreview } from '@/lib/purchases/product-preview';
 import type { DeliveryProfile } from '@/lib/purchases/schemas';
 import ProductRequestFields from './ProductRequestFields';
 import ProductPreview from './ProductPreview';
+import CostPreview from './CostPreview';
 import { usePurchaseClient } from './PurchaseClient';
 import { countryName } from './labels';
 export default function PurchaseForm() {
@@ -92,6 +93,7 @@ export default function PurchaseForm() {
   return <form className="form-stack" onSubmit={submit}>
     <fieldset className="form-stack" disabled={busy}><ProductRequestFields draft={draft} onChange={edited} /></fieldset>
     <ProductPreview draft={draft} product={product} />
+    <CostPreview draft={draft} onChange={edited} disabled={busy} />
     {signedIn && (profileLoading ? <p className="muted" role="status">Loading delivery details…</p> : profile ? <p className="notice">
       Delivering to {profile.fullName}, {profile.city}, {countryName(profile.country)}. <Link href={href('/settings/delivery?next=/purchase')}>Edit delivery details</Link>
     </p> : <p className="notice">Add your delivery details before submitting. <Link href={href('/settings/delivery?next=/purchase')}>Add delivery details</Link></p>)}

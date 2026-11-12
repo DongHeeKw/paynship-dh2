@@ -24,6 +24,7 @@ export default function ProductPreview({ draft, product }: Props) {
       {product.observation ? <div className="form-stack">
         {product.observation.name && <p><strong>{product.observation.name}</strong></p>}
         {product.observation.price && product.observation.currency && <p>Observed seller price: {product.observation.price} {product.observation.currency}</p>}
+        {(['sku', 'model', 'size', 'color', 'material', 'countryOfOrigin'] as const).map(field => product.observation?.[field] ? <p key={field}>{({ sku: 'SKU', model: 'Model', size: 'Size', color: 'Colour', material: 'Material', countryOfOrigin: 'Seller-stated origin' })[field]}: {product.observation[field]}</p> : null)}
         {product.observation.availability?.endsWith('/SoldOut') && <p>This sample page reported sold out when collected.</p>}
         <p className="muted">Local sample collected {observationTime(product.observation.retrievedAt)} KST. This is historical information; current price and availability are unverified. Shipping, duties, and taxes are not included.</p>
       </div> : <div className="form-stack">

@@ -7,7 +7,7 @@ export async function GET(request: Request) {
   const origin = process.env.NODE_ENV === 'production' ? new URL(process.env.NEXT_PUBLIC_APP_URL!).origin : url.origin;
   const code = url.searchParams.get('code');
   const next = customerReturnPath(url.searchParams.get('next'), '/');
-  if (code && code.length <= 4096 && !url.searchParams.has('error')) {
+  if (code && code.length <= 4096 && !url.searchParams.has('error') && !url.searchParams.has('error_code')) {
     try {
       const supabase = await createClient();
       const { error } = await supabase.auth.exchangeCodeForSession(code);
@@ -21,7 +21,11 @@ export async function GET(request: Request) {
     }
   }
   const failure = new URL('/login', origin);
-  failure.searchParams.set('error', 'callback');
+  if (url.searchParams.get('error_code') === 'provider_email_needs_verification') {
+    failure.searchParams.set('notice', 'confirm-email');
+  } else {
+    failure.searchParams.set('error', 'callback');
+  }
   failure.searchParams.set('next', next);
   return NextResponse.redirect(failure);
 }

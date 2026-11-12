@@ -30,7 +30,15 @@ describe('URL intake security boundary', () => {
 describe('reviewed customs calculation', () => {
   it('uses reviewed quantities, freight, duty and tax without VAT profit offsets', () => {
     const quote = calculatePurchaseQuote(review, 2, 3, now);
-    expect(quote).toMatchObject({ productCents: 2000, dutyCents: 125, taxCents: 263, totalCents: 2988, quoteVersion: 3 });
+    expect(quote).toMatchObject({ productCents: 2000, serviceFeeCents: 714, serviceFeeKrw: 10000, dutyCents: 125, taxCents: 263, totalCents: 3602, quoteVersion: 3 });
+  });
+  it('ignores operator-supplied fee overrides on new quotes and preserves legacy paid calculations', () => {
+    expect(calculatePurchaseQuote({ ...review, serviceFeeCents: 0 }, 2, 3, now).serviceFeeCents).toBe(714);
+    expect(calculatePurchaseQuote(review, 2, 3, now, 'LEGACY')).toMatchObject({ serviceFeeCents: 100, totalCents: 2988 });
+  });
+  it('uses verified country-specific import charges once, including clearance fees', () => {
+    const quote = calculatePurchaseQuote({ ...review, dutyBasisPoints: 9999, taxBasisPoints: 9999, verifiedImportCharges: { dutyCents: 10, taxCents: 20, clearanceCents: 30 } }, 2, 3, now);
+    expect(quote).toMatchObject({ dutyCents: 10, taxCents: 20, clearanceCents: 30, totalCents: 3274, importChargeMethod: 'VERIFIED_AMOUNTS' });
   });
   it('refuses expired, future or old rule evidence', () => {
     for (const patch of [{ rulesValidUntil: '2026-10-01T00:00:00Z' }, { rulesVerifiedAt: '2026-10-12T00:00:00Z' }, { rulesVerifiedAt: '2025-01-01T00:00:00Z' }]) {

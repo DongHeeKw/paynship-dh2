@@ -2,10 +2,9 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
 import { createClient } from '@/lib/supabase/client';
-import { buildOAuthRedirectTo } from '@/lib/auth/oauth-client';
-import { customerReturnPath } from '@/lib/auth/customer-redirect';
 import { customerAuthOriginError } from '@/lib/auth/customer-auth';
-interface AuthContextValue { user: User | null; loading: boolean; isGuest: boolean; signIn: (nextPath?: string) => Promise<void>; signOut: () => Promise<void>; requireLogin: (reason?: string) => Promise<boolean>; }
+import { startCustomerSocialSignIn, type CustomerSocialProvider } from '@/lib/auth/customer-social';
+interface AuthContextValue { user: User | null; loading: boolean; isGuest: boolean; signIn: (nextPath?: string, provider?: CustomerSocialProvider) => Promise<void>; signOut: () => Promise<void>; requireLogin: (reason?: string) => Promise<boolean>; }
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 export function AuthProvider({ children, localPreview = false }: { children: React.ReactNode; localPreview?: boolean }) {
   const [user, setUser] = useState<User | null>(null);
@@ -19,14 +18,9 @@ export function AuthProvider({ children, localPreview = false }: { children: Rea
     const { data: { subscription } } = client.auth.onAuthStateChange((_event, session) => { if (mounted) { const verified = session?.user?.email && session.user.email_confirmed_at; setUser(verified ? session!.user : null); setLoading(false); } });
     return () => { mounted = false; subscription.unsubscribe(); };
   }, [localPreview]);
-  const signIn = useCallback(async (nextPath = '/') => {
+  const signIn = useCallback(async (nextPath = '/', provider: CustomerSocialProvider = 'google') => {
     if (localPreview) throw new Error('Exit the local preview to sign in.');
-    const originError = customerAuthOriginError();
-    if (originError) throw new Error(originError);
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) throw new Error('Sign in is not configured yet.');
-    const safePath = customerReturnPath(nextPath, '/');
-    const { error } = await createClient().auth.signInWithOAuth({ provider: 'google', options: { redirectTo: buildOAuthRedirectTo(safePath) } });
-    if (error) throw new Error('Sign in could not start. Please try again.');
+    await startCustomerSocialSignIn(provider, nextPath);
   }, [localPreview]);
   const signOut = useCallback(async () => { if (localPreview) { setUser(null); return; } const { error } = await createClient().auth.signOut(); if (error) throw error; setUser(null); }, [localPreview]);
   const requireLogin = useCallback(async (_reason?: string) => { if (localPreview) return false; if (user) return true; const path = `${window.location.pathname}${window.location.search}`; window.location.assign(`/login?next=${encodeURIComponent(path)}`); return false; }, [user, localPreview]);

@@ -9,6 +9,7 @@ import { parseQuoteForm } from './quote-form-data';
 import ReviewProductFields from './ReviewProductFields';
 import ReviewCostFields from './ReviewCostFields';
 import ReviewCustomsFields from './ReviewCustomsFields';
+import ReviewImportCharges from './ReviewImportCharges';
 import RecipientEvidenceFields from './RecipientEvidenceFields';
 
 interface Props {
@@ -45,6 +46,7 @@ export default function AdminQuoteForm({ id, version, country, review, revalidat
     {revalidate && <p className="notice">Refresh product and customs evidence for this held request. Previously confirmed financial amounts must stay unchanged.</p>}
     <ReviewProductFields review={review} />
     <ReviewCostFields review={review} />
+    <ReviewImportCharges review={review} country={country} revalidate={revalidate} />
     <ReviewCustomsFields review={review} />
     <RecipientEvidenceFields country={country} evidence={review?.recipientEvidence} />
     <label className="flex items-start gap-3 text-sm">

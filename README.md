@@ -6,6 +6,8 @@ URL·도착국 입력 → 로그인 없이 초기 확인·다음 단계 안내 �
 
 처음 시작하면 [제품·로그인·DB 입문 안내](documents/Reference/BEGINNER_GUIDE.md)를 읽으세요. 이 안내는 `DongHeeKw/paynship-dh2`의 Vercel 화면, 로컬 `/dev/preview`, 기존 Supabase `/demo`를 구분합니다.
 
+서비스 수수료는 **상품 소계의 15%, 판매처 주문당 최소 ₩10,000**입니다. `/purchase`에서 로그인 없이 가격을 입력해 상품+서비스 소계를 확인할 수 있습니다. 배송·보험·관세·세금·통관 비용은 별도이며 미확인 비용은 `Needs review`로 표시합니다. [가격 기준과 데이터 등록](documents/Features/Pricing/Spec.md)을 참고하세요. Google·Apple·Naver 로그인 UI를 제공하며 Apple/Naver는 외부 제공자 설정 전까지 비활성입니다.
+
 ## 로컬 실행
 
 Node.js 24 LTS와 npm이 필요합니다. Docker와 AI API 키는 필요하지 않습니다.

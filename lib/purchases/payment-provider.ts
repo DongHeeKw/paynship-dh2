@@ -18,6 +18,7 @@ export async function createHostedPayment(requestId: string, quote: PurchaseQuot
     [quote.productName, quote.productCents], ['Domestic shipping', quote.domesticShippingCents],
     ['Purchasing service fee', quote.serviceFeeCents], ['International shipping', quote.internationalShippingCents],
     ['Insurance', quote.insuranceCents], ['Import duty deposit', quote.dutyCents], ['Destination tax deposit', quote.taxCents],
+    ['Customs clearance', quote.clearanceCents ?? 0],
   ].filter(([, cents]) => Number(cents) > 0).map(([title, cents]) => ({ title, quantity: 1, requiresShipping: false, taxable: false,
     originalUnitPriceWithCurrency: { amount: (Number(cents) / 100).toFixed(2), currencyCode: 'USD' } }));
   const response = await fetch(`https://${domain}/admin/api/${version}/graphql.json`, {

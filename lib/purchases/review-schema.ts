@@ -14,6 +14,7 @@ export const reviewSchema = z.object({
   domesticShippingKrw: z.number().int().min(0).max(1000000),
   exchangeRateKrwPerUsd: z.number().min(100).max(10000),
   serviceFeeCents: cents,
+  verifiedImportCharges: z.object({ dutyCents: cents, taxCents: cents, clearanceCents: cents }).strict().optional(),
   internationalShippingCents: cents,
   insuranceCents: cents,
   customsValueBasis: z.enum(['CIF', 'FOB']),

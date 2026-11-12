@@ -1,6 +1,18 @@
 # PayNShip: a beginner's guide to the product, login and database
 
-Updated: 2026-11-12. This guide describes **paynship-dh2**, the repository connected to `DongHeeKw/paynship-dh2`. A working screen does not prove that real accounts, payments or shipping are configured. See [implementation status](../Features/STATUS.md).
+Updated: 2026-11-13. This guide describes **paynship-dh2**, the repository connected to `DongHeeKw/paynship-dh2`. A working screen does not prove that real accounts, payments or shipping are configured. See [implementation status](../Features/STATUS.md).
+
+## Your approved service fee
+
+PayNShip charges **15% of the product subtotal, minimum ₩10,000 per retailer order**. A ₩100,000 product has a ₩15,000 fee. Two ₩20,000 units purchased together have a ₩10,000 fee in total, not ₩10,000 each. Shipping, insurance, duty, taxes and clearance are separate.
+
+On `/purchase`, enter the KRW unit price under **Before you place a request** to try it without login. Your input is a calculation aid, not a verified seller price or payment authorization. Unknown charges say **Needs review** and the delivered total remains unavailable. New server-approved quotes calculate the same fee; previously paid amounts remain unchanged.
+
+One request currently covers one product and quantity. Combining different products in a single retailer checkout is not implemented. Do not combine separate requests operationally and repeatedly charge the minimum without an approved grouping/refund procedure.
+
+Automatic delivered estimates need exact variants, current prices, freight and country-specific import assessments. The public catalog starts empty because no live prices/rates have been verified. Read the [pricing and catalog guide](../Features/Pricing/Spec.md) before adding records. Synthetic test amounts are never published as customer rates. US/CN/JP quote approval requires verified import charges, not a guessed common percentage.
+
+The fee is not profit. Track handling time, payment/FX costs, packing, support, mistakes and refunds for the first 30 orders. The remaining money still pays overhead.
 
 ## What the business does
 
@@ -47,7 +59,7 @@ The page is the visible form. **Authentication** establishes who the customer is
 
 ```mermaid
 flowchart LR
-    Form[Email/password or Google] --> Auth[Supabase Auth]
+    Form[Email/password or configured Google, Apple, Naver] --> Auth[Supabase Auth]
     Browser[Customer browser] --> API[Next.js private API]
     API -->|Verify user and confirmed email| Auth
     API --> Owner[Check ownership and validate input]
@@ -56,7 +68,9 @@ flowchart LR
     Prisma --> DB[(PostgreSQL)]
 ```
 
-The email/password and Google flows use Supabase Auth. Passwords are not stored in the application's `User` table or logs. Signup displays an email-confirmation step; private APIs independently verify the user and confirmed email. Google errors remain visible and recoverable. Apple and Naver are not connected, and password recovery is still a launch task.
+Email/password and social login use Supabase Auth. Passwords are not stored in the application's `User` table or logs. Private APIs independently verify the user and confirmed email. Google, Apple and Naver buttons appear on both account screens. Apple/Naver stay disabled until their external provider configuration and deployment flags are ready. The code does not create developer accounts or credentials. Password recovery remains a launch task.
+
+Google and Apple use native providers. Naver uses custom OAuth2 and `/auth/naver/userinfo`; email confirmation is required separately. Follow the [Apple/Naver setup and email template](Deployment/DEPLOYMENT.md). `/auth/confirm` verifies the token and server user. Never put signing keys, Naver Client Secret or a Supabase service-role key in public environment variables.
 
 The server obtains the customer ID from the verified session. It never trusts a customer ID sent by the browser as proof of ownership. The browser does not receive database administrator credentials.
 
@@ -86,6 +100,9 @@ Each submitted request keeps its own encrypted delivery snapshot. Editing a save
 | --- | --- |
 | `NEXT_PUBLIC_APP_URL` | Exact app origin, including the local port when applicable |
 | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Public Auth configuration; never substitute a service-role secret |
+| `NEXT_PUBLIC_APPLE_AUTH_ENABLED` | `true` after configuring/testing Apple; otherwise its button stays disabled |
+| `NEXT_PUBLIC_NAVER_AUTH_ENABLED` | `true` after configuring/testing `custom:naver` |
+| `NAVER_AUTH_ENABLED` | Server-only Naver adapter switch; production also requires shared Redis |
 | `DATABASE_URL`, `DIRECT_URL` | Server-only PostgreSQL connections using the restricted app role |
 | `PII_ENCRYPTION_KEY` | Server-only encryption key: 64 hexadecimal characters |
 | `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN` | Shared API request limits required in production |

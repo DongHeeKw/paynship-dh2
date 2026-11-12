@@ -17,6 +17,7 @@ export interface ProductObservation {
   price?: string;
   currency?: string;
   availability?: string;
+  sku?: string; model?: string; size?: string; color?: string; material?: string; countryOfOrigin?: string;
 }
 export interface ProductLookup {
   state: 'OBSERVED' | 'NOT_COLLECTED' | 'ROBOTS_BLOCKED' | 'UNAVAILABLE';
@@ -55,6 +56,8 @@ export function getProductPreview(input: string): ProductPreviewResult {
         retrievedAt: matchingSample.retrievedAt,
         name: observedValue(fields, 'name'), price: observedValue(fields, 'price'),
         currency: observedValue(fields, 'priceCurrency'), availability: observedValue(fields, 'availability'),
+        sku: observedValue(fields, 'sku'), model: observedValue(fields, 'model'), size: observedValue(fields, 'size'), color: observedValue(fields, 'color'),
+        material: observedValue(fields, 'material'), countryOfOrigin: observedValue(fields, 'countryOfOrigin'),
       };
       if (!observation.name && !observation.price && !observation.currency && !observation.availability) observation = null;
     }
