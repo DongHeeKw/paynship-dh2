@@ -37,7 +37,7 @@ describe('SignInForm', () => {
     mocks.search = 'error=callback';
     render(React.createElement(SignInForm));
 
-    expect(screen.getByRole('alert').textContent).toContain('Google sign-in did not complete');
+    expect(screen.getByRole('alert').textContent).toContain('sign-in link couldn’t be completed');
     expect((screen.getByRole('button', { name: 'Continue with Google' }) as HTMLButtonElement).disabled).toBe(false);
   });
 

@@ -2,5 +2,5 @@ import SiteShell from '@/components/site/SiteShell';
 import AuthRequired from '@/components/site/AuthRequired';
 import PurchaseList from '@/components/purchases/PurchaseList';
 export default function OrdersPage() {
-  return <SiteShell><div className="page-content"><div className="page-heading"><h1>Your requests</h1><p>Follow each purchase from review to delivery.</p></div><AuthRequired next="/orders"><PurchaseList /></AuthRequired></div></SiteShell>;
+  return <SiteShell variant="coastal"><div className="requests-page"><div className="page-heading"><h1>My requests<span>.</span></h1><p>Your submitted product requests, quotes and progress.</p></div><AuthRequired next="/orders" variant="requests"><PurchaseList /></AuthRequired></div></SiteShell>;
 }

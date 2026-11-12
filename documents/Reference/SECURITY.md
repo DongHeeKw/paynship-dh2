@@ -2,7 +2,7 @@
 
 현재 URL 구매 흐름의 보안 기준입니다. 코드 기반 보호와 실제 운영 환경 검증을 구분합니다.
 
-변경일: 2026-10-12. [Linux 실행서](Deployment/LINUX_RELEASE.md)와 [국가별 개인정보 요구](COUNTRY_CUSTOMS.md)를 함께 적용합니다.
+변경일: 2026-11-12. [Linux 실행서](Deployment/LINUX_RELEASE.md)와 [국가별 개인정보 요구](COUNTRY_CUSTOMS.md)를 함께 적용합니다.
 
 ## 인증·권한
 
@@ -71,3 +71,8 @@ production 요청 제한기는 Redis 장애·설정 누락 시 일반 API를 503
 GitHub CI의 임시 PostgreSQL 16 smoke는 DB 권한·RLS·제약과 정상 CRUD를 검증하며 fixture를 rollback합니다. 코드 commit 4c9874b의 실제 Linux CI가 통과했으며 SHA·실행 링크는 [검사 기록](Testing/SECURITY_CHECKS.md)에 있습니다. 로컬 단위 검사·비로그인 ZAP는 인증된 소유권·실제 DB 병렬 처리·provider 정산·복구를 증명하지 않습니다. ZAP 결과는 실제 스캔 범위와 별도로 기록하며 출시 전 고객 2계정·운영자 역할·공유 Redis·실제 제공자 통합을 검증합니다.
 
 2026-10-12 실행한 ZAP의 CSP 중간 위험을 수정하고 53 URL을 재검사했습니다. 높음/중간 0건, 낮음 redirect 4건과 정보 경고가 남았습니다. 실제 검사·제외 범위와 잔여 항목은 [검사 기록](Testing/SECURITY_CHECKS.md)을 확인합니다.
+
+
+## 계정·게스트 표현 변경 (2026-11-12)
+
+이메일 가입/로그인은 Supabase Auth를 사용하고 비밀번호를 앱 데이터베이스나 로그에 저장하지 않습니다. 서버 callback은 교환 후 사용자·확인 이메일을 재검증하며 내부 허용 경로로만 복귀합니다. 이메일·Google은 HTTPS 또는 정확한 loopback 개발 origin만 허용하고 일반 HTTP IP 입력·동작을 막습니다. 계정·callback 경로는 private, no-store입니다. 게스트 요청/주소 화면은 정적 설명·예시만 표시하며 기존 고객 API의 사용자·소유권·암호화·할당량 검사는 그대로 유지합니다. 기존 Supabase demo 테이블의 synthetic 공개 데이터와 고객 개인정보는 분리합니다.

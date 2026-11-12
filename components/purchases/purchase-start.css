@@ -1,0 +1,47 @@
+.purchase-start { max-width: 1120px; margin: 55px auto 65px; color: #192c43; }
+.purchase-start-kicker { margin: 0 0 12px; color: #526070; font-size: 10px; font-weight: 700; letter-spacing: .13em; }
+.purchase-start-heading { margin-bottom: 32px; }
+.purchase-start-heading h1 { margin: 0 0 16px; font-size: clamp(38px, 4.5vw, 54px); font-weight: 800; letter-spacing: -.055em; line-height: 1.1; }
+.purchase-start-heading h1 > span { color: #2467ed; }
+.purchase-start-heading > p:last-child { max-width: 640px; margin: 0; color: #526070; font-size: 15px; line-height: 1.8; }
+.purchase-start-layout { display: grid; grid-template-columns: minmax(0, 1fr) 310px; gap: 38px; align-items: start; }
+.purchase-start-form { min-width: 0; padding: 32px; border: 1px solid #192c4329; border-radius: 16px; background: #fffdf8; }
+.purchase-start-form-heading { display: flex; justify-content: space-between; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 28px; padding-bottom: 22px; border-bottom: 1px dashed #ccd5e0; }
+.purchase-start-form-heading h2 { margin: 0; font-size: 20px; font-weight: 700; letter-spacing: -.6px; }
+.purchase-start-form-heading > span { font-size: 10px; color: #2456a1; padding: 6px 9px; border-radius: 5px; background: #edf3ff; }
+.purchase-start-form fieldset { min-width: 0; border: 0; margin: 0; padding: 0; }
+.purchase-start-form .field { color: #31445c; font-size: 12px; gap: 8px; }
+.purchase-start-form :is(input, select, textarea) { min-height: 48px; border: 1px solid #bac5d2; border-radius: 8px; padding: 12px 13px; color: #192c43; font-size: 14px; }
+.purchase-start-form :is(input, select, textarea):focus-visible { outline: 2px solid #2467ed; outline-offset: 2px; }
+.purchase-start-form .field small { color: #627083; font-size: 11px; line-height: 1.7; }
+.purchase-start-form .muted { color: #627083; font-size: 12px; line-height: 1.8; }
+.purchase-start-form .notice { border: 1px solid #d9e3f5; border-radius: 8px; background: #eff4fc; color: #405979; font-size: 12px; line-height: 1.8; }
+.purchase-start-form .error-message { color: #913b2c; }
+.purchase-start-form .primary-button { min-height: 48px; border: 1px solid #192c43; border-radius: 8px; background: #2467ed; box-shadow: 2px 2px 0 #192c43; font-size: 12px; }
+.purchase-start-form .primary-button:hover { background: #174fc3; }
+.purchase-start-guide { padding-top: 18px; }
+.purchase-start-guide > h2 { margin: 0 0 15px; font-size: 27px; font-weight: 700; letter-spacing: -.9px; line-height: 1.2; }
+.purchase-start-guide > p:not(.purchase-start-kicker) { color: #526070; font-size: 13px; line-height: 1.8; }
+.purchase-start-guide ol { display: grid; gap: 25px; padding: 0; margin: 28px 0; list-style: none; }
+.purchase-start-guide li { display: flex; gap: 13px; }
+.purchase-start-guide li > span { display: grid; place-items: center; width: 29px; height: 29px; flex: 0 0 29px; border: 1px solid #a7bfed; border-radius: 50%; background: #edf3ff; color: #2456a1; font-size: 10px; font-weight: 700; }
+.purchase-start-guide h3 { margin: 3px 0 5px; font-size: 14px; font-weight: 700; }
+.purchase-start-guide li p { margin: 0; color: #526070; font-size: 12px; line-height: 1.8; }
+.purchase-start-note { padding: 18px; border: 1px solid #e3bdb1; border-radius: 9px; background: #fff0e9; }
+.purchase-start-note strong { font-size: 12px; }
+.purchase-start-note p { margin: 7px 0 0; color: #795346; font-size: 12px; line-height: 1.8; }
+.purchase-start-preview-link { display: flex; justify-content: space-between; gap: 12px; padding: 17px 0; border-bottom: 1px dashed #c8d2df; color: #2456a1; font-size: 12px; font-weight: 600; text-decoration: none; }
+.purchase-start-preview-link:hover { text-decoration: underline; }
+@media (max-width: 900px) {
+  .purchase-start-layout { grid-template-columns: minmax(0, 1fr) 260px; gap: 24px; }
+  .purchase-start-form { padding: 26px; }
+  .purchase-start-guide > h2 { font-size: 24px; }
+}
+@media (max-width: 700px) {
+  .purchase-start { margin-top: 32px; }
+  .purchase-start-layout { grid-template-columns: 1fr; }
+  .purchase-start-form { padding: 24px 20px; }
+  .purchase-start-form :is(input, select, textarea) { font-size: 16px; }
+  .purchase-start-form .primary-button { width: 100%; }
+  .purchase-start-guide { padding: 14px 4px 0; }
+}

@@ -28,7 +28,7 @@ export async function middleware(request: NextRequest) {
   const liveness = path === '/api/health' && request.method === 'GET' && !request.nextUrl.searchParams.has('deep');
   function respond(response: NextResponse) {
     securityHeaders(response.headers, development, process.env.NEXT_PUBLIC_SUPABASE_URL, nonce);
-    if (api || path.startsWith('/admin') || path.startsWith('/orders') || path.startsWith('/settings') || path.startsWith('/dev/')) response.headers.set('Cache-Control', 'private, no-store');
+    if (api || path === '/login' || path === '/signup' || path.startsWith('/auth/') || path.startsWith('/admin') || path.startsWith('/orders') || path.startsWith('/settings') || path.startsWith('/dev/')) response.headers.set('Cache-Control', 'private, no-store');
     return response;
   }
   if (path.startsWith('/admin/') && !/^\/admin\/(?:purchases(?:\/[0-9a-f-]+)?|support|settings|env-health)\/?$/i.test(path)) {

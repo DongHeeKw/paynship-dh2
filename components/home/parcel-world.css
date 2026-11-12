@@ -1,0 +1,40 @@
+.parcel-world { position: relative; width: 100%; overflow: clip; overflow-clip-margin: 12px; }
+.parcel-world-stage { position: relative; aspect-ratio: 1.06; isolation: isolate; }
+.parcel-world-halo { position: absolute; inset: 7% 0 5% 3%; border: 1px solid #2467ed20; border-radius: 50%; background: radial-gradient(ellipse at 40% 35%, #e5efff 0, #e5efff 35%, #d4e4ff 75%, #c9dcfc 100%); transform: rotate(-12deg); }
+.parcel-world-halo::after { content: ''; position: absolute; inset: -7%; border: 1px dashed #2467ed35; border-radius: 50%; }
+.parcel-world-canvas, .parcel-world-fallback { position: absolute; inset: 0; }
+.parcel-world-canvas { opacity: 0; transition: opacity 250ms; }
+.parcel-world-canvas canvas { width: 100%; height: 100%; display: block; }
+.parcel-world-fallback { display: flex; align-items: center; }
+.parcel-world.is-ready .parcel-world-canvas { opacity: 1; }
+.parcel-world.is-ready .parcel-world-fallback { visibility: hidden; }
+.parcel-world-origin { position: absolute; top: 6%; left: 2%; display: grid; grid-template-columns: 9px auto; gap: 5px 8px; transform: rotate(-7deg); background: #fffdf8; padding: 15px 18px; border: 1px solid #192c43; box-shadow: 3px 4px 0 #192c4312; font-size: 10px; font-weight: 800; letter-spacing: .07em; border-radius: 9px; }
+.parcel-world-origin > span:last-child { grid-column: 2; font-size: 7px; font-weight: 500; color: #526070; letter-spacing: .12em; }
+.parcel-world-dot { height: 7px; width: 7px; margin-top: 4px; background: #2467ed; border-radius: 50%; }
+.parcel-world-label { position: absolute; right: -1%; bottom: 8%; display: grid; gap: 4px; padding: 16px 54px 16px 19px; background: #fa765f; border: 1px solid #192c43; border-radius: 8px; transform: rotate(6deg); box-shadow: 3px 4px 0 #192c43; }
+.parcel-world-label > span { font-size: 8px; letter-spacing: .14em; font-weight: 700; }
+.parcel-world-label strong { font-size: 18px; letter-spacing: -.6px; }
+.parcel-world-label svg { position: absolute; top: 22px; right: 12px; }
+.parcel-world-caption { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 12px 0; font-size: 11px; font-weight: 600; color: #526070; }
+.parcel-world-caption small { display: block; margin-top: 3px; font-size: 9px; font-weight: 400; }
+.parcel-world-controls { display: flex; gap: 7px; }
+.parcel-world-controls button { display: grid; place-items: center; width: 44px; height: 44px; background: #fffdf8; border: 1px solid #192c4338; border-radius: 50%; font-size: 18px; transition: background 150ms; }
+.parcel-world-controls button:hover { background: #dbe8ff; }
+.parcel-home-links { display: flex; flex-wrap: wrap; gap: 9px 23px; margin-top: 24px; font-size: 12px; font-weight: 600; }
+.parcel-home-links a { padding: 5px 0; text-decoration: none; border-bottom: 1px solid #192c4360; }
+.parcel-home-links a:hover { color: #1d51b0; }
+.parcel-service-strip { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px 25px; padding: 20px 0; margin-bottom: 36px; border-top: 1px solid #192c4326; border-bottom: 1px solid #192c4326; font-size: 11px; color: #526070; }
+.parcel-service-strip > strong { color: #192c43; font-size: 12px; }
+.parcel-service-strip > span { display: inline-flex; gap: 9px; align-items: center; }
+.parcel-service-strip > span::before { content: ''; width: 5px; height: 5px; background: #2467ed; border-radius: 50%; }
+.parcel-faq { display: grid; grid-template-columns: .85fr 1.15fr; gap: 65px; margin: 65px 0 15px; }
+.parcel-faq h2 { font-size: 33px; letter-spacing: -.05em; line-height: 1.2; margin: 0 0 14px; font-weight: 700; }
+.parcel-faq-intro { color: #526070; max-width: 310px; font-size: 13px; line-height: 1.8; }
+.parcel-faq details { border-bottom: 1px solid #192c4326; padding: 19px 0; }
+.parcel-faq details:first-child { padding-top: 0; }
+.parcel-faq summary { cursor: pointer; font-size: 14px; font-weight: 600; }
+.parcel-faq details p { margin: 12px 0 0; color: #526070; line-height: 1.8; font-size: 12px; }
+@media (max-width: 1100px) { .parcel-world-origin { padding: 11px; font-size: 8px; } .parcel-world-label { padding: 13px 46px 13px 14px; } .parcel-world-label strong { font-size: 15px; } }
+@media (max-width: 760px) { .parcel-faq { grid-template-columns: 1fr; gap: 18px; margin-top: 42px; } .parcel-faq-intro { max-width: none; } }
+@media (max-width: 480px) { .parcel-world-stage { margin-top: 5px; } .parcel-world-origin { top: 3%; left: 0; } .parcel-world-label { right: 0; bottom: 5%; padding: 11px 40px 11px 12px; } .parcel-world-label svg { width: 25px; top: 15px; right: 9px; } .parcel-world-caption { padding: 16px 0 0; font-size: 10px; } .parcel-service-strip { margin-bottom: 27px; gap: 14px; } .parcel-service-strip > strong { flex-basis: 100%; } .parcel-home-links { margin-top: 19px; } }
+@media (prefers-reduced-motion: reduce) { .parcel-world-canvas, .parcel-world-controls button { transition: none; } }

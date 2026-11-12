@@ -69,7 +69,7 @@ Vercel과 Tailscale 서버는 서로 다른 배포 환경입니다. 두 주소�
 | 기존 Tailscale 주소 | `http://100.106.125.36:3001` |
 | 로컬 개발 | `http://localhost:3000` |
 
-Tailscale 주소는 tailnet 안에서만 접근 가능하고 현재 HTTP입니다. 가능하면 tailnet에서 HTTPS를 활성화하고 Tailscale Serve가 제공하는 HTTPS 도메인을 사용하세요. Google의 Web OAuth는 일반적으로 HTTPS origin을 요구하며 raw HTTP IP는 허용되지 않을 수 있습니다. HTTPS origin을 쓰기로 바꾸면 `NEXT_PUBLIC_APP_URL`, Supabase 허용 URL, Google origin에 동일한 새 origin을 반영합니다. 두 서버를 동시에 운영할 경우 각 서버에 서로 다른 환경변수를 설정하고 각각 재시작·재배포합니다. `.env` 파일을 서로 덮어쓰거나 한 서버에서 두 앱 설정을 공유하지 않습니다.
+Tailscale 주소는 tailnet 안에서만 접근 가능하고 위 예시는 HTTP입니다. 계정 UI는 일반 HTTP IP에서 이메일·Google 입력과 동작을 막으므로 로그인에는 tailnet에서 HTTPS를 활성화하고 Tailscale Serve가 제공하는 HTTPS 도메인을 사용하세요. Google의 Web OAuth는 일반적으로 HTTPS origin을 요구하며 raw HTTP IP는 허용되지 않을 수 있습니다. HTTPS origin을 쓰기로 바꾸면 `NEXT_PUBLIC_APP_URL`, Supabase 허용 URL, Google origin에 동일한 새 origin을 반영합니다. 두 서버를 동시에 운영할 경우 각 서버에 서로 다른 환경변수를 설정하고 각각 재시작·재배포합니다. `.env` 파일을 서로 덮어쓰거나 한 서버에서 두 앱 설정을 공유하지 않습니다.
 
 1. **Google Cloud Console**에서 Google Auth Platform 프로젝트를 선택하거나 새 프로젝트를 만듭니다. Branding에 표시할 앱 이름과 지원 이메일을 설정합니다. 테스트 단계에서는 Audience를 External로 두고 본인 Google 계정을 Test users에 추가합니다. 테스트가 끝나고 누구나 로그인해야 할 때만 공개 전환과 필요한 Google 검증을 검토합니다.
 2. **Google Cloud Console → Clients**에서 OAuth client를 만들고 앱 종류로 **Web application**을 선택합니다. Authorized JavaScript origins에는 실제 HTTPS Vercel origin과, Tailscale Serve HTTPS를 쓰는 경우 그 HTTPS origin을 각각 추가합니다. localhost를 쓰는 개발 환경은 `http://localhost:3000`도 추가합니다. origin에는 경로나 callback path를 넣지 않습니다.
@@ -77,11 +77,11 @@ Tailscale 주소는 tailnet 안에서만 접근 가능하고 현재 HTTP입니�
 4. **Supabase Dashboard → Authentication → Sign In / Providers → Google**에서 Google provider를 활성화하고 Client ID와 Client Secret을 입력해 저장합니다. Client Secret은 Supabase에만 입력하며 `NEXT_PUBLIC_` 변수나 저장소에 넣지 않습니다.
 5. **Supabase Dashboard → Authentication → URL Configuration**에서 Site URL을 주로 사용할 정식 HTTPS 주소로 설정합니다. Additional Redirect URLs에는 실제로 시험할 정확한 callback URL을 각각 추가합니다:
    - `https://paynship-ochre.vercel.app/auth/callback`
-   - `http://100.106.125.36:3001/auth/callback` (HTTP IP에서 Google 로그인이 허용되고 브라우저가 OAuth cookie를 유지하는 경우에만)
+   - `https://<tailnet-hostname>/auth/callback` (Tailscale Serve HTTPS를 준비한 경우; 일반 HTTP IP 로그인은 차단됨)
    - `http://localhost:3000/auth/callback` (로컬 시험용)
    HTTPS Tailscale Serve 주소를 준비했다면 HTTP IP 대신 `https://<tailnet-hostname>/auth/callback`을 등록합니다. Vercel preview URL을 쓸 때는 필요한 preview 도메인만 제한된 pattern으로 추가하고, 전체 URL에 대한 광범위한 wildcard는 피합니다.
 6. 두 앱 환경에 올바른 `NEXT_PUBLIC_APP_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`가 각각 설정되어 있는지 확인하고 해당 서버를 재배포하거나 재시작합니다. 공개 anon/publishable key는 앱에 쓰지만 `service_role` key와 DB 암호는 브라우저 환경변수로 절대 노출하지 않습니다.
-7. 고객 대상이 global인 초기 출시에서는 각 주소에서 `/login` → **Continue with Google** 하나만 노출하고 시험합니다. 동의 화면에서 본인 테스트 계정을 선택한 뒤 같은 주소의 앱으로 돌아오고 로그인 상태가 보이는지 확인합니다. callback으로 돌아왔는데 교환이 실패하면 로그인 화면이 오류와 제공자/redirect 설정 확인 안내를 표시합니다. 실패하면 주소창·Google/Supabase 오류 문구, Supabase Auth Logs, Vercel Function Logs 또는 Tailscale 서버 로그를 확인합니다. 로그인 redirect URI 불일치는 보통 Google Client의 Supabase callback 누락, origin 불일치는 Google Authorized JavaScript origins 누락, 로그인 후 잘못된 호스트로 이동하는 증상은 해당 서버의 `NEXT_PUBLIC_APP_URL` 불일치입니다.
+7. 각 HTTPS 주소에서 `/signup`의 이메일 가입·확인 메일·`/login`의 이메일 로그인과 **Continue with Google**을 각각 시험합니다. 동의 화면에서 본인 테스트 계정을 선택한 뒤 같은 주소의 앱으로 돌아오고 로그인 상태가 보이는지 확인합니다. callback으로 돌아왔는데 교환이 실패하면 로그인 화면이 오류와 제공자/redirect 설정 확인 안내를 표시합니다. 실패하면 주소창·Google/Supabase 오류 문구, Supabase Auth Logs, Vercel Function Logs 또는 Tailscale 서버 로그를 확인합니다. 로그인 redirect URI 불일치는 보통 Google Client의 Supabase callback 누락, origin 불일치는 Google Authorized JavaScript origins 누락, 로그인 후 잘못된 호스트로 이동하는 증상은 해당 서버의 `NEXT_PUBLIC_APP_URL` 불일치입니다.
 
 추가 provider는 고객 분포와 실제 전환 근거가 있을 때 하나씩 시험합니다. Kakao는 지원되지만 유효한 이메일이 필요한 서비스 흐름에 맞춰 Kakao 이메일 scope·동의와 Supabase 설정을 검증해야 합니다. GitHub는 개발자 계정에 편중되어 일반 글로벌 구매자 인증에는 기본 선택으로 권하지 않습니다. Naver는 Supabase의 현재 내장 social provider가 아니므로 표준 `signInWithOAuth({ provider })` 목록에 임의로 추가하지 않습니다. 별도 provider 통합을 검토하기 전에는 로그인 버튼을 표시하지 않습니다. Supabase가 기본 제공하는 [social login provider](https://supabase.com/docs/guides/auth/social-login)와 [Kakao 설정](https://supabase.com/docs/guides/auth/social-login/auth-kakao)을 참고합니다.
 
@@ -142,3 +142,10 @@ production 환경 점검은 `npm.cmd run ops:check -- production`입니다. 실�
 - ZAP의 비로그인 검사와 인증된 계정·운영자 API 검사, 실제 DB 동시 요청 시험은 별도입니다.
 
 [운영](../OPERATIONS.md) · [보안](../SECURITY.md) · [기능 상태](../../Features/STATUS.md)
+
+
+## paynship-dh2 첫 화면·계정 배포 (2026-11-12)
+
+Git/Vercel 연결 저장소는 `DongHeeKw/paynship-dh2`인지 확인합니다. Three.js `three`와 개발용 `@types/three` 의존성을 lockfile에 추가했으며 기존 `prisma generate && next build`를 사용합니다. Vercel 설정·기존 Supabase demo SQL·DB schema를 변경하지 않습니다. 홈 장면은 외부 CDN이나 추가 환경변수를 요구하지 않습니다.
+
+Vercel에서 `/`, `/purchase`, `/orders`, `/settings/delivery`, `/login`, `/signup`을 검토합니다. `/orders`와 배송정보 게스트 화면은 설명만 표시하고 실제 개인 데이터는 인증이 필요합니다. `/demo`는 기존 synthetic Supabase 데이터 페이지이고 `/dev/preview`는 로컬 development 전용이므로 Vercel에서는 사용할 수 없습니다. 로컬 `.env`를 업로드하지 말고 Vercel의 Production/Preview 환경변수를 각각 확인합니다. Email provider·이메일 확인·SMTP·Google 및 허용 callback은 실제 프로젝트에서 따로 검증합니다. [입문 안내](../BEGINNER_GUIDE.md)를 참고하세요.

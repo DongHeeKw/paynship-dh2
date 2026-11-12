@@ -1,21 +1,27 @@
 import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
-
-function safeReturnPath(value: string | null) {
-  if (!value || !value.startsWith('/') || value.startsWith('//') || value.includes('\\') || /[\r\n]/.test(value)) return '/';
-  const allowed = ['/', '/purchase', '/orders', '/settings/delivery', '/admin/purchases', '/admin/support'];
-  const path = value.split('?')[0];
-  return allowed.some(base => path === base || (base !== '/' && path.startsWith(`${base}/`))) ? value : '/';
-}
+import { customerReturnPath } from '@/lib/auth/customer-redirect';
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const origin = process.env.NODE_ENV === 'production' ? new URL(process.env.NEXT_PUBLIC_APP_URL!).origin : url.origin;
   const code = url.searchParams.get('code');
-  if (code) {
-    const supabase = await createClient();
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) return NextResponse.redirect(new URL(safeReturnPath(url.searchParams.get('next')), origin));
+  const next = customerReturnPath(url.searchParams.get('next'), '/');
+  if (code && code.length <= 4096 && !url.searchParams.has('error')) {
+    try {
+      const supabase = await createClient();
+      const { error } = await supabase.auth.exchangeCodeForSession(code);
+      if (!error) {
+        const { data, error: userError } = await supabase.auth.getUser();
+        if (!userError && data.user?.email && data.user.email_confirmed_at) return NextResponse.redirect(new URL(next, origin));
+        await supabase.auth.signOut({ scope: 'local' });
+      }
+    } catch {
+      // Expired/missing verifiers and provider failures return to a safe account screen.
+    }
   }
-  return NextResponse.redirect(new URL('/login?error=callback', origin));
+  const failure = new URL('/login', origin);
+  failure.searchParams.set('error', 'callback');
+  failure.searchParams.set('next', next);
+  return NextResponse.redirect(failure);
 }

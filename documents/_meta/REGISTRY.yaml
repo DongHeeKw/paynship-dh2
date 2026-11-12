@@ -1,18 +1,18 @@
 version: 2
-updated_at: "2026-10-12"
+updated_at: "2026-11-12"
 metadata:
   description: "Current URL purchasing service documentation"
   source_of_truth_note: "Registered current docs define scope; archives and old research are historical."
 current:
   - id: product
     path: documents/PRODUCT_SPECIFICATION.md
-    update_triggers: ["app/**", "components/purchases/**", "lib/purchases/**", "lib/dev-preview/**", "prisma/**"]
+    update_triggers: ["app/**", "components/home/**", "components/site/**", "components/purchases/**", "lib/purchases/**", "lib/dev-preview/**", "prisma/**"]
   - id: authentication
     path: documents/Features/Auth/Spec.md
-    update_triggers: ["app/login/**", "app/auth/**", "app/dev/preview/**", "components/site/SignInForm.tsx", "components/site/SignInForm.test.tsx", "components/site/PreviewModeLink.tsx", "components/auth/AuthButton.tsx", "components/auth/LoginModal.tsx", "components/auth/LoginEnforcementModal.tsx", "contexts/AuthContext.tsx", "lib/auth/**", "lib/supabase/**", "lib/dev-preview/**"]
+    update_triggers: ["app/login/**", "app/signup/**", "app/auth/**", "components/site/AccountPanel.tsx", "components/site/account.css", "app/dev/preview/**", "components/site/SignInForm.tsx", "components/site/SignInForm.test.tsx", "components/site/PreviewModeLink.tsx", "components/auth/AuthButton.tsx", "components/auth/LoginModal.tsx", "components/auth/LoginEnforcementModal.tsx", "contexts/AuthContext.tsx", "lib/auth/**", "lib/supabase/**", "lib/dev-preview/**"]
   - id: feature_status
     path: documents/Features/STATUS.md
-    update_triggers: ["app/**", "lib/**", "prisma/**", "tests/**"]
+    update_triggers: ["app/**", "lib/**", "prisma/**", "tests/**", "components/home/**", "components/site/**", "components/purchases/**", "e2e/public-journey.spec.ts"]
   - id: product_evidence
     path: documents/Features/Product-Data-Pipeline/Spec.md
     update_triggers: ["lib/purchases/product-url.ts", "lib/purchases/product-link-info.ts", "lib/purchases/product-preview.ts", "lib/purchases/intake-draft.ts", "lib/purchases/categories.ts", "lib/purchases/countries.ts", "lib/purchases/review*.ts", "lib/purchases/quote.ts", "components/purchases/ProductPreview.tsx", "components/purchases/ProductRequestFields.tsx", "components/purchases/PurchaseForm.tsx", "components/purchases/UrlIntake.tsx", "app/purchase/page.tsx", "lib/product-evidence/**", "scripts/product-samples/**", "data/samples/**"]
@@ -37,6 +37,9 @@ current:
   - id: documentation_policy
     path: documents/_meta/DOC_GOVERNANCE.md
     update_triggers: ["AGENTS.md", "CLAUDE.md", "documents/_meta/**", "docs/plans/**"]
+  - id: beginner_guide
+    path: documents/Reference/BEGINNER_GUIDE.md
+    update_triggers: ["app/login/**", "app/signup/**", "app/demo/**", "components/home/**", "components/site/**", "lib/auth/**", "prisma/schema.prisma"]
 reference:
   - id: naver_product_lookup
     path: data/samples/naver-product-evidence-2026-10-12.json

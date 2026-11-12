@@ -1,0 +1,74 @@
+.guest-journey { color: #192c43; }
+.guest-kicker { color: #526070; margin: 0 0 12px; font-size: 10px; font-weight: 700; letter-spacing: .13em; }
+.guest-intro { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 35px; align-items: center; padding: 40px 44px; border: 1px solid #192c4329; border-radius: 18px; background: #fffdf8; }
+.guest-intro h2 { margin: 0 0 18px; font-size: clamp(30px, 3.6vw, 44px); font-weight: 800; letter-spacing: -.055em; line-height: 1.1; }
+.guest-intro > div > p:not(.guest-kicker) { max-width: 520px; color: #526070; font-size: 14px; line-height: 1.8; }
+.guest-intro .action-row { margin-top: 24px; gap: 12px; }
+.guest-journey .primary-button, .guest-journey .secondary-button { min-height: 48px; border: 1px solid #192c43; border-radius: 8px; font-size: 12px; }
+.guest-journey .primary-button { gap: 18px; background: #2467ed; color: #fff; box-shadow: 2px 2px 0 #192c43; }
+.guest-journey .primary-button:hover { background: #174fc3; }
+.guest-journey .secondary-button { background: #fff; color: #192c43; }
+.guest-journey .secondary-button:hover { background: #edf3ff; }
+.guest-intro > div > .guest-intro-note { margin: 20px 0 0; font-size: 12px; }
+.guest-intro-note a { color: #2456a1; }
+.guest-intro > .journey-illustration { width: 100%; height: auto; }
+.guest-preview { margin-top: 32px; padding: 32px; border: 1px solid #192c4329; border-radius: 16px; background: #fffdf8; }
+.guest-preview-heading { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 28px; }
+.guest-preview-heading .guest-kicker { margin-bottom: 7px; }
+.guest-preview h2, .guest-access h2 { margin: 0; font-size: 23px; font-weight: 700; letter-spacing: -.6px; line-height: 1.25; }
+.guest-example-tag { display: inline-block; padding: 7px 10px; border: 1px solid #e3bdb1; border-radius: 6px; color: #794332; background: #fff0e9; font-size: 10px; font-weight: 600; }
+.guest-delivery-fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
+.guest-step-number { display: inline-grid; place-items: center; flex: 0 0 30px; width: 30px; height: 30px; border: 1px solid #a7bfed; border-radius: 50%; background: #edf3ff; color: #2456a1; font-size: 10px; font-weight: 700; }
+.guest-delivery-fields h3, .guest-request-stages h3, .guest-access h3 { margin: 14px 0 8px; font-size: 15px; font-weight: 700; }
+.guest-delivery-fields p, .guest-request-stages p, .guest-access > div > p:not(.guest-kicker) { margin: 0; color: #526070; font-size: 12px; line-height: 1.8; }
+.guest-field-preview { display: flex; justify-content: space-between; gap: 16px; padding: 12px; margin-top: 12px; border: 1px dashed #b8c4d2; border-radius: 6px; color: #526070; font-size: 12px; }
+.guest-field-preview > span { color: #7b8da5; }
+.guest-guidance-note { padding: 12px; margin-top: 12px; border-radius: 6px; background: #edf3ff; color: #405979; font-size: 12px; line-height: 1.8; }
+.guest-preview-footnote { margin: 24px 0 0; padding-top: 18px; border-top: 1px dashed #ccd5e0; color: #627083; font-size: 11px; line-height: 1.8; }
+.guest-demo-link { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding-top: 22px; }
+.guest-demo-link strong { font-size: 13px; }
+.guest-demo-link p { margin: 6px 0 0; color: #627083; font-size: 12px; line-height: 1.8; }
+.guest-demo-link .secondary-button { gap: 14px; }
+.guest-request-preview { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 35px; align-items: start; }
+.guest-request-card { padding: 24px; border: 1px solid #192c43; border-radius: 10px; background: #fff; box-shadow: 4px 4px 0 #e3edff; }
+.guest-request-card-top { display: flex; align-items: center; gap: 12px; font-size: 9px; font-weight: 700; letter-spacing: .1em; color: #627083; }
+.guest-package-icon { display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid #192c43; border-radius: 9px; background: #fa765f; color: #192c43; font-size: 24px; transform: rotate(-5deg); }
+.guest-request-card h3 { margin: 22px 0 7px; font-size: 22px; font-weight: 700; letter-spacing: -.7px; }
+.guest-request-card > p { margin: 0; color: #526070; font-size: 12px; line-height: 1.8; }
+.guest-request-card dl { margin: 24px 0 18px; font-size: 12px; }
+.guest-request-card dl > div { display: grid; grid-template-columns: 70px minmax(0, 1fr); gap: 12px; padding: 12px 0; border-top: 1px dashed #d6dde7; }
+.guest-request-card dt { color: #627083; }
+.guest-request-card dd { margin: 0; font-weight: 600; }
+.guest-request-card > .guest-request-card-note { color: #627083; font-size: 10px; }
+.guest-request-stages { display: grid; gap: 25px; padding: 5px 0 0; margin: 0; list-style: none; }
+.guest-request-stages li { display: flex; gap: 14px; }
+.guest-request-stages h3 { margin-top: 3px; }
+.guest-access { display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 28px; padding: 32px 0 0; margin-top: 6px; }
+.guest-access h2 { font-size: 22px; }
+.guest-access h3 { margin-top: 2px; }
+.requests-page { max-width: 1120px; margin: 55px auto 65px; }
+.requests-page > .page-heading h1 { font-size: clamp(34px, 4vw, 48px); font-weight: 800; letter-spacing: -.055em; line-height: 1.1; }
+.requests-page > .page-heading h1 > span { color: #2467ed; }
+.requests-page > .page-heading > p { color: #526070; font-size: 15px; }
+@media (max-width: 900px) {
+  .guest-intro { grid-template-columns: minmax(0, 1fr) 190px; padding: 32px; gap: 20px; }
+  .guest-delivery-fields { gap: 20px; }
+  .guest-preview { padding: 26px; }
+  .guest-request-preview { gap: 26px; }
+  .guest-access { grid-template-columns: 1fr 1fr; }
+  .guest-access > div:first-child { grid-column: 1 / -1; }
+}
+@media (max-width: 650px) {
+  .guest-intro { grid-template-columns: 1fr; padding: 26px 22px; gap: 20px; }
+  .guest-intro > .journey-illustration { display: none; }
+  .guest-intro .action-row { align-items: stretch; flex-direction: column; }
+  .guest-intro > div > p:not(.guest-kicker) { font-size: 13px; }
+  .guest-preview { padding: 24px 20px; margin-top: 22px; }
+  .guest-preview h2 { font-size: 21px; }
+  .guest-delivery-fields, .guest-request-preview, .guest-access { grid-template-columns: 1fr; }
+  .guest-delivery-fields > article + article { padding-top: 22px; border-top: 1px dashed #ccd5e0; }
+  .guest-request-card { padding: 20px; }
+  .guest-demo-link { align-items: flex-start; flex-direction: column; }
+  .guest-access { gap: 22px; }
+  .requests-page { margin-top: 32px; }
+}
