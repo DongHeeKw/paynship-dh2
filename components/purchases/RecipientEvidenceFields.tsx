@@ -39,9 +39,9 @@ export default function RecipientEvidenceFields({ country, evidence }: { country
         <small>Future date within 30 days; review again if the shipment or recipient changes.</small>
       </label>
     </div>
-    {country === 'TW' && <label className="field">Authorized shipment / airwaybill reference
+    {['CN', 'TW'].includes(country) && <label className="field">Reviewed shipment / airwaybill reference
       <input name="recipientShipmentReference" minLength={3} maxLength={100} defaultValue={evidence?.shipmentReference} />
-      <small>Required before dispatch, matching the shipment tracking reference. Leave blank for a pre-purchase authorization plan.</small>
+      <small>Before dispatch, record evidence for this exact shipment tracking reference. Leave blank only for a pre-purchase review.</small>
     </label>}
     <label className="field">Recipient review notes
       <textarea name="recipientNotes" required minLength={10} maxLength={1000} defaultValue={evidence?.notes} placeholder="What documents or authorization were checked, by whom, and through which secure broker/carrier process?" />

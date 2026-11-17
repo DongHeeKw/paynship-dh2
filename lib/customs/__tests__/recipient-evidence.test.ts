@@ -51,4 +51,13 @@ describe('recipient evidence approval boundary', () => {
     expect(validateRecipientEvidence('TW', taiwan, broker, now, 'shipping', 'TEST-AWB').method).toBe('BROKER_REVIEW');
     expect(() => validateRecipientEvidence('TW', { ...taiwan, customsAuthorization: 'DEFERRED' }, broker, now, 'shipping', 'TEST-AWB')).toThrow('Resolve');
   });
+  it('requires a reviewed China route and ties dispatch evidence to the exact shipment', () => {
+    const china = { ...delivery, country: 'CN' as const };
+    expect(() => validateRecipientEvidence('CN', china, evidence, now)).toThrow('broker');
+    const broker = { ...evidence, method: 'BROKER_REVIEW' };
+    expect(validateRecipientEvidence('CN', china, broker, now, 'quote').method).toBe('BROKER_REVIEW');
+    expect(() => validateRecipientEvidence('CN', china, broker, now, 'shipping', 'CN-TEST-AWB')).toThrow('shipment');
+    expect(() => validateRecipientEvidence('CN', china, { ...broker, shipmentReference: 'OTHER-AWB' }, now, 'shipping', 'CN-TEST-AWB')).toThrow('shipment');
+    expect(validateRecipientEvidence('CN', china, { ...broker, shipmentReference: 'CN-TEST-AWB' }, now, 'shipping', 'CN-TEST-AWB').shipmentReference).toBe('CN-TEST-AWB');
+  });
 });

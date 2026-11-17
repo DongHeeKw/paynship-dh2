@@ -31,7 +31,7 @@ export function deliveryProfileInput(profile: StoredDeliveryProfile): DeliveryPr
 // Do not guess an identifier type or inherit an old verification claim. This
 // does not delete historical ciphertext; subsequent saves replace the profile.
 export function readStoredDeliveryProfile(raw: unknown, now = Date.now()): StoredDeliveryProfile {
-  const stored = z.record(z.unknown()).parse(raw);
+  const stored = z.record(z.string(), z.unknown()).parse(raw);
   const { customsVerification: _oldState, ...input } = stored;
   if (input.country !== 'ID' || !input.customsIdType || input.customsIdType === 'NONE') {
     input.customsId = '';

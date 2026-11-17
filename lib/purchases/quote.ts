@@ -16,7 +16,7 @@ export interface PurchaseQuote {
 
 // No country-rate guesses, FTA assumptions, de-minimis rules or VAT profit offsets.
 // The operator supplies dated sources and verified facts; arithmetic is reproducible.
-export function calculatePurchaseQuote(input: PurchaseReview, quantity: number, quoteVersion: number, now = Date.now(), pricing: 'CURRENT' | 'LEGACY' = 'CURRENT'): PurchaseQuote {
+export function calculatePurchaseQuote(input: PurchaseReview, quantity: number, quoteVersion: number, now = Date.now(), pricing: 'CURRENT' | 'LEGACY' | 'PAID' = 'CURRENT'): PurchaseQuote {
   const review = reviewSchema.parse(input);
   if (intakeDecision(review.verifiedCategory) === 'OUT_OF_SCOPE') throw new PurchaseError(422, 'This category is outside the current service scope.');
   if (!customsCodeInServiceScope(review.hsCode)) throw new PurchaseError(422, 'This customs chapter is outside the current service scope. A separate broker route is required.');
@@ -34,7 +34,7 @@ export function calculatePurchaseQuote(input: PurchaseReview, quantity: number, 
   const productCents = convert(productSubtotalKrw);
   const domesticShippingCents = convert(review.domesticShippingKrw);
   const serviceFeeKrw = calculateServiceFeeKrw(productSubtotalKrw);
-  const serviceFeeCents = pricing === 'LEGACY' ? review.serviceFeeCents : convert(serviceFeeKrw);
+  const serviceFeeCents = pricing === 'CURRENT' ? convert(serviceFeeKrw) : review.serviceFeeCents;
   const customsValue = productCents + (review.customsValueBasis === 'CIF' ? review.internationalShippingCents + review.insuranceCents : 0);
   const dutyCents = review.verifiedImportCharges?.dutyCents ?? percentage(customsValue, review.dutyBasisPoints);
   const taxBase = customsValue + review.additionalTaxBaseCents + (review.taxIncludesDuty ? dutyCents : 0);
@@ -44,5 +44,5 @@ export function calculatePurchaseQuote(input: PurchaseReview, quantity: number, 
   if (!Number.isSafeInteger(totalCents) || totalCents <= 0 || totalCents > 10000000) throw new PurchaseError(422, 'Quote exceeds the service limit.');
   return { currency: 'USD', productName: review.productName, productCents, domesticShippingCents, serviceFeeCents,
     internationalShippingCents: review.internationalShippingCents, insuranceCents: review.insuranceCents,
-    dutyCents, taxCents, totalCents, quoteVersion, ...(pricing === 'CURRENT' ? { serviceFeePolicy: SERVICE_FEE_POLICY.id, serviceFeeKrw, exchangeRateKrwPerUsd: review.exchangeRateKrwPerUsd, clearanceCents, importChargeMethod: review.verifiedImportCharges ? 'VERIFIED_AMOUNTS' as const : 'REVIEWED_AD_VALOREM' as const } : {}), ...(review.estimatedTransitDays ? { estimatedTransitDays: review.estimatedTransitDays } : {}) };
+    dutyCents, taxCents, totalCents, quoteVersion, ...(pricing !== 'LEGACY' ? { serviceFeePolicy: SERVICE_FEE_POLICY.id, serviceFeeKrw, exchangeRateKrwPerUsd: review.exchangeRateKrwPerUsd, clearanceCents, importChargeMethod: review.verifiedImportCharges ? 'VERIFIED_AMOUNTS' as const : 'REVIEWED_AD_VALOREM' as const } : {}), ...(review.estimatedTransitDays ? { estimatedTransitDays: review.estimatedTransitDays } : {}) };
 }

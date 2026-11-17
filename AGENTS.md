@@ -24,7 +24,8 @@ PayNShip is a URL based purchasing and international shipping service for overse
 ## Commands
 
 - Install: `npm install`
-- Run: `npm run dev`
+- Isolated sample app: `npm start app` (Node 24+, Linux; port 3002)
+- Develop source: `npm run dev`
 - Check types: `npm run type-check`
 - Tests: `npm run test:ci`
 - Build: `npm run build`
@@ -43,3 +44,5 @@ PayNShip is a URL based purchasing and international shipping service for overse
 - Update the corresponding stable docs with behavior, API, schema or operations changes.
 - Stable docs live in `documents/`; current dated plans in `docs/plans/`; `documents/Archive/` is historical.
 - Use portable relative documentation links. Register new sources and triggers in [REGISTRY.yaml](documents/_meta/REGISTRY.yaml).
+
+New self-contained capabilities have canonical documentation beside their owner: `features/storefront/`, `features/workspace/`, `features/reseller/`, and `components/home/`. Preserve dh2 pricing/variant extraction/social-provider behavior when integrating another checkout. Add behavioral regressions before changes; do not claim full MC/DC without measured condition/decision evidence.

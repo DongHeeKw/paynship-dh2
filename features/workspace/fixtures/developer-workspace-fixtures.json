@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "sampleOnly": true,
+  "initializedAt": "2026-10-17T06:00:00.000Z",
+  "notice": "LOCAL SAMPLE ONLY. Ghost accounts, credits, payments and shipments are fictional. Product identities and prices are estimates, not seller observations. Duty, tax, HS and customs eligibility remain unknown.",
+  "scenario": { "currency": "USD", "exchangeRateKrwPerUsd": 1400, "openingCreditCents": 50000, "domesticShippingCents": 250, "serviceFeeCents": 400, "internationalShippingCents": 1800, "insuranceCents": 100 },
+  "customers": [
+    { "id": "sample-customer-cn", "email": "developer-cn@example.invalid", "name": "SAMPLE Wei Lin", "country": "CN", "profile": { "fullName": "SAMPLE Wei Lin", "phone": "+12025550101", "country": "CN", "address1": "SAMPLE ONLY - DO NOT SHIP", "address2": "", "city": "Sample City CN", "region": "Sample Region CN", "postalCode": "000000", "customsId": "", "customsIdType": "NONE", "customsAuthorization": "BROKER" } },
+    { "id": "sample-customer-jp", "email": "developer-jp@example.invalid", "name": "SAMPLE Hana Mori", "country": "JP", "profile": { "fullName": "SAMPLE Hana Mori", "phone": "+12025550101", "country": "JP", "address1": "SAMPLE ONLY - DO NOT SHIP", "address2": "", "city": "Sample City JP", "region": "Sample Region JP", "postalCode": "000-0000", "customsId": "", "customsIdType": "NONE", "customsAuthorization": "NONE" } },
+    { "id": "sample-customer-us", "email": "developer-us@example.invalid", "name": "SAMPLE Alex Morgan", "country": "US", "profile": { "fullName": "SAMPLE Alex Morgan", "phone": "+12025550101", "country": "US", "address1": "SAMPLE ONLY - DO NOT SHIP", "address2": "", "city": "Sample City US", "region": "Sample Region US", "postalCode": "00000", "customsId": "", "customsIdType": "NONE", "customsAuthorization": "BROKER" } }
+  ],
+  "products": [
+    { "id": "sample-naver-cup", "sourceUrl": "https://smartstore.naver.com/camping4rest/products/6273047603", "name": "Estimated titanium Sierra cup scenario", "category": "household", "options": "SAMPLE estimate: 300 ml; listing and option unverified", "estimatedPriceKrw": 24000, "observedPriceKrw": null, "hsCode": null, "evidenceStatus": "UNVERIFIED_ESTIMATE" },
+    { "id": "sample-naver-shirt", "sourceUrl": "https://smartstore.naver.com/tsoscorp/products/7831114418", "name": "Estimated cotton T-shirt scenario", "category": "clothing", "options": "SAMPLE estimate: navy / medium; listing and option unverified", "estimatedPriceKrw": 29000, "observedPriceKrw": null, "hsCode": null, "evidenceStatus": "UNVERIFIED_ESTIMATE" },
+    { "id": "sample-naver-cup-large", "sourceUrl": "https://smartstore.naver.com/moamoa0515/products/5285876567", "name": "Estimated large titanium cup scenario", "category": "household", "options": "SAMPLE estimate: 370 ml; listing and option unverified", "estimatedPriceKrw": 32000, "observedPriceKrw": null, "hsCode": null, "evidenceStatus": "UNVERIFIED_ESTIMATE" }
+  ],
+  "requestScenarios": [
+    { "key": "review", "status": "REVIEW_REQUIRED", "productId": "sample-naver-cup", "quantity": 1 },
+    { "key": "quoted", "status": "QUOTED", "productId": "sample-naver-shirt", "quantity": 1 },
+    { "key": "pending", "status": "PAYMENT_PENDING", "productId": "sample-naver-cup-large", "quantity": 1 },
+    { "key": "paid", "status": "PAID", "productId": "sample-naver-cup", "quantity": 2 },
+    { "key": "shipped", "status": "SHIPPED", "productId": "sample-naver-shirt", "quantity": 1 },
+    { "key": "delivered", "status": "DELIVERED", "productId": "sample-naver-cup-large", "quantity": 1 },
+    { "key": "hold", "status": "ON_HOLD", "productId": "sample-naver-cup", "quantity": 1 }
+  ]
+}

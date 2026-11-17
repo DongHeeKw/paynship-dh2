@@ -39,7 +39,7 @@ export async function createHostedPayment(requestId: string, quote: PurchaseQuot
     throw new PurchaseError(503, 'Payment provider total did not match the approved quote. Contact support.');
   }
   const url = new URL(draft.invoiceUrl);
-  if (url.protocol !== 'https:' || ![domain, 'checkout.shopify.com'].includes(url.hostname)) {
+  if (url.protocol !== 'https:' || url.username || url.password || url.port || ![domain, 'checkout.shopify.com'].includes(url.hostname)) {
     throw new PurchaseError(503, 'Payment provider returned an unexpected checkout address.');
   }
   return { id: String(draft.id), checkoutUrl: url.toString() };

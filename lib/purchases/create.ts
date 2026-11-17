@@ -10,6 +10,7 @@ import { PurchaseError } from './errors';
 import { purchaseDto } from './read';
 import { requirePurchasingAvailable } from './availability';
 import { purchaseEventFields } from './event-record';
+import { requireLaunchDestination } from './destination-policy';
 
 export async function createPurchase(userId: string, input: unknown) {
   const data = createPurchaseSchema.parse(input);
@@ -34,6 +35,7 @@ export async function createPurchase(userId: string, input: unknown) {
     const profile = await tx.deliveryProfile.findUnique({ where: { userId } });
     if (!profile) throw new PurchaseError(422, 'Save your delivery details first.');
     const delivery = readStoredDeliveryProfile(decryptPii(profile.encryptedData, `profile:${userId}`));
+    requireLaunchDestination(delivery.country);
     return tx.purchaseRequest.create({ data: {
       id, userId, sourceUrl, category: data.category, quantity: data.quantity, options: encryptPii(data.options, `options:${id}`),
       destination: delivery.country, encryptedDelivery: encryptPii(delivery, `request:${id}`),

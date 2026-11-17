@@ -13,7 +13,7 @@ export default defineConfig({
       exclude: ['**/__tests__/**', '**/*.test.ts'],
     },
     include: ['**/__tests__/**/*.test.ts', '**/*.test.ts'],
-    exclude: ['node_modules', '.next', 'e2e'],
+    exclude: ['**/node_modules/**', '.next/**', '.tools/**', 'e2e/**', 'packages/**'],
   },
   resolve: {
     alias: {

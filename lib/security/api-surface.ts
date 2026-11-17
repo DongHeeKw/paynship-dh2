@@ -1,6 +1,7 @@
 // Historic database models are retained for migration and records. Their former
 // endpoints cannot bypass the reviewed URL purchasing flow.
 const activeRoutes = [
+  /^\/api\/reseller\/requests$/,
   /^\/api\/purchases(?:\/[0-9a-f-]+(?:\/(?:cancel|checkout|support))?)?$/i,
   /^\/api\/delivery-profile$/,
   /^\/api\/admin\/purchases(?:\/[0-9a-f-]+)?$/i,

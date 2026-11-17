@@ -11,6 +11,7 @@ import { requirePurchasingAvailable } from './availability';
 import { purchaseEventFields } from './event-record';
 import { openReview } from './review-storage';
 import { reviewRecipient } from './recipient-review';
+import { requireCurrentCustomsReview } from './customs-gate';
 
 export async function purchaseCheckout(id: string, userId: string, email: string, input: unknown) {
   const { version } = z.object({ version: z.number().int().nonnegative() }).strict().parse(input);
@@ -19,10 +20,7 @@ export async function purchaseCheckout(id: string, userId: string, email: string
   const row = await purchaseTransaction(async tx => {
     const request = await tx.purchaseRequest.findFirst({ where: { id, userId } });
     if (!request) throw new PurchaseError(404, 'Purchase request not found.');
-    const review = openReview(request.review, id);
-    if (!review || Date.parse(review.rulesValidUntil) <= Date.now() || !Number.isFinite(Date.parse(review.rulesValidUntil))) {
-      throw new PurchaseError(409, 'Current customs evidence is required before opening payment.');
-    }
+    const review = requireCurrentCustomsReview(openReview(request.review, id), request.destination);
     reviewRecipient(request, review.recipientEvidence);
     if (request.status === 'PAYMENT_PENDING' && request.checkoutUrl) {
       if (!request.quoteExpiresAt || request.quoteExpiresAt.getTime() <= Date.now()) throw new PurchaseError(409, 'This payment quote expired. Contact support before paying.');

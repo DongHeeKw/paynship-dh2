@@ -1,5 +1,20 @@
 # 로컬 실행·배포
 
+## One local entry point — 2026-11-18
+
+Use the **paynship-dh2** checkout. With Node 24+ and Linux user services:
+
+```bash
+npm install
+npm start app
+```
+
+The launcher prints its absolute workspace root and opens `http://127.0.0.1:3002`. Products is `/products`; persistent fictional accounts, credit, payments, delivery and support are at `/dev/workspace`. Re-running preserves sample data and creates a fresh source snapshot. `npm start` without `app` still starts the production build. Other platforms can use `npm run dev`; the isolated starter requires Linux.
+
+The dedicated unit is `paynship-dh2-sample-preview.service`; stop it with `systemctl --user stop paynship-dh2-sample-preview.service`. Source snapshots under `.tools/` are ignored and excluded from source tests/type checking. They exclude real environment files and disable provider credentials. No old-repository service or production process is replaced.
+
+`npm run predeploy:check -- --with-lint` runs lint, types, docs, behavioral tests, launcher isolation/readiness tests, sample persistence tests, extraction tests and build. Passing source checks is not production release approval.
+
 변경일: 2026-10-12. 현재 Windows는 로컬 개발 환경입니다. 다른 Linux 서버의 도메인·DNS·clone·DB·TLS·systemd 출시는 [Linux 출시 실행서](LINUX_RELEASE.md)를 따릅니다. 이 작업에서는 원격 서버 배포·DB 변경을 실행하지 않았습니다.
 
 ## 화면 실행

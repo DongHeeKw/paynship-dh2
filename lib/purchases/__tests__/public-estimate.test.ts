@@ -37,7 +37,7 @@ describe('pre-login customer estimates', () => {
   });
   it('labels customer input as unverified and leaves missing charges unknown', () => {
     const estimate = publicCostEstimate({ ...input, sourceUrl: 'https://www.yes24.com/product/goods/99', enteredUnitPriceKrw: 20000, quantity: 2 }, now, catalog);
-    expect(estimate).toMatchObject({ priceSource: 'CUSTOMER', productSubtotalKrw: 40000, serviceFeeKrw: 10000, productAndServiceKrw: 50000, dutyKrw: null, taxKrw: null, totalKrw: null });
+    expect(estimate).toMatchObject({ priceSource: 'CUSTOMER', productSubtotalKrw: 40000, serviceFeeKrw: 6000, productAndServiceKrw: 46000, dutyKrw: null, taxKrw: null, totalKrw: null });
   });
   it('ignores a customer price override for a currently verified variant', () => {
     expect(publicCostEstimate({ ...input, enteredUnitPriceKrw: 1 }, now, catalog).productSubtotalKrw).toBe(100000);

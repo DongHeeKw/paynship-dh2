@@ -1,5 +1,11 @@
 # 국가별 수취인 정보와 통관 검토
 
+## Export-route gates — 2026-11-18
+
+The initial request countries are VN, TH, PH, ID, CN, JP and US; this is a business scope, not customs approval. China, Vietnam, Thailand and Philippines require manual carrier/broker review where no verified automatic rule exists. China recipient authorization uses BROKER_REVIEW and must match the shipment at dispatch; do not collect a Korean PCCC as a substitute.
+
+Product review destination, freshness, recipient evidence and country-policy deadline are rechecked before checkout, buying, shipping and resuming a hold. The internal deadline remains overdue until evidence is actually refreshed; this integration does not manufacture current legal verification. US/CN/JP still require verified duty/tax/clearance amounts. See [requests](../Features/Order-Checkout/Spec.md).
+
 최종 자료 확인: 2026-10-12. 코드 정책 버전: `2026-10-12`.
 
 국가 선택, URL 형식, 우편번호 형식과 통관 가능 여부는 별도 판단이다. 현재 등록된 36개 도착국은 요청을 검토할 수 있는 후보 목록이며, 배송 또는 자동 통관을 보장하는 지원 국가 목록이 아니다. 실제 품목·가격·수량·원산지·운송 방법·수취인·신고 경로를 운영자가 확인한다. 이 문서는 수취인 정보 수집 범위를 정하며 관세율을 자동 지정하지 않는다.

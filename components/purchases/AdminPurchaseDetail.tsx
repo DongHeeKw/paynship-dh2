@@ -13,6 +13,7 @@ import AdminQuoteForm from './AdminQuoteForm';
 import AdminStatusForm from './AdminStatusForm';
 import AdminRejectForm from './AdminRejectForm';
 import AdminDeliveryDetails from './AdminDeliveryDetails';
+import RecipientClearanceStatus from './RecipientClearanceStatus';
 import AdminPaymentReconciliation from './AdminPaymentReconciliation';
 import RecipientReviewForm from './RecipientReviewForm';
 import type { RecipientEvidence } from '@/lib/customs/recipient-evidence';
@@ -34,6 +35,7 @@ export default function AdminPurchaseDetail({ id }: { id: string }) {
       <button className="text-button mb-6" disabled={busy} onClick={() => void load()}>Refresh request</button>
       <PurchaseFacts request={data.request} />
       <AdminDeliveryDetails delivery={data.delivery} />
+      <RecipientClearanceStatus country={data.request.destination} delivery={data.delivery} review={data.review} carrier={data.request.carrier} trackingNumber={data.request.trackingNumber} />
       <QuoteSummary quote={data.request.quote} expires={data.request.quoteExpiresAt} />
       {['REVIEW_REQUIRED', 'QUOTED'].includes(data.request.status) && <>
         <section className="detail-section">
@@ -43,11 +45,11 @@ export default function AdminPurchaseDetail({ id }: { id: string }) {
         </section>
         <AdminRejectForm id={id} version={data.request.version} onUpdated={() => void load()} />
       </>}
-      {data.request.status === 'ON_HOLD' && (data.request.paymentReceived && !data.request.fulfilmentStarted ?
+      {data.request.status === 'ON_HOLD' && (data.request.paymentReceived ?
         <section className="detail-section">
           <h2 className="section-heading">Revalidate product & customs evidence</h2>
           <AdminQuoteForm key={`revalidate-${data.request.version}`} id={id} version={data.request.version} country={data.request.destination} review={data.review} revalidate onUpdated={() => void load()} />
-        </section> : !data.request.paymentReceived && !data.request.fulfilmentStarted ?
+        </section> : !data.request.paymentReceived ?
         <AdminPaymentReconciliation key={`payment-${data.request.version}`} id={id} version={data.request.version} onUpdated={() => void load()} /> : null)}
       {data.review && ['PAID', 'PURCHASING', 'AT_WAREHOUSE', 'READY_TO_SHIP', 'ON_HOLD'].includes(data.request.status) &&
         <RecipientReviewForm key={`recipient-${data.request.version}`} id={id} version={data.request.version} country={data.request.destination} evidence={data.review.recipientEvidence} onUpdated={() => void load()} />}

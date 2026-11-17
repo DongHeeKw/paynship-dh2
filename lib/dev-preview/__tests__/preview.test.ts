@@ -48,6 +48,7 @@ describe('preview transport isolation', () => {
     expect((await request<{ requests: unknown[] }>('/api/purchases')).requests).toHaveLength(3);
   });
   it('maps navigation into the same preview without accepting external or admin destinations', () => {
+    expect(previewHref('/products?category=beauty')).toBe('/products?category=beauty');
     expect(previewHref('/settings/delivery?next=/purchase')).toBe('/dev/preview?view=delivery&next=%2Fpurchase');
     for (const path of ['//example.test/orders', 'https://example.test/', '/admin/purchases', '/orders/../admin']) expect(() => previewHref(path)).toThrow();
   });

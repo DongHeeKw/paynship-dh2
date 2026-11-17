@@ -9,6 +9,8 @@ const disableWebServer = process.env.PLAYWRIGHT_DISABLE_WEBSERVER === 'true';
 
 export default defineConfig({
   testDir: './e2e',
+  // Legacy v21 suites describe retired API routes and are retained as history.
+  testIgnore: ['**/v21-*.spec.ts'],
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -23,6 +25,7 @@ export default defineConfig({
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL,
+    launchOptions: { args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] },
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',

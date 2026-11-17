@@ -1,12 +1,18 @@
 # PayNShip
 
+## Local app in this checkout
+
+This repository is `DongHeeKw/paynship-dh2`. Run **`npm start app`** with Node 24+ on Linux. Open the printed URL (port **3002**) for the welcome scene and Products tab; use **`/dev/workspace`** for persistent fictional customers, credit, payments, delivery and support. The starter prints the checkout path, preserves sample data and excludes real backend credentials. `npm start` alone remains the production command.
+
+Current fee: **15% of merchandise, no minimum**. Historical paid quotes are unchanged. [Welcome scene](components/home/README.md) · [Product catalog](features/storefront/README.md) · [Sample workspace](features/workspace/README.md) · [Reseller API](features/reseller/README.md).
+
 한국 상품 URL을 받아 해외 고객 대신 구매하고 배송하는 서비스입니다. 초기 대상은 아시아권과 미국을 포함한 해외 고객이며, 배송 가능 여부는 상품과 도착국을 확인한 뒤 결정합니다.
 
-URL·도착국 입력 → 로그인 없이 초기 확인·다음 단계 안내 → 로그인 → 배송지 저장·구매 요청 → 운영자 검토 → 견적·외부 결제 → 구매·입고·배송 현황 확인 순서로 사용합니다. 로그인 전 상품 분류·수량·옵션도 입력할 수 있습니다. 첫 확인은 URL 형식·지원 판매처·초기 제한을 안내하며 상품 실재·현재 가격·통관 가능성을 보증하지 않습니다. 기존 샘플 URL에는 수집 날짜가 있는 관찰 정보를 보여줍니다. 크림·코발트·코럴 색상의 Three.js 택배·지구 홈과 이메일 우선 가입·로그인, 게스트 요청 예시·배송정보 설명을 제공합니다. WebGL 실패 시 SVG를 표시하며 장면은 실제 배송 상태가 아닙니다. 대화형 AI와 고객 대시보드는 제거했습니다.
+URL·도착국 입력 → 로그인 없이 초기 확인·다음 단계 안내 → 로그인 → 배송지 저장·구매 요청 → 운영자 검토 → 견적·외부 결제 → 구매·입고·배송 현황 확인 순서로 사용합니다. 로그인 전 상품 분류·수량·옵션도 입력할 수 있습니다. 첫 확인은 URL 형식·지원 판매처·초기 제한을 안내하며 상품 실재·현재 가격·통관 가능성을 보증하지 않습니다. 기존 샘플 URL에는 수집 날짜가 있는 관찰 정보를 보여줍니다. 크림·코발트·코럴 색상의 Three.js 포장 스튜디오·비행기 홈과 이메일 우선 가입·로그인, 게스트 요청 예시·배송정보 설명을 제공합니다. WebGL 실패 시 SVG를 표시하며 장면은 실제 배송 상태가 아닙니다. 대화형 AI와 고객 대시보드는 제거했습니다.
 
 처음 시작하면 [제품·로그인·DB 입문 안내](documents/Reference/BEGINNER_GUIDE.md)를 읽으세요. 이 안내는 `DongHeeKw/paynship-dh2`의 Vercel 화면, 로컬 `/dev/preview`, 기존 Supabase `/demo`를 구분합니다.
 
-서비스 수수료는 **상품 소계의 15%, 판매처 주문당 최소 ₩10,000**입니다. `/purchase`에서 로그인 없이 가격을 입력해 상품+서비스 소계를 확인할 수 있습니다. 배송·보험·관세·세금·통관 비용은 별도이며 미확인 비용은 `Needs review`로 표시합니다. [가격 기준과 데이터 등록](documents/Features/Pricing/Spec.md)을 참고하세요. Google·Apple·Naver 로그인 UI를 제공하며 Apple/Naver는 외부 제공자 설정 전까지 비활성입니다.
+서비스 수수료는 **상품 소계의 15%, 최소 수수료 없음**입니다. `/purchase`에서 로그인 없이 가격을 입력해 상품+서비스 소계를 확인할 수 있습니다. 배송·보험·관세·세금·통관 비용은 별도이며 미확인 비용은 `Needs review`로 표시합니다. [가격 기준과 데이터 등록](documents/Features/Pricing/Spec.md)을 참고하세요. Google·Apple·Naver 로그인 UI를 제공하며 Apple/Naver는 외부 제공자 설정 전까지 비활성입니다.
 
 ## 로컬 실행
 

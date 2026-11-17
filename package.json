@@ -8,8 +8,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && next build",
-    "start": "next start",
-    "lint": "next lint",
+    "start": "node scripts/app/start.mjs",
+    "lint": "eslint app components contexts features lib middleware.ts",
     "type-check": "tsc --noEmit",
     "postinstall": "prisma generate",
     "db:generate": "prisma generate",
@@ -30,7 +30,10 @@
     "security:zap": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/security/zap-scan.ps1",
     "product:samples": "node scripts/product-samples/collect.mjs",
     "product:samples:db": "node scripts/product-samples/create-db.mjs",
-    "product:evidence:test": "node --test lib/product-evidence/evidence.test.mjs"
+    "product:evidence:test": "node --test lib/product-evidence/evidence.test.mjs lib/product-evidence/css-fallback.test.mjs",
+    "app:test": "node --test scripts/app/entry.test.mjs scripts/preview/*.test.mjs",
+    "samples:workspace": "node scripts/samples/create-developer-workspace.mjs",
+    "samples:workspace:test": "node --test features/workspace/core/workspace.test.mjs"
   },
   "dependencies": {
     "@prisma/client": "^6.19.0",
@@ -43,7 +46,8 @@
     "react-dom": "^18.3.1",
     "resend": "^6.32.1",
     "zod": "^3.24.1",
-    "three": "^0.187.0"
+    "three": "^0.187.0",
+    "cheerio": "^1.1.2"
   },
   "overrides": {
     "next": {

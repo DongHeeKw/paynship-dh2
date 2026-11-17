@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { encryptPii } from '../pii';
-import { sealReview, type StoredReview } from '../review-storage';
+import { openReview, sealReview, type StoredReview } from '../review-storage';
 
 const mocks = vi.hoisted(() => ({ read: vi.fn(), claim: vi.fn(), event: vi.fn(), provider: vi.fn(), availability: vi.fn(), quota: vi.fn() }));
 vi.mock('@/lib/db/prisma', () => ({ prisma: {} }));
@@ -18,7 +18,7 @@ const id = 'request';
 const now = Date.parse('2026-10-12T00:00:00Z');
 function request() {
   return { id, userId: 'owner', destination: 'TW', status: 'QUOTED', version: 2, quote: { totalCents: 1200 }, quoteExpiresAt: new Date(now + 3600000),
-    review: sealReview({ rulesValidUntil: new Date(now + 3600000).toISOString(), recipientEvidence: { method: 'BROKER_REVIEW',
+    review: sealReview({ destination: 'TW', rulesVerifiedAt: new Date(now - 60000).toISOString(), rulesValidUntil: new Date(now + 3600000).toISOString(), recipientEvidence: { method: 'BROKER_REVIEW',
       reference: 'https://broker.example.invalid/evidence', verifiedAt: new Date(now - 60000).toISOString(), validUntil: new Date(now - 1).toISOString(), notes: 'Expired authorization review example.' } } as StoredReview, id),
     encryptedDelivery: encryptPii({ fullName: 'Example', phone: '+886912345678', address1: 'Sample street', city: 'Taipei', country: 'TW', postalCode: '100', customsAuthorization: 'BROKER' }, `request:${id}`) };
 }
@@ -38,6 +38,16 @@ describe('payment authorization boundary', () => {
     vi.spyOn(Date, 'now').mockReturnValue(now);
     mocks.read.mockResolvedValue(request());
     await expect(purchaseCheckout(id, 'owner', 'example@example.invalid', { version: 2 })).rejects.toMatchObject({ status: 422 });
+    expect(mocks.claim).not.toHaveBeenCalled(); expect(mocks.provider).not.toHaveBeenCalled();
+  });
+  it('refuses product evidence that aged past 30 days while the quote and recipient evidence remain current', async () => {
+    vi.spyOn(Date, 'now').mockReturnValue(now);
+    const row = request();
+    const review = openReview(row.review, id)!;
+    row.review = sealReview({ ...review, rulesVerifiedAt: new Date(now - 31 * 86400000).toISOString(),
+      recipientEvidence: { ...review.recipientEvidence, validUntil: new Date(now + 3600000).toISOString() } }, id);
+    mocks.read.mockResolvedValue(row);
+    await expect(purchaseCheckout(id, 'owner', 'example@example.invalid', { version: 2 })).rejects.toMatchObject({ status: 409 });
     expect(mocks.claim).not.toHaveBeenCalled(); expect(mocks.provider).not.toHaveBeenCalled();
   });
 });

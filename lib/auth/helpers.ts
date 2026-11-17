@@ -3,11 +3,12 @@ import { prisma } from '@/lib/db/prisma';
 import type { User } from '@supabase/supabase-js';
 import logger from '@/lib/utils/logger';
 import { resolveAdminRole, hasAdminRoleAccess, type AdminRole } from './admin-role';
+import { verifyAdminMfa } from './admin-mfa';
 export { hasAdminRoleAccess } from './admin-role';
 export type { AdminRole } from './admin-role';
 
 export interface AuthResult { user: User | null; error: string | null; isGuest: boolean; }
-export interface AdminResult { user: User | null; error: string | null; isAdmin: boolean; adminRole: AdminRole | null; }
+export interface AdminResult { user: User | null; error: string | null; isAdmin: boolean; adminRole: AdminRole | null; mfaStatus?: 'required' | 'unavailable'; }
 
 export async function getAuthUser(): Promise<AuthResult> {
   try {
@@ -26,7 +27,7 @@ export async function requireAuth(): Promise<AuthResult> {
   return result.user ? result : { user: null, error: 'Unauthorized', isGuest: true };
 }
 
-export async function requireAdmin(requiredRole: AdminRole = 'viewer'): Promise<AdminResult> {
+async function verifyAdminRole(requiredRole: AdminRole = 'viewer'): Promise<AdminResult> {
   const { user, error } = await requireAuth();
   if (error || !user) return { user: null, error: 'Unauthorized', isAdmin: false, adminRole: null };
   try {
@@ -39,6 +40,20 @@ export async function requireAdmin(requiredRole: AdminRole = 'viewer'): Promise<
     logger.error('Auth: Unable to verify administrator');
     return { user, error: 'Unable to verify administrator', isAdmin: false, adminRole: null };
   }
+}
+
+export async function requireAdmin(requiredRole: AdminRole = 'viewer'): Promise<AdminResult> {
+  const result = await verifyAdminRole(requiredRole);
+  if (!result.isAdmin || !result.user) return result;
+  const status = await verifyAdminMfa(result.user.id);
+  if (status !== 'verified') return { ...result, isAdmin: false, error: status === 'required' ? 'Administrator multi-factor authentication required' : 'Unable to verify administrator multi-factor authentication', mfaStatus: status };
+  return result;
+}
+
+// Only the self-service MFA page may use this pre-MFA check. It grants no
+// customer-data or operations access, and still verifies the server role.
+export async function getAdminMfaEnrollmentAccess(): Promise<AdminResult> {
+  return verifyAdminRole('viewer');
 }
 
 export async function ensureUserExists(user: User): Promise<{ success: boolean; userId: string }> {

@@ -14,7 +14,8 @@ import type { PurchaseQuote } from './quote';
 import { openReview, sealReview } from './review-storage';
 import { reviewRecipient } from './recipient-review';
 import { purchaseEventFields } from './event-record';
-import { SERVICE_FEE_POLICY } from './service-fee';
+import { CUSTOMS_REVIEW_WINDOW_MS, requireCurrentCustomsReview } from './customs-gate';
+import { getCountryCustomsPolicy } from '@/lib/customs/country-policy';
 
 export async function getOperatorPurchase(id: string, actorId: string) {
   await purchaseTransaction(async tx => {
@@ -28,6 +29,9 @@ export async function getOperatorPurchase(id: string, actorId: string) {
 
 export async function updateOperatorPurchase(id: string, actorId: string, input: unknown) {
   const action = operatorActionSchema.parse(input);
+  if (action.action === 'status' && action.status !== 'SHIPPED' && (action.carrier !== undefined || action.trackingNumber !== undefined)) {
+    throw new PurchaseError(422, 'Carrier and tracking assignments are only accepted when dispatching a shipment.');
+  }
   if (action.action === 'reconcile_payment') return reconcilePurchasePayment(id, actorId, action.version, action.draftId);
   await purchaseTransaction(async tx => {
     const row = await tx.purchaseRequest.findUnique({ where: { id } });
@@ -46,21 +50,26 @@ export async function updateOperatorPurchase(id: string, actorId: string, input:
     } else if (action.action === 'revalidate') {
       if (row.status !== 'ON_HOLD' || !row.paidAt || !row.paymentOrderId || !row.quote) throw new PurchaseError(409, 'Only a provider-verified paid hold can be reviewed.');
       const fulfilled = await tx.purchaseEvent.findFirst({ where: { requestId: id, status: { in: ['PURCHASING', 'AT_WAREHOUSE', 'READY_TO_SHIP', 'SHIPPED', 'DELIVERED'] } } });
-      if (fulfilled) throw new PurchaseError(409, 'A fulfilment hold must resume its existing stage through support resolution.');
       const original = row.quote as unknown as PurchaseQuote;
       reviewRecipient(row, action.review.recipientEvidence);
-      if (original.serviceFeePolicy && original.serviceFeePolicy !== SERVICE_FEE_POLICY.id) throw new PurchaseError(409, 'This historical fee policy requires a separate review.');
-      const reviewed = calculatePurchaseQuote(action.review, row.quantity, original.quoteVersion, Date.now(), original.serviceFeePolicy ? 'CURRENT' : 'LEGACY');
+      if (original.serviceFeePolicy && !['retailer-order-15pct-min10000krw-v1', 'retailer-order-15pct-no-minimum'].includes(original.serviceFeePolicy)) throw new PurchaseError(409, 'This historical fee policy requires a separate review.');
+      const reviewed = calculatePurchaseQuote(action.review, row.quantity, original.quoteVersion, Date.now(), original.serviceFeePolicy ? 'PAID' : 'LEGACY');
       const moneyFields = ['productCents', 'domesticShippingCents', 'serviceFeeCents', 'internationalShippingCents', 'insuranceCents', 'dutyCents', 'taxCents', 'clearanceCents', 'totalCents'] as const;
       if (moneyFields.some(field => (reviewed[field] ?? 0) !== (original[field] ?? 0))) throw new PurchaseError(409, 'Paid amounts are immutable. A changed cost requires support and refund resolution.');
-      data = { status: 'PAID', review: sealReview({ ...action.review, destination: row.destination, reviewedBy: actorId, reviewedAt: new Date().toISOString() }, id) };
-      message = 'Held payment customs evidence reviewed; approved amounts preserved.';
+      data = { status: fulfilled ? 'ON_HOLD' : 'PAID', review: sealReview({ ...action.review, destination: row.destination, reviewedBy: actorId, reviewedAt: new Date().toISOString() }, id) };
+      message = fulfilled ? 'Held fulfilment customs evidence reviewed; paid amounts and existing fulfilment stage preserved. Resolve the hold before resuming.'
+        : 'Held payment customs evidence reviewed; approved amounts preserved.';
     } else if (action.action === 'resume') {
       if (row.status !== 'ON_HOLD') throw new PurchaseError(409, 'Only a held request can be resumed.');
       const previous = await tx.purchaseEvent.findFirst({ where: { requestId: id, status: { not: 'ON_HOLD' } }, orderBy: { createdAt: 'desc' } });
       if (!previous || previous.status === 'PAYMENT_PENDING' || !row.paidAt || !['PAID', 'PURCHASING', 'AT_WAREHOUSE', 'READY_TO_SHIP', 'SHIPPED'].includes(previous.status)) {
         throw new PurchaseError(409, 'The payment must be reconciled with the provider before this request can resume.');
       }
+      const review = requireCurrentCustomsReview(openReview(row.review, id), row.destination);
+      if (previous.status === 'SHIPPED') {
+        if (!row.carrier || !row.trackingNumber) throw new PurchaseError(422, 'The original carrier and tracking assignment are required to resume this shipment.');
+        reviewRecipient(row, review.recipientEvidence, 'shipping', row.trackingNumber);
+      } else reviewRecipient(row, review.recipientEvidence, 'purchasing');
       data = { status: previous.status };
       message = `Operator resolved hold: ${action.reason}`;
     } else if (action.action === 'quote') {
@@ -68,8 +77,14 @@ export async function updateOperatorPurchase(id: string, actorId: string, input:
       if (['US', 'CN', 'JP'].includes(row.destination) && !action.review.verifiedImportCharges) throw new PurchaseError(422, 'USA, China and Japan quotes require verified duty, tax and clearance amounts from current destination-specific evidence. A generic percentage calculation is insufficient.');
       const quote = calculatePurchaseQuote(action.review, row.quantity, row.version + 1);
       reviewRecipient(row, action.review.recipientEvidence);
+      const policyDeadline = getCountryCustomsPolicy(row.destination).reviewDueAt;
+      const quoteExpiry = Math.min(Date.now() + 86400000, Date.parse(action.review.rulesValidUntil),
+        Date.parse(action.review.rulesVerifiedAt) + CUSTOMS_REVIEW_WINDOW_MS,
+        Date.parse(action.review.recipientEvidence.validUntil), Date.parse(action.review.recipientEvidence.verifiedAt) + CUSTOMS_REVIEW_WINDOW_MS,
+        policyDeadline ? Date.parse(policyDeadline) : Infinity);
+      if (!Number.isFinite(quoteExpiry) || quoteExpiry <= Date.now()) throw new PurchaseError(422, 'Refresh customs and recipient evidence before issuing a payable quote.');
       data = { status: 'QUOTED', review: sealReview({ ...action.review, serviceFeeCents: quote.serviceFeeCents, destination: row.destination, reviewedBy: actorId, reviewedAt: new Date().toISOString() }, id),
-        quote: { ...quote }, quoteExpiresAt: new Date(Math.min(Date.now() + 86400000, Date.parse(action.review.rulesValidUntil), Date.parse(action.review.recipientEvidence.validUntil))) };
+        quote: { ...quote }, quoteExpiresAt: new Date(quoteExpiry) };
       message = 'Product, destination requirements and costs reviewed. A payment quote is available.';
     } else if (action.action === 'reject') {
       if (!['REVIEW_REQUIRED', 'QUOTED'].includes(row.status)) throw new PurchaseError(409, 'Paid or pending-payment requests require support review.');
@@ -79,13 +94,10 @@ export async function updateOperatorPurchase(id: string, actorId: string, input:
       if (!TRANSITIONS[row.status as PurchaseStatus]?.includes(action.status)) throw new PurchaseError(409, 'This status transition is not allowed.');
       if (action.status === 'SHIPPED' && !(action.carrier && action.trackingNumber)) throw new PurchaseError(422, 'A carrier and tracking number are required.');
       const review = openReview(row.review, id);
-      const rulesExpiry = review ? Date.parse(review.rulesValidUntil) : NaN;
-      if (action.status === 'PURCHASING' && (!row.paidAt || !Number.isFinite(rulesExpiry) || rulesExpiry <= Date.now())) {
-        throw new PurchaseError(409, 'Payment and current customs evidence are required before purchasing. Hold and review expired evidence.');
-      }
       if (['PURCHASING', 'SHIPPED'].includes(action.status)) {
-        if (!review) throw new PurchaseError(422, 'Reviewed recipient evidence is required.');
-        reviewRecipient(row, review.recipientEvidence, action.status === 'SHIPPED' ? 'shipping' : 'purchasing', action.trackingNumber ?? row.trackingNumber ?? undefined);
+        if (!row.paidAt) throw new PurchaseError(409, 'Verified payment is required before purchasing or dispatch.');
+        const currentReview = requireCurrentCustomsReview(review, row.destination);
+        reviewRecipient(row, currentReview.recipientEvidence, action.status === 'SHIPPED' ? 'shipping' : 'purchasing', action.trackingNumber ?? row.trackingNumber ?? undefined);
       }
       data = { status: action.status, ...(action.carrier ? { carrier: action.carrier } : {}), ...(action.trackingNumber ? { trackingNumber: action.trackingNumber } : {}) };
       message = action.message;

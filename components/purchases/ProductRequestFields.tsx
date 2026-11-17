@@ -1,6 +1,6 @@
 import { useId } from 'react';
 import { PRODUCT_CATEGORIES } from '@/lib/purchases/categories';
-import { DESTINATIONS } from '@/lib/purchases/countries';
+import { LAUNCH_DESTINATIONS } from '@/lib/purchases/countries';
 import type { IntakeDraft } from '@/lib/purchases/intake-draft';
 import { CATEGORY_LABELS, countryName } from './labels';
 
@@ -34,7 +34,7 @@ export default function ProductRequestFields({ draft, onChange }: Props) {
       <label htmlFor={`${fieldId}-destination`}>Destination country</label>
       <select id={`${fieldId}-destination`} required value={draft.destination} onChange={event => onChange({ destination: event.target.value as IntakeDraft['destination'] })}>
         <option value="">Choose a destination</option>
-        {DESTINATIONS.map(code => <option key={code} value={code}>{countryName(code)}</option>)}
+        {LAUNCH_DESTINATIONS.map(code => <option key={code} value={code}>{countryName(code)}</option>)}
       </select>
     </div>
   </>;

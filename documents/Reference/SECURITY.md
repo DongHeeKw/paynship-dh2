@@ -1,5 +1,13 @@
 # 보안 경계
 
+## Integration boundaries — 2026-11-18
+
+Admin access additionally requires verified AAL2 claims; role-only access is confined to self-service MFA. The reseller endpoint uses verified bearer auth, not cookie fallback, and shares owned requests, bounded bodies, rate protection and durable idempotency.
+
+The [sample workspace](../../features/workspace/README.md) uses a separately marked local SQLite database and encryption key. Development flag + loopback Host gates reads; matching Origin gates writes. Production and forged forwarding/preview headers cannot enable it. The launcher clears inherited database/provider credentials and does not read real environment files. Sample files/keys, runtime snapshots and user reference images are not part of the application commit.
+
+No production schema migration, payment, shipment or deployment is performed by this integration. Authenticated live-provider, RLS and operations readiness remain separate gates.
+
 현재 URL 구매 흐름의 보안 기준입니다. 코드 기반 보호와 실제 운영 환경 검증을 구분합니다.
 
 변경일: 2026-11-12. [Linux 실행서](Deployment/LINUX_RELEASE.md)와 [국가별 개인정보 요구](COUNTRY_CUSTOMS.md)를 함께 적용합니다.

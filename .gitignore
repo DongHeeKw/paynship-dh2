@@ -56,3 +56,8 @@ data/cache/
 # Local security scanner binaries, session data and raw reports.
 .security-tools/
 data/samples/*.sqlite
+data/samples/*.sqlite-*
+data/samples/*.key
+.tools/
+/test-results/
+/playwright-report/

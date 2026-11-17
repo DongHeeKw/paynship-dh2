@@ -4,6 +4,7 @@ import { validateProductUrl } from './product-url';
 import { getProductLinkInfo, type ProductLinkInfo } from './product-link-info';
 
 const MERCHANT_LABELS: Record<string, string> = {
+  'shop.weverse.io': 'Weverse Shop', 'www.romand.co.kr': 'rom&nd', 'roundlab.co.kr': 'ROUND LAB', 'wiggle-wiggle.com': 'wiggle wiggle',
   'www.coupang.com': 'Coupang', 'smartstore.naver.com': 'Naver Smart Store',
   'brand.naver.com': 'Naver Brand', 'www.musinsa.com': 'Musinsa', 'www.29cm.co.kr': '29CM',
   'www.oliveyoung.co.kr': 'Olive Young', 'item.gmarket.co.kr': 'Gmarket',
@@ -65,6 +66,6 @@ export function getProductPreview(input: string): ProductPreviewResult {
       : { state: observation ? 'OBSERVED' : matchingSample.fetchStatus === 'robots_blocked' ? 'ROBOTS_BLOCKED' : 'UNAVAILABLE', attemptedAt: matchingSample.retrievedAt };
     return { state: 'SUPPORTED', canonicalUrl, merchant, link, lookup, observation };
   } catch {
-    return { state: 'UNSUPPORTED', message: 'Use a supported HTTPS product page from Coupang, Naver, Musinsa, 29CM, Olive Young, Gmarket, Yes24, or Kyobo.' };
+    return { state: 'UNSUPPORTED', message: 'Use a supported HTTPS product page from Coupang, Naver, Musinsa, 29CM, Olive Young, Gmarket, Yes24, Kyobo, rom&nd, ROUND LAB, wiggle wiggle, or Korean KRW Weverse Shop.' };
   }
 }

@@ -1,6 +1,13 @@
 // Request destinations. Availability is confirmed by an operator, not promised here.
 export const DESTINATIONS = ['JP', 'TW', 'HK', 'SG', 'MY', 'TH', 'VN', 'PH', 'ID', 'CN', 'IN', 'US', 'CA', 'AU', 'NZ', 'GB', 'DE', 'FR', 'IT', 'ES', 'NL', 'BE', 'CH', 'AT', 'SE', 'NO', 'DK', 'FI', 'PL', 'CZ', 'IE', 'PT', 'AE', 'SA', 'MX', 'BR'] as const;
 
+// Initial intake scope. The broader list remains for historical records and
+// country-policy review; inclusion here never guarantees shipment eligibility.
+export const LAUNCH_DESTINATIONS = ['VN', 'TH', 'PH', 'ID', 'CN', 'JP', 'US'] as const;
+export function isLaunchDestination(country: string): boolean {
+  return LAUNCH_DESTINATIONS.some(code => code === country);
+}
+
 // Explicit labels keep SSR and browser output identical across ICU versions.
 export const COUNTRY_NAMES: Record<typeof DESTINATIONS[number], string> = {
   JP: 'Japan', TW: 'Taiwan', HK: 'Hong Kong', SG: 'Singapore', MY: 'Malaysia',

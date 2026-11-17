@@ -1,5 +1,5 @@
 import type { DeliveryProfile } from '@/lib/purchases/schemas';
-import { DESTINATIONS } from '@/lib/purchases/countries';
+import { LAUNCH_DESTINATIONS, isLaunchDestination } from '@/lib/purchases/countries';
 import { countryName } from './labels';
 import { getPostalInputPolicy } from '@/lib/customs/postal-policy';
 
@@ -22,7 +22,8 @@ export default function DeliveryAddressFields({ profile, onChange }: Props) {
     </div>
     <label className="field">Destination country
       <select autoComplete="country" value={profile.country} onChange={event => onChange('country', event.target.value)}>
-        {DESTINATIONS.map(code => <option key={code} value={code}>{countryName(code)}</option>)}
+        {!isLaunchDestination(profile.country) && <option value={profile.country} disabled>{countryName(profile.country)} — outside current intake</option>}
+        {LAUNCH_DESTINATIONS.map(code => <option key={code} value={code}>{countryName(code)}</option>)}
       </select>
       <small>Product eligibility and shipping availability are confirmed during review.</small>
     </label>

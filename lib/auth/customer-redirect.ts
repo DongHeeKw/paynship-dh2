@@ -1,4 +1,4 @@
-const RETURN_BASES = ['/', '/purchase', '/orders', '/settings/delivery', '/admin/purchases', '/admin/support'];
+const RETURN_BASES = ['/', '/purchase', '/orders', '/auth/mfa', '/settings/delivery', '/admin/purchases', '/admin/support'];
 const LOCAL_ORIGIN = 'https://paynship.invalid';
 
 /** Return only recognized app routes; never trust a redirect from a query string. */

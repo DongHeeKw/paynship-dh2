@@ -1,9 +1,21 @@
 version: 2
-updated_at: "2026-11-13"
+updated_at: "2026-11-18"
 metadata:
   description: "Current URL purchasing service documentation"
   source_of_truth_note: "Registered current docs define scope; archives and old research are historical."
 current:
+  - id: welcome
+    path: components/home/README.md
+    update_triggers: ["components/home/**", "app/page.tsx"]
+  - id: storefront
+    path: features/storefront/README.md
+    update_triggers: ["features/storefront/**", "app/products/**", "public/images/products/**"]
+  - id: sample_workspace
+    path: features/workspace/README.md
+    update_triggers: ["features/workspace/**", "app/dev/workspace/**", "scripts/app/**", "scripts/preview/**", "scripts/samples/**"]
+  - id: reseller
+    path: features/reseller/README.md
+    update_triggers: ["features/reseller/**", "app/api/reseller/**", "app/developers/**"]
   - id: pricing
     path: documents/Features/Pricing/Spec.md
     update_triggers: ["lib/purchases/service-fee.ts", "lib/purchases/money.ts", "lib/purchases/public-estimate.ts", "lib/purchases/quote.ts", "lib/purchases/review-schema.ts", "lib/purchases/operator.ts", "lib/purchases/payment-provider.ts", "components/purchases/CostPreview.tsx", "components/purchases/ReviewImportCharges.tsx", "components/purchases/QuoteSummary.tsx", "data/catalog/**"]
@@ -44,6 +56,9 @@ current:
     path: documents/Reference/BEGINNER_GUIDE.md
     update_triggers: ["app/login/**", "app/signup/**", "app/demo/**", "components/home/**", "components/site/**", "lib/auth/**", "prisma/schema.prisma"]
 reference:
+  - id: recorded_naver_customs_check
+    path: data/samples/naver-customs-readiness-2026-11-15.json
+    scope: ["dated Naver robots refusals", "zero observed fields", "sample customs UI"]
   - id: naver_product_lookup
     path: data/samples/naver-product-evidence-2026-10-12.json
     scope: ["dated operator lookup", "robots-blocked Naver URL", "unknown product facts"]

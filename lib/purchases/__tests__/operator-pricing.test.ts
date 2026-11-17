@@ -11,15 +11,15 @@ vi.mock('../quota', () => ({ consumeQuota: vi.fn() }));
 vi.mock('../recipient-review', () => ({ reviewRecipient: mocks.recipient }));
 import { updateOperatorPurchase } from '../operator';
 
-const now = Date.parse('2026-11-13T12:00:00Z');
+const now = Date.parse('2026-10-20T12:00:00Z');
 const review: PurchaseReview = {
   verifiedCategory: 'clothing', productName: 'Synthetic test shirt', productUnitPriceKrw: 100000, domesticShippingKrw: 0,
   exchangeRateKrwPerUsd: 1000, serviceFeeCents: 1, internationalShippingCents: 500, insuranceCents: 0,
   customsValueBasis: 'CIF', dutyBasisPoints: 0, taxBasisPoints: 0, taxIncludesDuty: true, additionalTaxBaseCents: 0,
   hsCode: '610910', origin: 'KR', material: 'Cotton', weightKg: 0.5, dimensions: { l: 20, w: 20, h: 10 },
   rulesReference: 'https://evidence.example.invalid/customs', evidenceReference: 'https://evidence.example.invalid/product',
-  rulesVerifiedAt: '2026-11-13T10:00:00Z', rulesValidUntil: '2026-11-14T10:00:00Z', customsNotes: 'Synthetic arithmetic evidence, not a real tariff or product.',
-  recipientEvidence: { method: 'BROKER_REVIEW', reference: 'https://evidence.example.invalid/recipient', verifiedAt: '2026-11-13T10:00:00Z', validUntil: '2026-11-14T10:00:00Z', notes: 'Synthetic recipient evidence, separately validated in recipient tests.' },
+  rulesVerifiedAt: '2026-10-20T10:00:00Z', rulesValidUntil: '2026-10-21T10:00:00Z', customsNotes: 'Synthetic arithmetic evidence, not a real tariff or product.',
+  recipientEvidence: { method: 'BROKER_REVIEW', reference: 'https://evidence.example.invalid/recipient', verifiedAt: '2026-10-20T10:00:00Z', validUntil: '2026-10-21T10:00:00Z', notes: 'Synthetic recipient evidence, separately validated in recipient tests.' },
 };
 
 beforeEach(() => {

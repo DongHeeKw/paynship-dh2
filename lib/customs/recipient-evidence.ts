@@ -35,6 +35,10 @@ export function validateRecipientEvidence(destination: string, delivery: Deliver
   if (evidence.method === 'CARRIER_ID_VERIFICATION' && destination !== 'ID') throw new Error('Direct carrier identifier review is limited to the configured Indonesia route.');
   if (destination === 'TW' && !['BROKER_REVIEW', 'EZWAY_AUTHORIZATION'].includes(evidence.method)) throw new Error('Taiwan recipient authorization requires broker or EZ WAY review.');
   if (destination === 'ID' && !['BROKER_REVIEW', 'CARRIER_ID_VERIFICATION'].includes(evidence.method)) throw new Error('Indonesia recipient documents require broker or carrier review.');
+  if (destination === 'CN') {
+    if (evidence.method !== 'BROKER_REVIEW') throw new Error('China requires a reviewed carrier/broker customs route.');
+    if (stage === 'shipping' && (!trackingNumber || evidence.shipmentReference !== trackingNumber)) throw new Error('China dispatch requires carrier/broker evidence for this shipment reference.');
+  }
   if (destination === 'TW' && stage === 'shipping') {
     if (!trackingNumber || evidence.shipmentReference !== trackingNumber) throw new Error('Taiwan shipping requires recipient authorization evidence for this shipment reference.');
     if (delivery.customsAuthorization === 'DEFERRED') throw new Error('Resolve the Taiwan recipient authorization route before dispatch.');

@@ -1,5 +1,11 @@
 # 인증
 
+## Operations MFA and sample isolation — 2026-11-18
+
+Every administrator authorization now requires signature-verified claims bound to the already verified user and AAL2. The self-service `/auth/mfa` page verifies server roles before allowing authenticator enrollment/challenge, but grants no customer-data access before MFA. Unknown claims fail closed. Customer email, Google, Apple and Naver flows and their existing enablement flags are preserved.
+
+`/dev/workspace` provides [persistent fictional personas](../../../features/workspace/README.md), not Supabase accounts or a login bypass. Production and non-loopback hosts cannot enable it. Existing `/dev/preview` remains in memory.
+
 URL·도착국의 초기 확인과 서비스 절차 안내에는 로그인하지 않아도 됩니다. 이 단계는 DB·상품 페이지·결제 제공자에 접근하지 않으며 실제 고객정보를 서버에 저장하지 않습니다. Supabase Auth 프로젝트 미설정·세션 갱신 장애가 공개 화면을 차단하지 않으며, 실제 개인정보 API는 별도로 인증을 요구합니다. URL 확인은 상품 실재나 통관 승인과 구분합니다.
 
 고객 가입·로그인은 Supabase Auth의 이메일·비밀번호와 Google·Apple·Naver를 제공합니다. Apple·Naver는 배포별 활성화 설정과 실제 제공자 연결이 필요합니다. 서버에서 `getUser()`로 사용자와 이메일 인증을 확인합니다. 고객 ID를 요청 본문에서 받지 않습니다.

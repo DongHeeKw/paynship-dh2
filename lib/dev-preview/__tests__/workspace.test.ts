@@ -14,7 +14,7 @@ vi.mock('@/contexts/AuthContext', () => ({ useAuth: () => ({ user: null, loading
 
 const entered: IntakeDraft = {
   sourceUrl: 'https://brand.naver.com/kinox/products/5912828061?site_preference=device&NaPm=tracking',
-  category: 'household', quantity: 3, options: 'Black, 24 cm', destination: 'SG',
+  category: 'household', quantity: 3, options: 'Black, 24 cm', destination: 'JP',
 };
 
 beforeEach(() => {

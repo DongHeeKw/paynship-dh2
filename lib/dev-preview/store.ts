@@ -15,7 +15,7 @@ export function createPreviewStore() {
   const createdAt = new Date().toISOString();
   function makeRequest(id: string): PurchaseDetail {
     return { id, sourceUrl: 'https://www.yes24.com/product/goods/13137546', category: 'books', quantity: 1, options: '',
-      destination: 'SG', status: 'REVIEW_REQUIRED', statusLabel: 'Awaiting review', version: 0, paymentReceived: false, checkoutAvailable: false,
+      destination: 'JP', status: 'REVIEW_REQUIRED', statusLabel: 'Awaiting review', version: 0, paymentReceived: false, checkoutAvailable: false,
       quote: null, quoteExpiresAt: null, carrier: null, trackingNumber: null, createdAt, updatedAt: createdAt, fulfilmentStarted: false,
       events: [{ status: 'REVIEW_REQUIRED', source: 'local_preview', createdAt, message: 'Fictional preview request. No seller purchase or payment was made.' }], tickets: [] };
   }

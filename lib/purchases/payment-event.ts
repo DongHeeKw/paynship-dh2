@@ -44,10 +44,13 @@ export async function applyPaymentEvent(raw: Buffer) {
     if (!request.paidAt) {
       if (!['PAYMENT_PENDING', 'ON_HOLD'].includes(request.status)) throw new PurchaseError(409, 'This request is not awaiting payment.');
       const expired = !request.quoteExpiresAt || request.quoteExpiresAt.getTime() <= verified.paidAt!.getTime();
-      const status = expired ? 'ON_HOLD' : 'PAID';
+      const held = request.status === 'ON_HOLD';
+      const status = expired || held ? 'ON_HOLD' : 'PAID';
+      const message = expired ? 'Payment received after quote expiry. Operator review is required before purchasing.'
+        : held ? 'Payment confirmed by the payment provider. Existing hold preserved; operator review is required before purchasing.'
+          : 'Payment confirmed by the payment provider.';
       await tx.purchaseRequest.update({ where: { id: requestId }, data: { status, paymentOrderId: String(data.id), paidAt: verified.paidAt, version: { increment: 1 } } });
-      await tx.purchaseEvent.create({ data: { requestId, ...purchaseEventFields(requestId, 'shopify', 'payment_provider', status,
-        expired ? 'Payment received after quote expiry. Operator review is required before purchasing.' : 'Payment confirmed by the payment provider.') } });
+      await tx.purchaseEvent.create({ data: { requestId, ...purchaseEventFields(requestId, 'shopify', 'payment_provider', status, message) } });
     }
     await tx.purchaseWebhookReceipt.create({ data: { id: receiptId, provider: 'shopify' } });
   });

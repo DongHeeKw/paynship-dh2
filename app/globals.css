@@ -3,11 +3,12 @@
 @tailwind utilities;
 
 :root {
-  --pn-canvas: #fff; --pn-canvas-soft: #fff; --pn-surface: #fff; --pn-surface-soft: #f5f5f5; --pn-surface-muted: #eee;
-  --pn-border: #dedede; --pn-border-strong: #aaa; --pn-ink: #111; --pn-ink-soft: #555; --pn-ink-muted: #666;
-  --pn-brand: #111; --pn-brand-strong: #000; --pn-brand-soft: #f5f5f5;
-  --pn-info: #111; --pn-info-soft: #f5f5f5; --pn-success: #111; --pn-success-soft: #f5f5f5;
-  --pn-warning: #111; --pn-warning-soft: #f5f5f5; --pn-danger: #111; --pn-danger-soft: #f5f5f5;
+  --pn-canvas: #fff8ed; --pn-canvas-soft: #fffdf8; --pn-surface: #fffdf8; --pn-surface-soft: #edf3ff; --pn-surface-muted: #e5eeff;
+  --pn-border: #d1d8e2; --pn-border-strong: #192c43; --pn-ink: #192c43; --pn-ink-soft: #40566f; --pn-ink-muted: #526070;
+  --pn-brand: #2467ed; --pn-brand-strong: #1b51bd; --pn-brand-soft: #e5eeff;
+  --pn-info: #234d96; --pn-info-soft: #edf3ff; --pn-success: #285a47; --pn-success-soft: #edf6f0;
+  --pn-warning: #794332; --pn-warning-soft: #fff0e9; --pn-danger: #a03628; --pn-danger-soft: #fff0e9;
+  --coast-cream: var(--pn-canvas); --coast-ink: var(--pn-ink); --coast-blue: var(--pn-brand); --coast-coral: #fa765f;
 }
 * { box-sizing: border-box; }
 body { margin: 0; background: #fff; color: #111; font-family: Arial, Helvetica, sans-serif; font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
@@ -32,10 +33,10 @@ a { color: inherit; text-underline-offset: 4px; }
 .url-form { display: flex; border: 1px solid #111; padding: 6px; gap: 6px; }
 .url-form input { border: 0; min-width: 0; width: 100%; padding: 14px; background: #fff; }
 .primary-button, .secondary-button { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 11px 22px; border: 1px solid #111; font-weight: 600; font-size: 13px; text-decoration: none; white-space: nowrap; }
-.primary-button { background: #111; color: #fff; }
-.primary-button:hover { background: #333; }
+.primary-button { background: var(--pn-brand); color: #fff; border-color: var(--pn-ink); border-radius: 8px; box-shadow: 2px 2px 0 var(--pn-ink); }
+.primary-button:hover { background: var(--pn-brand-strong); }
 .secondary-button { background: #fff; color: #111; }
-.secondary-button:hover { background: #f5f5f5; }
+.secondary-button:hover { background: var(--pn-brand-soft); }
 .google-sign-in { display: inline-flex; align-items: center; justify-content: center; gap: 12px; min-height: 48px; padding: 11px 18px; border: 1px solid #dadce0; background: #fff; color: #3c4043; font-size: 14px; font-weight: 600; box-shadow: 0 1px 2px rgb(60 64 67 / 15%); transition: background-color .15s, box-shadow .15s, border-color .15s; }
 .google-sign-in:hover { background: #f8faff; border-color: #c6dafc; box-shadow: 0 2px 5px rgb(60 64 67 / 20%); }
 .google-sign-in:focus-visible { outline: 2px solid #4285f4; outline-offset: 2px; }
@@ -53,11 +54,11 @@ a { color: inherit; text-underline-offset: 4px; }
 .page-heading p { color: #555; max-width: 620px; }
 .form-stack { display: flex; flex-direction: column; gap: 22px; }
 .field { display: flex; flex-direction: column; gap: 7px; font-size: 13px; font-weight: 600; }
-.field input, .field select, .field textarea { width: 100%; padding: 12px; border: 1px solid #bbb; background: #fff; color: #111; font-weight: 400; }
+.field input, .field select, .field textarea { width: 100%; padding: 12px; border: 1px solid var(--pn-border); border-radius: 8px; background: var(--pn-surface); color: var(--pn-ink); font-weight: 400; }
 .field textarea { resize: vertical; min-height: 100px; }
 .field small { font-size: 12px; color: #666; font-weight: 400; }
 .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
-.notice { border-left: 2px solid #111; padding: 12px 16px; background: #f5f5f5; font-size: 13px; }
+.notice { border-left: 3px solid var(--coast-coral); padding: 12px 16px; background: var(--pn-warning-soft); color: var(--pn-ink); border-radius: 0 8px 8px 0; font-size: 13px; }
 .error-message { font-size: 13px; padding: 12px 0; font-weight: 600; }
 .muted { color: #666; font-size: 13px; }
 .action-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }

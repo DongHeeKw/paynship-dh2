@@ -32,4 +32,18 @@ describe('request security boundaries', () => {
     expect(verifyWebhookSignature(raw, signature, '')).toBe(false);
     expect(verifyWebhookSignature(raw, 'garbage', secret)).toBe(false);
   });
+  it('permits an authenticator QR image without loosening script or object restrictions', () => {
+    const headers = new Headers(); securityHeaders(headers, false, undefined, 'mfa-nonce', true);
+    expect(headers.get('content-security-policy')).toContain("img-src 'self' data:");
+    expect(headers.get('content-security-policy')).toContain("script-src 'self' 'nonce-mfa-nonce' 'strict-dynamic'");
+    expect(headers.get('content-security-policy')).toContain("object-src 'none'");
+  });
+  it('permits local preview hot reload on its actual port without adding development sockets in production', () => {
+    const local = new Headers(); securityHeaders(local, true, undefined, undefined, false, 'http://127.0.0.1:3001');
+    expect(local.get('content-security-policy')).toContain('ws://127.0.0.1:3001');
+    const remote = new Headers(); securityHeaders(remote, true, undefined, undefined, false, 'http://localhost.attacker.test:3001');
+    expect(remote.get('content-security-policy')).not.toContain('attacker.test');
+    const production = new Headers(); securityHeaders(production, false, undefined, 'nonce', false, 'http://127.0.0.1:3001');
+    expect(production.get('content-security-policy')).not.toContain('ws://');
+  });
 });

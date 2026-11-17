@@ -1,5 +1,13 @@
 # 제품 기준
 
+## Integrated customer journey — 2026-11-18
+
+The home uses a reference-inspired 3D packing studio with a softer parcel character, an airplane, grounded lighting and safe WebGL fallback. Products has its own tab: eight real seller references, five category shelves and four items per page, with exact draft handoff. Cream, cobalt, coral and navy are shared across customer pages. See [welcome](../components/home/README.md) and [catalog](../features/storefront/README.md).
+
+The fee is 15% of merchandise with no minimum. Public estimates preserve unknown charges and exact variant matching. Existing paid quotes keep their original amounts. The seven initial destinations are VN, TH, PH, ID, CN, JP and US, subject to actual route review.
+
+The [local customer workspace](../features/workspace/README.md) persists fictional account/credit/payment/delivery/support data. It is not a production wallet. The [reseller API](../features/reseller/README.md) submits owned requests through the same review logic. Real provider operations and current customs evidence remain release prerequisites.
+
 변경일: 2026-11-13.
 
 가격 정책은 상품 소계의 15%, 판매처 주문당 최소 ₩10,000입니다. 배송·보험·수입 비용은 별도이며 공개 요청 화면에 항목별 계산을 표시합니다. 고객 입력 가격은 미검증이고 미확인 비용은 0이 아닙니다. 검토된 catalog의 정확한 옵션·국가·수량과 24시간 이내 유효 근거가 있을 때만 전체 예상액을 계산합니다. 초기 catalog는 비어 있습니다. 자동 공개 견적의 초기 대상은 미국·중국·일본이며 기존 수동 접수 국가와 과거 기록은 유지합니다. 신규 세 나라 서버 견적은 국가별 검증 수입 비용 금액을 요구합니다. [가격 명세](Features/Pricing/Spec.md).

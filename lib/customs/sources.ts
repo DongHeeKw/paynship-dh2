@@ -1,10 +1,10 @@
 import type { CustomsSource } from './types';
 
-export const POLICY_REVISION = '2026-10-12';
+export const POLICY_REVISION = '2026-10-14';
 // Internal review deadline, not a legal expiry date or a guarantee of validity.
 export const POLICY_REVIEW_DUE_AT = '2026-11-11T00:00:00.000Z';
-function source(title: string, url: string): CustomsSource {
-  return { title, url, checkedAt: POLICY_REVISION };
+function source(title: string, url: string, checkedAt = '2026-10-12'): CustomsSource {
+  return { title, url, checkedAt };
 }
 
 export const CUSTOMS_SOURCES = {
@@ -13,7 +13,7 @@ export const CUSTOMS_SOURCES = {
   indonesiaConsignment: source('Indonesia Customs: consignment requirements', 'https://www.beacukai.go.id/faq-impor-barang-kiriman'),
   indonesiaNik: source('Indonesia: Government Regulation 40/2019, Article 31', 'https://disdukcapil.bandung.go.id/api/public/uploads/produk-hukum/PERATURAN_PEMERINTAH_REPUBLIK_INDONESIA_NOMOR_40_TAHUN_2019.pdf'),
   indonesiaNpwp: source('Indonesia Tax Authority: NPWP format transition', 'https://www.pajak.go.id/index.php/en/node/108724'),
-  japanPersonalImports: source('Japan Customs: personal import clearance', 'https://www.customs.go.jp/english/c-answer_e/kojin/3002_e.htm'),
+  japanPersonalImports: source('Japan Customs: personal import clearance', 'https://www.customs.go.jp/english/c-answer_e/kojin/3002_e.htm', '2026-10-14'),
   singaporeParcels: source('Singapore Customs: courier and postal procedures', 'https://www.customs.gov.sg/personal-shipment/buying-from-overseas/courier-postal-procedures/'),
   singaporePrivacy: source('Singapore PDPC: national identifier collection', 'https://www.pdpc.gov.sg/guidelines-and-consultation/2020/02/advisory-guidelines-on-the-personal-data-protection-act-for-nric-and-other-national-identification-numbers/nric-faqs'),
   hongKongDeclarations: source('Hong Kong Customs: import declarations', 'https://www.customs.gov.hk/en/service-enforcement-information/cargo-clearance/import-export-declaration/'),

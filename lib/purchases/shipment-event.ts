@@ -25,7 +25,12 @@ export async function applyShipmentEvent(input: unknown) {
     if (!row?.paidAt || !row.carrier || !row.trackingNumber || row.carrier !== event.carrier || row.trackingNumber !== event.trackingNumber) throw new PurchaseError(409, 'Shipment did not match an assigned carrier and tracking number.');
     if (!['SHIPPED', 'ON_HOLD', 'DELIVERED'].includes(row.status)) throw new PurchaseError(409, 'This request has not shipped.');
     if (occurredAt < row.createdAt) throw new PurchaseError(400, 'Shipment event predates the purchase request.');
-    if (!row.lastCarrierEventAt || occurredAt > row.lastCarrierEventAt) {
+    // Carrier timestamps may have coarse precision. A distinct signed delivery
+    // confirmation can finish the shipment at the same timestamp as its last scan.
+    // Other equal-time statuses have no implied ordering.
+    const equalTimeDelivery = event.status === 'DELIVERED' && row.status !== 'DELIVERED'
+      && row.lastCarrierEventAt?.getTime() === occurredAt.getTime();
+    if (!row.lastCarrierEventAt || occurredAt > row.lastCarrierEventAt || equalTimeDelivery) {
       let status = row.status;
       if (row.status !== 'DELIVERED') {
         if (event.status === 'EXCEPTION') status = 'ON_HOLD';

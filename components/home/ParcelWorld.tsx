@@ -37,10 +37,7 @@ export default function ParcelWorld(props: ParcelSceneState) {
     </div>
     <div className="parcel-world-caption">
       <span>A little imagination. A long journey.<small>Illustration · not shipment tracking</small></span>
-      {ready && <div className="parcel-world-controls" role="group" aria-label="Rotate the parcel illustration">
-        <button type="button" onClick={() => scene.current?.rotate(-1)} aria-label="Turn parcel left">←</button>
-        <button type="button" onClick={() => scene.current?.rotate(1)} aria-label="Turn parcel right">→</button>
-      </div>}
+
     </div>
   </div>;
 }

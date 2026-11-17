@@ -1,6 +1,6 @@
 # Pricing and product estimates
 
-Updated: 2026-11-13. Applies to `DongHeeKw/paynship-dh2`. The owner approved **15% of the product subtotal, minimum KRW 10,000 per retailer order**. Shipping, insurance and import charges are separate. This is a service-fee policy, not a profit margin or tax rate.
+Updated: 2026-11-18. Applies to `DongHeeKw/paynship-dh2`. The owner approved **15% of the product subtotal, with no minimum**. Shipping, insurance and import charges are separate. This is a service-fee policy, not a profit margin or tax rate.
 
 ## Fee and exact arithmetic
 
@@ -8,14 +8,14 @@ Updated: 2026-11-13. Applies to `DongHeeKw/paynship-dh2`. The owner approved **1
 
 ```text
 product subtotal KRW = verified unit price KRW × quantity
-service fee KRW = max(10,000, round-half-up(product subtotal KRW × 15 / 100))
+service fee KRW = round-half-up(product subtotal KRW × 15 / 100)
 ```
 
 A zero-value calculator basket has no fee. Actual requests require a positive price. Round the fee once to whole won, then convert fee and product subtotal separately to USD cents at the reviewed KRW-per-USD rate. `money.ts` uses integer/BigInt ratios and half-up rounding. The total equals its rounded line items. Customer/operator fee overrides do not control new quotes.
 
-One request currently contains one product and its quantity and represents one retailer order. The minimum applies once to that subtotal, never once per unit. Multi-product checkout across separate requests is **not implemented**. `allocateServiceFeeKrw` supports exact future grouped-line allocation using largest remainders; allocations sum to one order fee. It does not create a cart. If operations combine requests into one retailer checkout, a reviewed grouping/refund workflow is needed before charging to avoid repeated minimums.
+One request currently contains one product and its quantity and represents one retailer order. Multi-product checkout across separate requests is **not implemented**. `allocateServiceFeeKrw` supports exact future grouped-line allocation using largest remainders; allocations sum to one order fee. It does not create a cart.
 
-New quotes record the policy ID, KRW fee and FX rate. Existing stored/paid quotes are not rewritten. Paid legacy revalidation retains the historical fee/arithmetic, and all paid line items must match. Changed costs require support/refund resolution.
+New quotes record the policy ID, KRW fee and FX rate. Existing stored/paid quotes are not rewritten, including the previous 15%/KRW 10,000-minimum policy. Paid legacy revalidation retains the historical fee/arithmetic, and all paid line items must match. Changed costs require support/refund resolution.
 
 ## Before-login estimates
 
@@ -25,7 +25,7 @@ Automatic estimates use the public operator-reviewed [catalog](../../../data/cat
 
 Entries match canonical URL **and exact options**; routes also match destination and quantity. A larger quantity never reuses a smaller shipment's transport/tax amounts. Duplicate matches, missing amounts, future/stale evidence or expiry require review. Evidence windows are at most 24 hours; expiry is the earliest product/freight/customs expiry. The browser checks freshness every 30 seconds. This display is not checkout authorization.
 
-Automatic catalog routes cover Korea shipments to the **USA, China and Japan**. Existing destination/history records and wider manual request list remain intact. Shipping from Korea and product manufacturing origin are different facts.
+Automatic catalog routes cover Korea shipments to the **USA, China and Japan**. The new request list is VN/TH/PH/ID/CN/JP/US; historical destination records remain intact. Shipping from Korea and product manufacturing origin are different facts.
 
 ## Publishing verified data
 

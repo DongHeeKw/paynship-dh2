@@ -1,10 +1,18 @@
 # URL과 상품·통관 검토
 
+## Structured data and CSS integration — 2026-11-18
+
+Extraction first reads structured data and records measured `structuredMs`; a conservative CSS adapter runs only for missing unambiguous fields and records `cssMs`. The proposed 50/200 ms figures are targets, not guarantees. No scripts execute or resources load in CSS parsing. Exact variant selection, strict positive price/currency pairs and provenance from dh2 are preserved. CSS cannot resolve ambiguous variants/offers or invalid/partial currencies. Naver/Coupang access limits are never bypassed.
+
+The [catalog](../../../features/storefront/README.md) adds eight real references and local seller images without asserting current prices or stock. Intake additionally supports exact rom&nd, ROUND LAB, wiggle wiggle product URLs and Korean KRW Weverse listings. Product identifiers are required; duplicated Cafe24 identifiers are rejected.
+
+New requests and saved delivery profiles use VN, TH, PH, ID, CN, JP and US. Historical destinations remain in the schema and database. Country selection does not prove an available carrier or customs route.
+
 ## 2026-11-13 가격·옵션 확장
 
 JSON-LD `ProductGroup.hasVariant`와 Product에서 SKU·모델·사이즈·색상·재질·판매자 원산지를 관측합니다. `selectObservedVariant`는 모든 선택 필드가 정확히 일치하는 단일 variant만 반환합니다. 조합을 추정하거나 최저가 variant를 대신 선택하지 않습니다. 여러 offer, AggregateOffer, 통화 없는 가격, 0/음수/범위 가격, 모호한 variant는 가격 확정에 사용하지 않습니다. 모호한 JSON-LD를 meta 가격으로 덮어쓰지 않습니다. 출처·시각·해시를 보존하고 포장 규격·HS·통관 승인을 추정하지 않습니다.
 
-공개 `/purchase`에는 15%·최소 ₩10,000 수수료와 비용 항목을 표시합니다. 고객 입력 가격은 미검증 계산용이고 서버 견적에 쓰지 않습니다. 검토된 공개 catalog의 정확한 URL·옵션·국가·수량·최대 24시간 근거가 맞을 때만 자동 합계를 표시합니다. catalog는 초기 비어 있으며 임의 링크의 실시간 수집은 추가하지 않습니다. 신규 US/CN/JP 견적은 국가별 검증 관세·세금·통관비를 요구합니다. 기존 종가 산식을 세 나라의 완전한 세법 엔진으로 취급하지 않습니다. [가격 명세](../Pricing/Spec.md)를 따릅니다.
+공개 `/purchase`에는 15%·최소 없음 수수료와 비용 항목을 표시합니다. 고객 입력 가격은 미검증 계산용이고 서버 견적에 쓰지 않습니다. 검토된 공개 catalog의 정확한 URL·옵션·국가·수량·최대 24시간 근거가 맞을 때만 자동 합계를 표시합니다. catalog는 초기 비어 있으며 임의 링크의 실시간 수집은 추가하지 않습니다. 신규 US/CN/JP 견적은 국가별 검증 관세·세금·통관비를 요구합니다. 기존 종가 산식을 세 나라의 완전한 세법 엔진으로 취급하지 않습니다. [가격 명세](../Pricing/Spec.md)를 따릅니다.
 
 변경일: 2026-10-12. 고객 요청 중 모델 호출·외부 상품 수집·자동 HS 추론을 사용하지 않습니다. 운영자용 제한된 증거 수집 CLI는 별도로 제공합니다.
 

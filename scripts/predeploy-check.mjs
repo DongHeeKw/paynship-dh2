@@ -7,7 +7,7 @@ if (args.some(arg => arg !== '--with-lint')) {
   process.exit(1);
 }
 const scripts = JSON.parse(readFileSync('package.json', 'utf8')).scripts ?? {};
-const steps = ['type-check', 'docs:check', 'test:ci', 'product:evidence:test', 'build'];
+const steps = ['type-check', 'docs:check', 'test:ci', 'app:test', 'samples:workspace:test', 'product:evidence:test', 'build'];
 if (args.includes('--with-lint')) {
   if (!scripts.lint || /\bnext\s+lint\b/.test(scripts.lint)) {
     console.error('[predeploy] Configure a working ESLint command before --with-lint.');

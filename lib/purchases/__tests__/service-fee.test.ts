@@ -3,15 +3,15 @@ import { allocateServiceFeeKrw, calculateServiceFeeKrw } from '../service-fee';
 import { applyBasisPoints, decimalToMinor, krwToUsdCents, roundMoneyRatio } from '../money';
 
 describe('approved retailer-order service fee', () => {
-  it.each([[0, 0], [30000, 10000], [66666, 10000], [66670, 10001], [100000, 15000], [200000, 30000]])('charges %i won as %i won', (subtotal, fee) => {
+  it.each([[0, 0], [1, 0], [4, 1], [30000, 4500], [66666, 10000], [66670, 10001], [100000, 15000], [200000, 30000]])('charges %i won as %i won', (subtotal, fee) => {
     expect(calculateServiceFeeKrw(subtotal)).toBe(fee);
   });
   it.each([-1, 1.5, NaN, Infinity, 1000000001])('rejects invalid subtotals %s', subtotal => {
     expect(() => calculateServiceFeeKrw(subtotal)).toThrow();
   });
-  it('applies the minimum once to a combined retailer order and allocates exact won', () => {
+  it('charges 15% without a minimum and allocates exact won', () => {
     const result = allocateServiceFeeKrw([{ id: 'a', subtotalKrw: 10000 }, { id: 'b', subtotalKrw: 10000 }, { id: 'c', subtotalKrw: 10000 }]);
-    expect(result).toEqual({ totalKrw: 10000, lines: [{ id: 'a', feeKrw: 3334 }, { id: 'b', feeKrw: 3333 }, { id: 'c', feeKrw: 3333 }] });
+    expect(result).toEqual({ totalKrw: 4500, lines: [{ id: 'a', feeKrw: 1500 }, { id: 'b', feeKrw: 1500 }, { id: 'c', feeKrw: 1500 }] });
   });
   it('never loses a won across different order sizes and never allocates fees to free lines', () => {
     for (let count = 1; count <= 100; count++) {

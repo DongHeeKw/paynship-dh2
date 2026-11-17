@@ -2,6 +2,18 @@ import { CUSTOMS_SOURCES as sources, POLICY_REVISION, POLICY_REVIEW_DUE_AT } fro
 import type { CountryCustomsPolicy } from './types';
 
 const countryPolicies: Record<string, Omit<CountryCustomsPolicy, 'country' | 'revision' | 'reviewDueAt'>> = {
+  ...Object.fromEntries(['VN', 'TH', 'PH'].map(country => [country, {
+    id: `${country}_CARRIER_BROKER_REVIEW`, requirement: 'MANUAL_REVIEW' as const, sources: [],
+    customerHint: 'Your destination needs a carrier or broker review before payment. Save your address without national ID numbers. Product, recipient and import requirements must be checked for the selected route.',
+  }])),
+  CN: {
+    id: 'CN_CARRIER_BROKER_REVIEW',
+    requirement: 'MANUAL_REVIEW',
+    customerHint: 'China shipments require a review of the selected carrier and customs route before payment. If identity documents are needed, provide them directly through the contracted carrier or broker’s secure channel. Do not enter a national ID, passport number, or Korean customs code here.',
+    // A live rule/contract has not been verified. Do not infer rules from country
+    // selection or collect identifiers based on a search-result excerpt.
+    sources: [],
+  },
   TW: {
     id: 'TW_EXPRESS_AUTHORIZATION',
     requirement: 'EXTERNAL_AUTHORIZATION',

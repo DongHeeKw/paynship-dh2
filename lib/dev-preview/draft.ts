@@ -15,6 +15,6 @@ export function readPreviewEntryDraft(storage: Pick<DraftStorage, 'getItem'> | n
 export function previewBookExample(): IntakeDraft {
   return {
     sourceUrl: 'https://www.yes24.com/product/goods/13137546', category: 'books',
-    quantity: 1, options: '', destination: 'SG',
+    quantity: 1, options: '', destination: 'JP',
   };
 }

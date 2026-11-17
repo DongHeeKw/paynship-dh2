@@ -1,13 +1,13 @@
 import { applyBasisPoints, moneyInteger } from './money';
 
 export const SERVICE_FEE_POLICY = Object.freeze({
-  id: 'retailer-order-15pct-min10000krw-v1',
+  id: 'retailer-order-15pct-no-minimum',
   basisPoints: 1500,
-  minimumKrw: 10000,
-  effectiveDate: '2026-11-13',
+  minimumKrw: 0,
+  effectiveDate: '2026-11-17',
 });
 
-/** One retailer checkout, including all quantities; never apply the minimum per unit. */
+/** 15% of merchandise for one retailer checkout, including all quantities; no minimum. */
 export function calculateServiceFeeKrw(productSubtotalKrw: number): number {
   moneyInteger(productSubtotalKrw);
   if (productSubtotalKrw > 1_000_000_000) throw new Error('Product subtotal exceeds the service limit.');

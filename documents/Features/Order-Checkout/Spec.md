@@ -1,8 +1,18 @@
 # 구매 요청·결제·상태
 
+## Integrated behavior — 2026-11-18
+
+The current fee is **15% of merchandise, no minimum**. New quotes and the public calculator share exact KRW rounding and USD-cent conversion. Stored/paid quotes keep their original policy and all amounts, including clearance. Revalidation supports the previous 15%/₩10,000-minimum policy without applying today's cheaper fee to old payments.
+
+Provider-confirmed payment preserves an existing ON_HOLD status. Checkout, purchasing, dispatch and hold-resume require current destination-matched product/customs and recipient evidence. A fulfilment hold can refresh evidence without resetting its existing stage; monetary changes require support/refund resolution. Quote expiry is capped by each evidence expiry, its 30-day age limit and the internal country-policy deadline. An overdue policy remains blocked.
+
+Only dispatch accepts new carrier/tracking assignments. Resuming a shipped hold checks the original assignment and recipient authorization tied to that tracking reference. Distinct signed delivery events at the same timestamp can complete delivery; replay/older-event protection remains. Shopify checkout URLs reject embedded credentials/custom ports, while verified clearance remains a separate charge.
+
+The [reseller API](../../../features/reseller/README.md) shares the same request service. The [fictional workspace](../../../features/workspace/README.md) demonstrates credit/payment/delivery without real provider effects.
+
 ## 2026-11-13 수수료와 수입 비용
 
-신규 수수료는 상품가×수량의 15%, 판매처 주문당 최소 ₩10,000이며 정수 산술로 원화 반올림 후 승인 환율로 USD cents에 변환합니다. 운영자 수수료 입력은 신규 견적에 적용하지 않습니다. 정책 ID·원화 수수료·환율을 보존하고 결제한 과거 견적은 변경하지 않습니다. 현재 요청은 한 상품/수량으로 한 판매처 주문입니다. 여러 요청을 한 checkout으로 합치는 기능은 없으며 묶음 구매 최소 수수료 중복 부과를 막으려면 별도 grouping 절차가 필요합니다.
+신규 수수료는 상품가×수량의 15%, 최소 수수료 없이 적용하며 정수 산술로 원화 반올림 후 승인 환율로 USD cents에 변환합니다. 운영자 수수료 입력은 신규 견적에 적용하지 않습니다. 정책 ID·원화 수수료·환율을 보존하고 결제한 과거 견적은 변경하지 않습니다. 현재 요청은 한 상품/수량으로 한 판매처 주문입니다. 여러 요청을 한 checkout으로 합치는 기능은 없습니다.
 
 신규 USA·China·Japan 견적은 증빙에 근거한 `verifiedImportCharges`(관세·세금·통관비 USD cents)를 요구합니다. 이는 generic 관세·세금 산식을 대체하며 이중 가산하지 않습니다. 통관비는 고객 견적·Shopify 결제의 독립 항목입니다. 근거 만료·HS 사업 범위·수취인·소유권·결제 검증은 유지합니다. 과거 결제 견적 재검토는 과거 수수료·산술과 모든 금액의 일치를 확인합니다.
 

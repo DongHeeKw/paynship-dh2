@@ -4,6 +4,7 @@ import { decryptPii, encryptPii } from './pii';
 import { buildStoredDeliveryProfile, readStoredDeliveryProfile } from '@/lib/customs/delivery';
 import { consumeQuota } from './quota';
 import { purchaseTransaction } from './transaction';
+import { requireLaunchDestination } from './destination-policy';
 
 export async function getDeliveryProfile(userId: string) {
   const row = await prisma.deliveryProfile.findUnique({ where: { userId } });
@@ -12,6 +13,7 @@ export async function getDeliveryProfile(userId: string) {
 
 export async function saveDeliveryProfile(user: User, input: unknown) {
   const profile = buildStoredDeliveryProfile(input);
+  requireLaunchDestination(profile.country);
   const encryptedData = encryptPii(profile, `profile:${user.id}`);
   await purchaseTransaction(async tx => {
     await consumeQuota(tx, `profile:${user.id}`, 20);
