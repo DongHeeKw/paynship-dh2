@@ -50,7 +50,7 @@ export async function verifyHostedPayment(draftId: string, requestId: string, qu
     .map(item => Date.parse(item.processedAt!)).filter(value => Number.isFinite(value) && value <= Date.now() + 300000) ?? [];
   if (draft.order && !timestamps.length) throw new PurchaseError(409, 'A successful payment transaction must be reconciled with the provider.');
   const url = draft.invoiceUrl ? new URL(draft.invoiceUrl) : null;
-  if (url && (url.protocol !== 'https:' || ![domain, 'checkout.shopify.com'].includes(url.hostname))) throw new PurchaseError(503, 'Unexpected hosted payment address.');
+  if (url && (url.protocol !== 'https:' || url.username || url.password || url.port || ![domain, 'checkout.shopify.com'].includes(url.hostname))) throw new PurchaseError(503, 'Unexpected hosted payment address.');
   return { draftId, checkoutUrl: url?.toString() ?? null, orderId: draft.order?.id.split('/').pop() ?? null,
     paidAt: timestamps.length ? new Date(Math.max(...timestamps)) : null };
 }

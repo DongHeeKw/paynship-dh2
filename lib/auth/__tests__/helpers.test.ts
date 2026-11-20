@@ -83,4 +83,15 @@ describe('verified operator authorization', () => {
     mocks.findUnique.mockResolvedValueOnce({ isAdmin: false });
     expect((await getAdminMfaEnrollmentAccess()).isAdmin).toBe(false);
   });
+  it.each([null, { ...verifiedUser, email: undefined }])('rejects missing user identity or email before database authorization', async user => {
+    mocks.getUser.mockResolvedValue({ data: { user }, error: null });
+    expect((await getAuthUser()).isGuest).toBe(true);
+    expect((await requireAdmin()).isAdmin).toBe(false);
+    expect(mocks.findUnique).not.toHaveBeenCalled();
+  });
+  it('does not provision users lacking an email even if confirmation metadata exists', async () => {
+    expect(await ensureUserExists({ ...verifiedUser, email: undefined })).toEqual({ success: false, userId: '' });
+    expect(mocks.upsert).not.toHaveBeenCalled();
+  });
+
 });
