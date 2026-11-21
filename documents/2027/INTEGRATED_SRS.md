@@ -1,6 +1,6 @@
 # PayNShip 2027 — Integrated Product & Software Requirements (SRS)
 
-Status: **PROPOSED / NOT IMPLEMENTED** · Version: 1.0 · Authored: 2026-11-21 · Repository: \`DongHeeKw/paynship-dh2\`
+Status: **PROPOSED / NOT IMPLEMENTED** · Version: 1.0 · Authored: 2026-11-21 · Repository: `DongHeeKw/paynship-dh2`
 
 > This is a delivery contract for a coding agent, not a declaration that 2027 tariffs are finalized or that the current deployment is production-ready. No product may be advertised as customs-cleared or duty-paid without current, auditable evidence.
 
@@ -16,11 +16,11 @@ Status: **PROPOSED / NOT IMPLEMENTED** · Version: 1.0 · Authored: 2026-11-21 �
 
 ## 1. Baseline confirmed from repository (2026-11-21)
 
-- README: Node >=24, Next.js 15, Prisma/PostgreSQL, Supabase Auth, Shopify hosted payment, service fee **15% merchandise subtotal, no minimum**. Legacy paid quotes immutable. \`npm start app\` local runner; Vercel is a separate deployment path.
-- \`PurchaseRequest\` has single source URL, quantity/options/destination, idempotency/version, quote, carrier/tracking and events. Current schema alone does **not** represent a many-item order / several domestic purchases / split packages.
-- \`Product\` legacy fields include \`hsCode\`, \`origin\`, \`material\`, \`dataSources\`, \`overallConfidence\`; these are **not** official country-specific classifications.
-- \`documents/Features/STATUS.md\`: 8 curated seller references; limited JSON-LD/CSS extraction; URL preflight is not live verification; product evidence dates do not refresh on deploy; Naver blocks crawling via robots; no current verified public all-in catalog, live carrier/broker, full refunds or verified end-to-end production checkout.
-- \`documents/Reference/COUNTRY_CUSTOMS.md\`: policy recheck deadline 2026-11-11 has elapsed; existing gate correctly blocks approvals. Do not silently extend expiry.
+- README: Node >=24, Next.js 15, Prisma/PostgreSQL, Supabase Auth, Shopify hosted payment, service fee **15% merchandise subtotal, no minimum**. Legacy paid quotes immutable. `npm start app` local runner; Vercel is a separate deployment path.
+- `PurchaseRequest` has single source URL, quantity/options/destination, idempotency/version, quote, carrier/tracking and events. Current schema alone does **not** represent a many-item order / several domestic purchases / split packages.
+- `Product` legacy fields include `hsCode`, `origin`, `material`, `dataSources`, `overallConfidence`; these are **not** official country-specific classifications.
+- `documents/Features/STATUS.md`: 8 curated seller references; limited JSON-LD/CSS extraction; URL preflight is not live verification; product evidence dates do not refresh on deploy; Naver blocks crawling via robots; no current verified public all-in catalog, live carrier/broker, full refunds or verified end-to-end production checkout.
+- `documents/Reference/COUNTRY_CUSTOMS.md`: policy recheck deadline 2026-11-11 has elapsed; existing gate correctly blocks approvals. Do not silently extend expiry.
 - **Documentation drift:** README and STATUS specify no minimum service fee, while part of OPERATIONS.md still says KRW 10,000 minimum. Canonical rule for new quotes is **15%, no minimum** until formally changed; remove/flag stale contradictory wording in a separate reviewed change.
 - Existing protection (owner checks, encrypted PII, limited identifiers, signed provider events, idempotent webhook processing, versioned state, admin MFA, NO fake shipment delivered, NO unknown customs cost as zero) is a **non-regression requirement**.
 
@@ -38,10 +38,10 @@ Status: **PROPOSED / NOT IMPLEMENTED** · Version: 1.0 · Authored: 2026-11-21 �
 
 | ID | Priority | SHALL requirement | Acceptance / notes |
 | --- | --- | --- | --- |
-| EXP-001 | P0 | Public \`/products\` and MD home remain accessible without authentication. | No auth prompt for browsing; no private metadata leakage. |
+| EXP-001 | P0 | Public `/products` and MD home remain accessible without authentication. | No auth prompt for browsing; no private metadata leakage. |
 | EXP-002 | P0 | Public URL preview takes merchant HTTPS URL, country, selected variant/quantity and does not assert product real/available or customs cleared until verified. | URL parsing distinct from evidence and quote approval. |
 | EXP-003 | P0 | Preserve guest draft over sign-in callback, verify tamper protection, ownership, expiry and canonical URL; do not persist recipient PII before consent. | Cross-account and replay tests. |
-| EXP-004 | P0 | Home resolves \`guest\`, \`authenticated_no_active_order\`, \`authenticated_active_order\`, \`action_required\` states; active order goes first; MD never disappears. | Same responsive navigation; accessible keyboard/screen reader. |
+| EXP-004 | P0 | Home resolves `guest`, `authenticated_no_active_order`, `authenticated_active_order`, `action_required` states; active order goes first; MD never disappears. | Same responsive navigation; accessible keyboard/screen reader. |
 | EXP-005 | P0 | Per-item variants and quantity are exact SKU/color/size identities; changing variant invalidates inventory, price, compliance and shipping quote where applicable. | No merging near-match SKUs. |
 | EXP-006 | P0 | Guest preview clearly labels preliminary vs verified; no checkout CTA with unknown mandatory duty/clearance fee. | Unknown is not zero. |
 | EXP-007 | P1 | Admin MD may publish/unpublish editorial collections and evidence-backed selection reason (Korea-only, limited, discount verified, etc.). | Avoid unverified claims such as "cheaper than the US". |
@@ -53,15 +53,15 @@ Status: **PROPOSED / NOT IMPLEMENTED** · Version: 1.0 · Authored: 2026-11-21 �
 
 ## 4. Functional requirements — URL orchestration / evidence
 
-Pipeline: \`URL_ACCEPTED -> MERCHANT_RESOLVED -> PRODUCT_IDENTIFIED -> VARIANT_RESOLVED -> EVIDENCE_EXTRACTED -> EVIDENCE_VERIFIED -> CLASSIFICATION_REVIEWED -> IMPORT_ELIGIBILITY_REVIEWED -> QUOTE_READY\`; any uncertain step -> \`MANUAL_REVIEW_REQUIRED\`, with a human-readable reason and retained draft.
+Pipeline: `URL_ACCEPTED -> MERCHANT_RESOLVED -> PRODUCT_IDENTIFIED -> VARIANT_RESOLVED -> EVIDENCE_EXTRACTED -> EVIDENCE_VERIFIED -> CLASSIFICATION_REVIEWED -> IMPORT_ELIGIBILITY_REVIEWED -> QUOTE_READY`; any uncertain step -> `MANUAL_REVIEW_REQUIRED`, with a human-readable reason and retained draft.
 
 | ID | Priority | SHALL requirement |
 | --- | --- | --- |
 | URL-001 | P0 | Canonicalize merchant URL; HTTPS-only explicit hostname/path allowlist; validate redirects and DNS at each hop; block localhost, link-local, private, metadata IP and alternative encodings; enforce resource size/timeouts, no arbitrary fetch. |
 | URL-002 | P0 | Treat retrieved HTML/structured data as untrusted. No page text as execution instructions; sanitize output; prevent script/HTML injection. |
-| URL-003 | P0 | Merchant adapters implement same typed interface \`resolve, extract, normalize, evidence\`; fallback for authorized JSON-LD/Open Graph/CSS, then customer/manual request. |
+| URL-003 | P0 | Merchant adapters implement same typed interface `resolve, extract, normalize, evidence`; fallback for authorized JSON-LD/Open Graph/CSS, then customer/manual request. |
 | URL-004 | P0 | Store per-field provenance: merchant URL, capture time, extraction method, source revision/evidence digest, confidence, who approved and expiration. |
-| URL-005 | P0 | Verify SKU/model/color/size/currency, membership coupon exclusions, shipping charge and stock; missing information is \`UNKNOWN\`, not inferred. |
+| URL-005 | P0 | Verify SKU/model/color/size/currency, membership coupon exclusions, shipping charge and stock; missing information is `UNKNOWN`, not inferred. |
 | URL-006 | P0 | URL extraction MUST NOT automatically invent manufacturing origin, weight, HS tariff line, country-specific eligibility or tariff value. |
 | URL-007 | P0 | If merchant rejects automated access or terms/robots disallow it, do not evade; use authorized feed/API/affiliate data or customer/manual entry. |
 | URL-008 | P1 | Per-site adapters for Naver, Musinsa, Daiso only **after** legal/technical access review; versioned fixtures and selector drift detection. |
@@ -87,7 +87,7 @@ Model **separate layers**: (1) product identity and physical composition, (2) cu
 | CUS-009 | P0 | Evaluate again at checkout, before purchase, before dispatch and on release from hold; preserve existing paid-quote financial history, use explicit adjustment/consent/refund flow. |
 | CUS-010 | P0 | Shipment/importer identity and required authorizations are country/channel-specific; minimize personal identifier collection; broker secure-channel path rather than general profile fields. |
 | CUS-011 | P0 | Required customs fields and signed invoices must reflect actual SKU/quantity/value/origin; never relabel Chinese-made products as Korean origin. |
-| CUS-012 | P0 | Distinguish \`ALLOWED_VERIFIED\`, \`REVIEW_REQUIRED\`, \`RESTRICTED\`, \`PROHIBITED\`, \`UNKNOWN\`; only current approved verified chain may unlock payment. |
+| CUS-012 | P0 | Distinguish `ALLOWED_VERIFIED`, `REVIEW_REQUIRED`, `RESTRICTED`, `PROHIBITED`, `UNKNOWN`; only current approved verified chain may unlock payment. |
 | CUS-013 | P1 | DDP/DAP eligibility depends on specific carrier contract, importer-of-record arrangement and destination rule; disclose who pays on arrival. |
 | CUS-014 | P1 | Audit every rule lookup, decision and manual override with before/after, approver, input snapshot and rule hash. Overrides never silently bypass prohibited categories. |
 | CUS-015 | P1 | Automatic rule impact report on 2027 tariff changes and scheduled rule-source review; pause affected unapproved quotes, notify ops. |
@@ -106,7 +106,7 @@ Model **separate layers**: (1) product identity and physical composition, (2) cu
 | --- | --- | --- |
 | PRC-001 | P0 | New quotes honor merchandise subtotal * 15% and no minimum, unless formal versioned business decision changes it; legacy paid amounts stay immutable. |
 | PRC-002 | P0 | Quote has line items with source evidence and currency: goods, domestic ship, purchasing fee, warehouse/pack, international freight, customs duty, import tax, brokerage/advancement, insurance, payment/FX, promo. |
-| PRC-003 | P0 | Explicit \`ESTIMATE\`, \`VERIFIED_QUOTE\`, \`EXPIRED\`, \`ON_HOLD\`, \`PAID\`; no total presented as final if mandatory costs unknown. |
+| PRC-003 | P0 | Explicit `ESTIMATE`, `VERIFIED_QUOTE`, `EXPIRED`, `ON_HOLD`, `PAID`; no total presented as final if mandatory costs unknown. |
 | PRC-004 | P0 | Quote pins variant/SKU/quantity/destination/address-relevant zone, route, rule-version hash, source and FX timestamp; any mutation revalidates. |
 | PRC-005 | P0 | No payment request unless approved duty/tax/clearance evidence meets country gate, signed provider callbacks match exact amount/currency/order, recipient data valid. |
 | PRC-006 | P1 | Show customer decision inputs but not carrier-selection complexity; allow "fast" alternative only if grounded SLA and pricing. |
@@ -116,7 +116,7 @@ Model **separate layers**: (1) product identity and physical composition, (2) cu
 
 | ID | Priority | SHALL requirement |
 | --- | --- | --- |
-| ORD-001 | P0 | Support future \`Order -> OrderItems -> DomesticPurchases -> WarehouseReceipts -> ShipmentGroups -> Packages -> TrackingEvents\` with backward-compatible mapping from existing \`PurchaseRequest\`. |
+| ORD-001 | P0 | Support future `Order -> OrderItems -> DomesticPurchases -> WarehouseReceipts -> ShipmentGroups -> Packages -> TrackingEvents` with backward-compatible mapping from existing `PurchaseRequest`. |
 | ORD-002 | P0 | Customer dashboard displays verified order progress and last verified event time, not inferred carrier events; action-required shown separately. |
 | ORD-003 | P0 | Customer-facing timeline: Confirmed, Purchasing, Preparing, In transit, Delivered. Internally preserve inventory/warehouse/customs/exceptions and tracking details. |
 | ORD-004 | P0 | Tracking owner authorization, signed provider event, deduplication, out-of-order monotonic state, multi-package support. No admin fake delivered. |
@@ -131,18 +131,18 @@ Model **separate layers**: (1) product identity and physical composition, (2) cu
 
 ## 8. Data schema / migration principles
 
-Suggested **new** entities: \`Merchant\`, \`MerchantAdapterRevision\`, \`ProductEvidence\`, \`VariantIdentity\`, \`CuratedCollection\`, \`CountryTariffClassification\`, \`TradeRuleVersion\`, \`ImportEligibilityDecision\`, \`QuoteSnapshot\`, \`OrderItem\`, \`DomesticPurchase\`, \`WarehouseReceipt\`, \`ShipmentGroup\`, \`ShipmentPackage\`, \`CarrierRateEvidence\`, \`TrackingEvent\`, \`ReturnCase\`, \`RefundLedger\`, \`AuditDecision\`. Separate immutable observed evidence from editable MD content and from broker-approved classification.
+Suggested **new** entities: `Merchant`, `MerchantAdapterRevision`, `ProductEvidence`, `VariantIdentity`, `CuratedCollection`, `CountryTariffClassification`, `TradeRuleVersion`, `ImportEligibilityDecision`, `QuoteSnapshot`, `OrderItem`, `DomesticPurchase`, `WarehouseReceipt`, `ShipmentGroup`, `ShipmentPackage`, `CarrierRateEvidence`, `TrackingEvent`, `ReturnCase`, `RefundLedger`, `AuditDecision`. Separate immutable observed evidence from editable MD content and from broker-approved classification.
 
 Rules:
 1. First inspect current Prisma migrations and relations; **do not drop historical Quote/Order/Chat/User data**. Additive migrations with compatibility layer, backfill rehearsal and rollback plan.
-2. Separate legacy \`Product.hsCode\` (unverified) from verified classifications. Never auto-migrate candidate to verified.
+2. Separate legacy `Product.hsCode` (unverified) from verified classifications. Never auto-migrate candidate to verified.
 3. Store monetary amounts in integer minor units/decimal, not JS float for customs financial calculation; currency and rounding mode per jurisdiction.
 4. Normalized source URLs never serve as sole variant identity; preserve seller ID, exact SKU and variant fields.
 5. Order and customs snapshots are immutable after paid. Use append-only audit/reconciliation events and explicit corrections.
 6. Encrypt PII and sensitive document references, least privilege, retention/deletion policies; no SSN in free-form support notes.
 7. Idempotency keys for merchant purchase, payment, refund, carrier booking and provider callbacks; optimistic concurrency/version checks.
 8. Queue/outbox for side effects, bounded retries, poison-event review, no double orders.
-9. API errors use typed error codes \`NEEDS_EVIDENCE\`, \`RULE_EXPIRED\`, \`CARRIER_UNAVAILABLE\`, \`PRICE_CHANGED\`, \`REQUIRES_BROKER\`, \`NOT_ELIGIBLE\`, \`ACTION_REQUIRED\` and non-sensitive messages.
+9. API errors use typed error codes `NEEDS_EVIDENCE`, `RULE_EXPIRED`, `CARRIER_UNAVAILABLE`, `PRICE_CHANGED`, `REQUIRES_BROKER`, `NOT_ELIGIBLE`, `ACTION_REQUIRED` and non-sensitive messages.
 
 ## 9. Core acceptance, release gates, priorities
 
@@ -172,6 +172,6 @@ Rules:
 
 ## 10. Agent handoff
 
-Follow \`documents/2027/AGENT_IMPLEMENTATION_PLAN.md\` and \`documents/2027/TEST_MATRIX.md\`. Do not implement regulatory decisions from memory; attach authoritative cited rules, effective dates and signed approval. Each PR must reference requirement IDs, test IDs, migration and rollback implications, screenshots of guest/signed-in behavior, and verify with \`npm run type-check\`, \`npm run test:ci\`, \`npm run build\`, \`npm run docs:check\`, appropriate Playwright tests. Report actual results only.
+Follow `documents/2027/AGENT_IMPLEMENTATION_PLAN.md` and `documents/2027/TEST_MATRIX.md`. Do not implement regulatory decisions from memory; attach authoritative cited rules, effective dates and signed approval. Each PR must reference requirement IDs, test IDs, migration and rollback implications, screenshots of guest/signed-in behavior, and verify with `npm run type-check`, `npm run test:ci`, `npm run build`, `npm run docs:check`, appropriate Playwright tests. Report actual results only.
 
-**Source reading list:** \`README.md\`, \`documents/PRODUCT_SPECIFICATION.md\`, \`documents/Features/STATUS.md\`, \`documents/Reference/TAX_AND_CUSTOMS.md\`, \`documents/Reference/COUNTRY_CUSTOMS.md\`, \`documents/Reference/OPERATIONS.md\`, \`documents/Features/Pricing/Spec.md\`, \`features/storefront/README.md\`, \`prisma/schema.prisma\`.
+**Source reading list:** `README.md`, `documents/PRODUCT_SPECIFICATION.md`, `documents/Features/STATUS.md`, `documents/Reference/TAX_AND_CUSTOMS.md`, `documents/Reference/COUNTRY_CUSTOMS.md`, `documents/Reference/OPERATIONS.md`, `documents/Features/Pricing/Spec.md`, `features/storefront/README.md`, `prisma/schema.prisma`.
