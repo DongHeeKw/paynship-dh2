@@ -172,6 +172,6 @@ Rules:
 
 ## 10. Agent handoff
 
-Follow `documents/2027/AGENT_IMPLEMENTATION_PLAN.md` and `documents/2027/TEST_MATRIX.md`. Do not implement regulatory decisions from memory; attach authoritative cited rules, effective dates and signed approval. Each PR must reference requirement IDs, test IDs, migration and rollback implications, screenshots of guest/signed-in behavior, and verify with `npm run type-check`, `npm run test:ci`, `npm run build`, `npm run docs:check`, appropriate Playwright tests. Report actual results only.
+Follow `documents/2027/AGENT_IMPLEMENTATION_PLAN.md`, `documents/2027/UX_MD_AND_SERVICE_GUIDE.md`, `documents/2027/CURRENT_TO_TARGET.md` and `documents/2027/TEST_MATRIX.md`. Do not implement regulatory decisions from memory; attach authoritative cited rules, effective dates and signed approval. Each PR must reference requirement IDs, test IDs, migration and rollback implications, screenshots of guest/signed-in behavior, and verify with `npm run type-check`, `npm run test:ci`, `npm run build`, `npm run docs:check`, appropriate Playwright tests. Report actual results only.
 
 **Source reading list:** `README.md`, `documents/PRODUCT_SPECIFICATION.md`, `documents/Features/STATUS.md`, `documents/Reference/TAX_AND_CUSTOMS.md`, `documents/Reference/COUNTRY_CUSTOMS.md`, `documents/Reference/OPERATIONS.md`, `documents/Features/Pricing/Spec.md`, `features/storefront/README.md`, `prisma/schema.prisma`.
