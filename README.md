@@ -1,6 +1,6 @@
 # PayNShip
 
-> **2027 제품·개발 목표 (미구현):** [통합 SRS](documents/2027/INTEGRATED_SRS.md) · [실제 코드 변경 실행서](documents/2027/AGENT_IMPLEMENTATION_PLAN.md) · [SW/Test 검증표](documents/2027/TEST_MATRIX.md) · [현행/목표 문서 대조](documents/2027/CURRENT_TO_TARGET.md). 본 README의 기능 설명은 현행 동작을 뜻하며 V3의 구현 완료를 의미하지 않습니다. 방문자는 MD 탐색과 URL 미리보기를, 로그인 후 활성 주문자는 주문 현황 우선 홈을 사용하는 것이 목표입니다. 구매처·배대지·택배사 선택은 내부 오케스트레이션으로 추상화하되, 가격·관세 부담·배송 예상·환불 조건은 공개합니다.
+> **2027 제품·개발 목표 (미구현):** [통합 SRS](documents/2027/INTEGRATED_SRS.md) · [화면/MD/서비스 정책](documents/2027/UX_MD_AND_SERVICE_GUIDE.md) · [실제 코드 변경 실행서](documents/2027/AGENT_IMPLEMENTATION_PLAN.md) · [SW/Test 검증표](documents/2027/TEST_MATRIX.md) · [현행/목표 문서 대조](documents/2027/CURRENT_TO_TARGET.md). 본 README의 기능 설명은 현행 동작을 뜻하며 V3의 구현 완료를 의미하지 않습니다. 방문자는 MD 탐색과 URL 미리보기를, 로그인 후 활성 주문자는 주문 현황 우선 홈을 사용하는 것이 목표입니다. 구매처·배대지·택배사 선택은 내부 오케스트레이션으로 추상화하되, 가격·관세 부담·배송 예상·환불 조건은 공개합니다.
 
 ## Local app in this checkout
 
