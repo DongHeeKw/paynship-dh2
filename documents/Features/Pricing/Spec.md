@@ -1,5 +1,7 @@
 # Pricing and product estimates
 
+> **2027 목표 참고:** [통합 SRS의 PRC/CUS](../../2027/INTEGRATED_SRS.md), [Golden Test](../../2027/TEST_MATRIX.md), [구현 계획](../../2027/AGENT_IMPLEMENTATION_PLAN.md). 현재 15%/최소 없음 정책과 과거 유료 견적 불변 원칙을 유지합니다. 미국·일본·중국 규칙 데이터, 통관사 증빙, 실운임 없이는 새 규칙 기반의 자동 올인 가격 확정을 시작하지 않습니다.
+
 Updated: 2026-11-18. Applies to `DongHeeKw/paynship-dh2`. The owner approved **15% of the product subtotal, with no minimum**. Shipping, insurance and import charges are separate. This is a service-fee policy, not a profit margin or tax rate.
 
 ## Fee and exact arithmetic
