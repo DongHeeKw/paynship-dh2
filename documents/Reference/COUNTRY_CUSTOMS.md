@@ -1,5 +1,7 @@
 # 국가별 수취인 정보와 통관 검토
 
+> **2027 목표 대비 현행 국가 데이터 안내:** 본 문서는 수취인 입력/증빙과 현행 국가 정책 게이트를 설명하며 2027 관세표나 자동 수입 허가 데이터가 아닙니다. [국가별 수입 규칙 SRS](../2027/INTEGRATED_SRS.md) · [검증 테스트](../2027/TEST_MATRIX.md). **2026-11-11 정책 재검토 마감일은 만료 상태로 유지**하고, 실제 법령·통관사 근거가 갱신되기 전까지 금액 승인/출고를 우회하지 않습니다.
+
 ## Export-route gates — 2026-11-18
 
 The initial request countries are VN, TH, PH, ID, CN, JP and US; this is a business scope, not customs approval. China, Vietnam, Thailand and Philippines require manual carrier/broker review where no verified automatic rule exists. China recipient authorization uses BROKER_REVIEW and must match the shipment at dispatch; do not collect a Korean PCCC as a substitute.

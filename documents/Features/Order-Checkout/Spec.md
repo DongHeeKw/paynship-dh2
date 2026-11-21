@@ -1,5 +1,7 @@
 # 구매 요청·결제·상태
 
+> **현재 단건 요청 기준과 V3 다건 주문 목표의 경계:** 이 문서의 API/상태표는 현재 구현에 대한 설명이며, 다수의 상품·국내 발주·여러 배송 박스·통합 로그인 대시보드는 [2027 SRS](../../2027/INTEGRATED_SRS.md)와 [Agent 실행 계획](../../2027/AGENT_IMPLEMENTATION_PLAN.md)의 미구현 목표입니다. 기존 idempotency, 결제 webhook, 관세 기한, 주문 소유권, 배송사 서명 이벤트와 과거 결제액 불변은 **회귀 방지 요구사항**입니다.
+
 ## Integrated behavior — 2026-11-18
 
 The current fee is **15% of merchandise, no minimum**. New quotes and the public calculator share exact KRW rounding and USD-cent conversion. Stored/paid quotes keep their original policy and all amounts, including clearance. Revalidation supports the previous 15%/₩10,000-minimum policy without applying today's cheaper fee to old payments.

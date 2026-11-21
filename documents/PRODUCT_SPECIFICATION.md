@@ -1,5 +1,7 @@
 # 제품 기준
 
+> **버전 구분:** 이 문서의 기존 고객 흐름과 구현 내용은 2026-11-18 기준 V2입니다. [2027 V3 통합 SRS](2027/INTEGRATED_SRS.md) · [에이전트 작업 계획](2027/AGENT_IMPLEMENTATION_PLAN.md) · [현행↔목표 비교](2027/CURRENT_TO_TARGET.md)는 **아직 구현되지 않은 목표**입니다. V3에서는 비로그인 MD/URL 상품 탐색과 로그인 후 활성 주문·배송 우선 홈, 국가별 관세 엔진, 배송비 최적화 및 판매처 Adapter를 구현합니다. 기존 AI 채팅은 복원하지 않습니다.
+
 ## Integrated customer journey — 2026-11-18
 
 The home uses a reference-inspired 3D packing studio with a softer parcel character, an airplane, grounded lighting and safe WebGL fallback. Products has its own tab: eight real seller references, five category shelves and four items per page, with exact draft handoff. Cream, cobalt, coral and navy are shared across customer pages. See [welcome](../components/home/README.md) and [catalog](../features/storefront/README.md).
@@ -10,7 +12,7 @@ The [local customer workspace](../features/workspace/README.md) persists fiction
 
 변경일: 2026-11-13.
 
-가격 정책은 상품 소계의 15%, 판매처 주문당 최소 ₩10,000입니다. 배송·보험·수입 비용은 별도이며 공개 요청 화면에 항목별 계산을 표시합니다. 고객 입력 가격은 미검증이고 미확인 비용은 0이 아닙니다. 검토된 catalog의 정확한 옵션·국가·수량과 24시간 이내 유효 근거가 있을 때만 전체 예상액을 계산합니다. 초기 catalog는 비어 있습니다. 자동 공개 견적의 초기 대상은 미국·중국·일본이며 기존 수동 접수 국가와 과거 기록은 유지합니다. 신규 세 나라 서버 견적은 국가별 검증 수입 비용 금액을 요구합니다. [가격 명세](Features/Pricing/Spec.md).
+**현재 신규 견적 정책은 상품 소계의 15%, 최소 수수료 없음**입니다. 과거 15%/판매처 주문당 최소 ₩10,000 규정은 이미 결제된 기존 견적의 이력 재검증에만 적용하며 새 주문 견적에는 적용하지 않습니다. 배송·보험·수입 비용은 별도이며 공개 요청 화면에 항목별 계산을 표시합니다. 고객 입력 가격은 미검증이고 미확인 비용은 0이 아닙니다. 검토된 catalog의 정확한 옵션·국가·수량과 24시간 이내 유효 근거가 있을 때만 전체 예상액을 계산합니다. 초기 catalog는 비어 있습니다. 자동 공개 견적의 초기 대상은 미국·중국·일본이며 기존 수동 접수 국가와 과거 기록은 유지합니다. 신규 세 나라 서버 견적은 국가별 검증 수입 비용 금액을 요구합니다. [가격 명세](Features/Pricing/Spec.md).
 
 PayNShip은 한국 판매처에서 해외 고객 대신 상품을 구매하고 국제 배송을 관리합니다. 아시아권과 미국을 포함한 여러 국가의 요청을 받지만 국가 선택 목록이 배송·통관 지원 보장을 뜻하지는 않습니다.
 
@@ -45,7 +47,7 @@ PayNShip은 한국 판매처에서 해외 고객 대신 상품을 구매하고 �
 
 ## 범위와 한계
 
-- 대화형 AI, 모델 API, 상품 검색 에이전트, 고객 대시보드, Docker 개발 실행은 제거합니다.
+- **현행 V2:** 대화형 AI, 모델 API, 과거 AI 기반 고객 대시보드, Docker 개발 실행은 제거되었습니다. **V3 목표:** AI 채팅/자동 세관 판정 기능은 복원하지 않고, 로그인 고객이 실제 주문·배송·필요 조치를 확인하는 새로운 경량 주문 대시보드를 구현합니다(아직 미구현).
 - 고객 제출은 URL의 host·상품 경로만 확인합니다. 별도 운영자 증거 CLI로 공개 페이지 샘플을 수집할 수 있으며 가격·재고·통관 누락 사항은 검토가 필요합니다.
 - 식품·식물·동물성 제품·의약품·주류·담배는 초기 사업 범위에서 제외합니다. 법적으로 모든 국가에서 금지라는 뜻은 아닙니다.
 - 고객 카테고리는 사실 확인을 대체하지 않습니다. 허위 분류는 운영자 검토에서 거절합니다.

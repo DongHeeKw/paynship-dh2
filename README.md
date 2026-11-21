@@ -1,5 +1,7 @@
 # PayNShip
 
+> **2027 제품·개발 목표 (미구현):** [통합 SRS](documents/2027/INTEGRATED_SRS.md) · [화면/MD/서비스 정책](documents/2027/UX_MD_AND_SERVICE_GUIDE.md) · [실제 코드 변경 실행서](documents/2027/AGENT_IMPLEMENTATION_PLAN.md) · [SW/Test 검증표](documents/2027/TEST_MATRIX.md) · [현행/목표 문서 대조](documents/2027/CURRENT_TO_TARGET.md). 본 README의 기능 설명은 현행 동작을 뜻하며 V3의 구현 완료를 의미하지 않습니다. 방문자는 MD 탐색과 URL 미리보기를, 로그인 후 활성 주문자는 주문 현황 우선 홈을 사용하는 것이 목표입니다. 구매처·배대지·택배사 선택은 내부 오케스트레이션으로 추상화하되, 가격·관세 부담·배송 예상·환불 조건은 공개합니다.
+
 ## Local app in this checkout
 
 This repository is `DongHeeKw/paynship-dh2`. Run **`npm start app`** with Node 24+ on Linux. Open the printed URL (port **3002**) for the welcome scene and Products tab; use **`/dev/workspace`** for persistent fictional customers, credit, payments, delivery and support. The starter prints the checkout path, preserves sample data and excludes real backend credentials. `npm start` alone remains the production command.
@@ -8,7 +10,7 @@ Current fee: **15% of merchandise, no minimum**. Historical paid quotes are unch
 
 한국 상품 URL을 받아 해외 고객 대신 구매하고 배송하는 서비스입니다. 초기 대상은 아시아권과 미국을 포함한 해외 고객이며, 배송 가능 여부는 상품과 도착국을 확인한 뒤 결정합니다.
 
-URL·도착국 입력 → 로그인 없이 초기 확인·다음 단계 안내 → 로그인 → 배송지 저장·구매 요청 → 운영자 검토 → 견적·외부 결제 → 구매·입고·배송 현황 확인 순서로 사용합니다. 로그인 전 상품 분류·수량·옵션도 입력할 수 있습니다. 첫 확인은 URL 형식·지원 판매처·초기 제한을 안내하며 상품 실재·현재 가격·통관 가능성을 보증하지 않습니다. 기존 샘플 URL에는 수집 날짜가 있는 관찰 정보를 보여줍니다. 크림·코발트·코럴 색상의 Three.js 포장 스튜디오·비행기 홈과 이메일 우선 가입·로그인, 게스트 요청 예시·배송정보 설명을 제공합니다. WebGL 실패 시 SVG를 표시하며 장면은 실제 배송 상태가 아닙니다. 대화형 AI와 고객 대시보드는 제거했습니다.
+URL·도착국 입력 → 로그인 없이 초기 확인·다음 단계 안내 → 로그인 → 배송지 저장·구매 요청 → 운영자 검토 → 견적·외부 결제 → 구매·입고·배송 현황 확인 순서로 사용합니다. 로그인 전 상품 분류·수량·옵션도 입력할 수 있습니다. 첫 확인은 URL 형식·지원 판매처·초기 제한을 안내하며 상품 실재·현재 가격·통관 가능성을 보증하지 않습니다. 기존 샘플 URL에는 수집 날짜가 있는 관찰 정보를 보여줍니다. 크림·코발트·코럴 색상의 Three.js 포장 스튜디오·비행기 홈과 이메일 우선 가입·로그인, 게스트 요청 예시·배송정보 설명을 제공합니다. WebGL 실패 시 SVG를 표시하며 장면은 실제 배송 상태가 아닙니다. 기존 대화형 AI와 과거 고객 대시보드는 제거된 상태입니다. **2027 V3 목표**는 AI 채팅을 복원하는 것이 아니라 로그인 사용자의 실제 주문·배송 현황을 우선 표시하는 고객 홈을 구현하는 것입니다. 이는 아직 미구현입니다.
 
 처음 시작하면 [제품·로그인·DB 입문 안내](documents/Reference/BEGINNER_GUIDE.md)를 읽으세요. 이 안내는 `DongHeeKw/paynship-dh2`의 Vercel 화면, 로컬 `/dev/preview`, 기존 Supabase `/demo`를 구분합니다.
 
