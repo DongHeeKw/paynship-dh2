@@ -8,7 +8,7 @@ Layer 0 — static policy/schema checks; Layer 1 — deterministic unit tests (m
 
 All real regulatory fixture values MUST carry: issuing authority, publicly accessible original URL or official licensed dataset, effective date/time and jurisdiction, importer and trade regime, HS national subheading, country of origin, composition, valuation inputs, source capture timestamp, verification date, human reviewer and approval reference. Fixture status DRAFT until signed review; changing rule data requires a second reviewer for high-risk rules.
 
-Mandatory test nomenclature: \`TC-<MODULE>-###\`; name maps to a requirement ID, fixture ID and expected result. Keep failed/unknown test counts; never fabricate screenshots or CI results.
+Mandatory test nomenclature: `TC-<MODULE>-###`; name maps to a requirement ID, fixture ID and expected result. Keep failed/unknown test counts; never fabricate screenshots or CI results.
 
 ## 2. Detailed matrix — tariff & compliance
 
@@ -139,10 +139,10 @@ Mandatory test nomenclature: \`TC-<MODULE>-###\`; name maps to a requirement ID,
 
 ## 7. Architecture / data tests
 
-- Database migration from populated baseline, NULL/old \`Product.hsCode\`, legacy \`Quote/Order/Chat\` preserved; dry-run backup/restore and rollback rehearsal.
+- Database migration from populated baseline, NULL/old `Product.hsCode`, legacy `Quote/Order/Chat` preserved; dry-run backup/restore and rollback rehearsal.
 - Check FK constraints and order-item/parcel cardinalities, concurrent version updates, duplicate idempotency keys, outbox atomicity, poison messages and retries.
 - Encrypted PII at rest and in backup; RLS/app-level tenancy: user A cannot read B, operator role granular, audit of decrypted-view.
-- URL source snapshots and customs evidence digests tamper-evident; admin cannot generate \`PROVIDER_VERIFIED\` without actual provider proof.
+- URL source snapshots and customs evidence digests tamper-evident; admin cannot generate `PROVIDER_VERIFIED` without actual provider proof.
 - Performance budget target (initial hypothesis, adjust after baseline): p95 catalog first render < 3s on representative mobile, p95 URL submission < 1s for validation, external extraction asynchronous, tracking read p95 < 1s after cache. Capture hardware/network before claiming pass.
 - Operational resilience: FX feed unavailable, official tariff provider unreachable, webhook duplication, storage outage, payment timeout; no double-charge or default-zero tariff.
 - Privacy/retention/DSAR and customer service, statutory return rights by geography; restore encrypted data with key-rotation test.
@@ -161,11 +161,11 @@ Mandatory test nomenclature: \`TC-<MODULE>-###\`; name maps to a requirement ID,
 - [ ] Customs hold, lost parcel, damaged goods, address correction, out-of-stock and wrong-item playbooks reviewed.
 - [ ] On-call runbook, source change monitoring, exception metrics, rollback and feature flags ready.
 - [ ] Real route-specific user disclosures of DDP/DAP, unexpected charges, refund rights and delivery estimates reviewed.
-- [ ] \`npm run type-check\`, \`npm run test:ci\`, \`npm run build\`, \`npm run docs:check\` and Playwright suite run after relevant changes with recorded commit SHA.
+- [ ] `npm run type-check`, `npm run test:ci`, `npm run build`, `npm run docs:check` and Playwright suite run after relevant changes with recorded commit SHA.
 
 ## 9. Suggested evidence format
 
-\`\`\`json
+```json
 {
   "fixtureId": "US-APPROVED-EXAMPLE-001",
   "status": "DRAFT_NOT_LAW",
@@ -183,6 +183,6 @@ Mandatory test nomenclature: \`TC-<MODULE>-###\`; name maps to a requirement ID,
   "verifiedBy": null,
   "expectedOutcome": "REVIEW_REQUIRED"
 }
-\`\`\`
+```
 
 Do not pass a sample fixture whose expected duty is zero unless the official rule and broker expressly approve zero for the specified route.
