@@ -60,7 +60,7 @@ jobs:
 
       - name: Initialize disposable historical baseline
         run: |
-          git show 5c7e7abadb81367588a7fd380a602771eb5f693a:prisma/schema.prisma > "$RUNNER_TEMP/pre-purchase.prisma"
+          node scripts/ci/make-pre-purchase-schema.mjs "$RUNNER_TEMP/pre-purchase.prisma"
           npx --no-install prisma migrate diff --from-empty --to-schema-datamodel "$RUNNER_TEMP/pre-purchase.prisma" --script > "$RUNNER_TEMP/legacy-baseline.sql"
           psql -X -v ON_ERROR_STOP=1 --single-transaction -f "$RUNNER_TEMP/legacy-baseline.sql"
           psql -X -v ON_ERROR_STOP=1 -c 'CREATE ROLE anon NOLOGIN; CREATE ROLE authenticated NOLOGIN;'
