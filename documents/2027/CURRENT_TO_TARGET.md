@@ -1,5 +1,7 @@
 # 2027 documentation reconciliation — CURRENT vs TARGET vs DEPRECATED
 
+> **<u>HOME_HUB 초기 운영 및 여러 주문의 합배송 추천이 핵심 목표다.</u>** [자택 배대지·합배송 SRS](HOME_HUB_AND_CONSOLIDATION_SRS.md)에 있는 HUB/CON/GEO/OPS 요구사항과 TC-HUB/TC-CON/TC-GEO 테스트를 이 문서의 필수 하위 명세로 적용한다. 초기 3PL 계약은 필수 아님; 실제 운송사·통관/관세 증거 없는 절감액을 고객에게 확정 표시하지 않는다.
+
 > **<u>최상위 제품/사업 방향은 [역직구 컴파일러 + MD 헌장](PRODUCT_VISION_COMPILER_AND_MD.md)이다.</u>** 이 문서는 컴파일러의 일부 요구사항을 상세화하는 하위 문서다. 신규 API 개발이나 Day 0 목록을 목표로 삼지 말고, URL→상품 증거→국가별 관세/규제→DDP/배송 최적화→고객 총액·주문 상태, 그리고 MD 큐레이션으로 연결한다. 미구현 기능은 미구현으로 표시한다.
 
 
