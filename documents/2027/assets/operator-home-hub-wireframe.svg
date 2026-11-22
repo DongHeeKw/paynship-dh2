@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="760" viewBox="0 0 1240 760" role="img" aria-label="PayNShip 자택 물류 허브 운영자 대시보드. 오늘 입고, 검수, 합배송 제안, 포장 출고 및 예외 처리 섹션을 보여주는 원본 시안.">
+<rect width="1240" height="760" fill="#f6f7fb"/>
+<rect width="1240" height="84" fill="#162a56"/>
+<text x="64" y="54" font-family="Arial, sans-serif" font-size="31" fill="#ffffff" font-weight="bold">PayNShip | Home Hub</text>
+<text x="862" y="52" font-family="Arial, sans-serif" font-size="18" fill="#d5e1fc">Operator Console · Concept</text>
+<text x="64" y="138" font-family="Arial, sans-serif" font-size="31" fill="#172745" font-weight="bold">Today's work</text>
+<text x="64" y="174" font-family="Arial, sans-serif" font-size="18" fill="#637087">A simple physical workflow: receive → inspect → measure → pack → dispatch</text>
+<rect x="64" y="205" width="336" height="145" fill="#ffffff" rx="18" stroke="#d9dfeb"/>
+<text x="88" y="247" font-family="Arial" font-size="20" font-weight="bold" fill="#23375f">Inbound parcels</text>
+<text x="88" y="307" font-family="Arial" font-size="48" font-weight="bold" fill="#214c9c">03</text>
+<text x="168" y="307" font-family="Arial" font-size="16" fill="#68778f">to receive today</text>
+<rect x="426" y="205" width="336" height="145" fill="#ffffff" rx="18" stroke="#d9dfeb"/>
+<text x="450" y="247" font-family="Arial" font-size="20" font-weight="bold" fill="#23375f">Ready to inspect</text>
+<text x="450" y="307" font-family="Arial" font-size="48" font-weight="bold" fill="#214c9c">02</text>
+<text x="530" y="307" font-family="Arial" font-size="16" fill="#68778f">SKU verification</text>
+<rect x="788" y="205" width="388" height="145" fill="#ffffff" rx="18" stroke="#d9dfeb"/>
+<text x="812" y="247" font-family="Arial" font-size="20" font-weight="bold" fill="#23375f">Needs attention</text>
+<text x="812" y="307" font-family="Arial" font-size="48" font-weight="bold" fill="#c46a36">01</text>
+<text x="882" y="307" font-family="Arial" font-size="16" fill="#68778f">Customs evidence missing</text>
+<rect x="64" y="379" width="710" height="270" fill="#ffffff" rx="18" stroke="#d9dfeb"/>
+<text x="91" y="425" font-family="Arial" font-size="24" font-weight="bold" fill="#172745">Consolidation suggestions</text>
+<rect x="92" y="446" width="654" height="86" rx="12" fill="#edf4ff"/>
+<text x="114" y="480" font-family="Arial" font-size="18" font-weight="bold" fill="#1d3c74">Orders A + B → One package</text>
+<text x="114" y="510" font-family="Arial" font-size="17" fill="#526985">Save estimated KRW 8,000 · Wait 3 days · Consent needed</text>
+<rect x="92" y="549" width="654" height="76" rx="12" fill="#f6f7fa"/>
+<text x="114" y="580" font-family="Arial" font-size="18" font-weight="bold" fill="#1d3c74">Order C → Ship separately</text>
+<text x="114" y="607" font-family="Arial" font-size="16" fill="#64748b">Consolidation raises volumetric shipping weight</text>
+<rect x="803" y="379" width="373" height="270" rx="18" fill="#ffffff" stroke="#d9dfeb"/>
+<text x="831" y="425" font-family="Arial" font-size="24" font-weight="bold" fill="#172745">Pack &amp; dispatch</text>
+<text x="831" y="474" font-family="Arial" font-size="18" fill="#55647d">☐ Confirm exact SKU and qty</text>
+<text x="831" y="520" font-family="Arial" font-size="18" fill="#55647d">☐ Record weight and dimensions</text>
+<text x="831" y="566" font-family="Arial" font-size="18" fill="#55647d">☐ Recheck carrier and customs</text>
+<rect x="826" y="594" width="324" height="38" rx="9" fill="#244c9c"/>
+<text x="875" y="619" font-family="Arial" font-size="17" fill="#ffffff" font-weight="bold">Ready for verified dispatch</text>
+<text x="64" y="697" font-family="Arial" font-size="16" fill="#7a879b">Original conceptual wireframe · Sample-only values · No live order, address, courier price or customs approval</text>
+</svg>
