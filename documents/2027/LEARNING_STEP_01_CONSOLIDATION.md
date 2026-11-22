@@ -8,7 +8,13 @@
 
 고객에게는 **8,000원 절약, 첫 상품 3일 더 대기**를 함께 보여줘야 한다. 고객이 동의하지 않았으면 그저 제안만 하고 배송을 지연시켜서는 안 된다. 사업주는 웹페이지에서 배송사를 직접 고르는 대신, 실제 계약상 가능한 조합의 계산 결과를 이해하고 집에서 입고·검수·포장 작업을 수행한다.
 
-![고객 합배송 추천 화면](assets/customer-consolidation-wireframe.svg)
+![PayNShip 실제 생성 이미지: 고객 합배송 추천 화면](assets/images/paynship-consolidation-original.png)
+
+![PayNShip 실제 생성 이미지: 자택 물류 운영 화면](assets/images/paynship-home-hub-original.png)
+
+아래 SVG는 편집 가능한 구조 참고용이며, 위 PNG 두 장이 **대화에서 생성한 원본 이미지**다.
+
+![고객 합배송 추천 와이어프레임](assets/customer-consolidation-wireframe.svg)
 
 ![운영자 자택 허브 화면](assets/operator-home-hub-wireframe.svg)
 
