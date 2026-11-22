@@ -1,5 +1,8 @@
 # PayNShip V3 — Customer journeys, merchandising, service-guide and failure handling
 
+> **<u>최상위 제품/사업 방향은 [역직구 컴파일러 + MD 헌장](PRODUCT_VISION_COMPILER_AND_MD.md)이다.</u>** 이 문서는 컴파일러의 일부 요구사항을 상세화하는 하위 문서다. 신규 API 개발이나 Day 0 목록을 목표로 삼지 말고, URL→상품 증거→국가별 관세/규제→DDP/배송 최적화→고객 총액·주문 상태, 그리고 MD 큐레이션으로 연결한다. 미구현 기능은 미구현으로 표시한다.
+
+
 Status: TARGET UX / NOT IMPLEMENTED · As of 2026-11-21
 
 ## 1. Design brief — KRDS discipline + distinct PayNShip identity
