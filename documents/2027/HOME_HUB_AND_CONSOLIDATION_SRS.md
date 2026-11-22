@@ -8,6 +8,13 @@
 
 **상태:** 2026-11-22 목표 SRS / 아직 구현 완료 아님. 본 문서가 **물류 허브·합배송·다중 주문 처리의 최우선 요구사항**이다. 관련 문서: [제품 헌장](PRODUCT_VISION_COMPILER_AND_MD.md), [전체 AUTO-ENGINE](AUTO_ENGINE_ALGORITHMS_AND_WORK_PROCESS.md), [국가별 통관 테스트](KOREAN_CUSTOMS_SW_TEST_REQUIREMENTS.md), [제품 현황](../Features/STATUS.md).
 
+## 기술 구현/검증 시작점
+
+- [TDD 학습 계약](TDD_AGENT_DEVELOPMENT_CONTRACT.md) — 사용자의 사전 코드 승인 대신 에이전트 테스트·설명 책임.
+- [테스트 가능한 합배송 계획 선택기](../../lib/compiler/consolidation/recommend.ts) 및 [Vitest 테스트](../../lib/compiler/consolidation/__tests__/recommend.test.ts)는 이미 검증된 후보들 중 추천을 선택하는 **첫 순수 함수 슬라이스**다.
+- [Step 1 공부](LEARNING_STEP_01_CONSOLIDATION.md) · [고객 SVG 시안](assets/customer-consolidation-wireframe.svg) · [운영자 SVG 시안](assets/operator-home-hub-wireframe.svg).
+- **현재 미구현:** 상품 여러 개의 실제 후보 생성, 사업주 자택 입고 DB/운영 화면, 실제 관세/운송사 계약 요금, 사용자 동의 저장/자동 출고. 추상 알고리즘 문서와 순수 함수 테스트를 실제 배송 기능 완료로 혼동하지 말 것.
+
 ## 1. 용어·업무모델 명확화
 
 - **자택 배대지 (Home Hub):** 사업주가 직접 한국 쇼핑몰 택배를 받아 주문과 일치 여부를 확인하고, 보관/합포장/출고하는 물리 공간. 외부 공개 배대지 업체와 동일한 의미가 아니며 현재는 타인에게 공용 주소를 무제한 개방하는 모델이 아니다.
