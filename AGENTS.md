@@ -23,6 +23,10 @@ PayNShip currently implements URL-based purchasing workflow foundations. The tar
 **Current vertical slice:** `lib/compiler/consolidation/recommend.ts` + `lib/compiler/consolidation/__tests__/recommend.test.ts` **only selects among already-verified candidate plans**. It is **not** end-to-end auto booking/customs/packing; the verified flags and manifest/recipient fingerprints must eventually be server-derived. Do not wire it to paid checkout until real approved rate/customs evidence is available.
 
 
+## White + orange UX contract (2026-11-22)
+
+**<u>Existing storefront is white with orange accents.</u>** New customer consolidation and Home Hub operator UI must match this instead of navy/teal prototype screenshots. Use the scoped [white-orange preview](components/consolidation/ConsolidationPreview.tsx), [styles](components/consolidation/ConsolidationPreview.module.css), and [UI instructions](documents/2027/UI_WHITE_ORANGE_CONSOLIDATION.md) as implementation reference. Benefit-first customer copy: **“함께 배송하면 N원 아낄 수 있어요”**, not **“합배송을 추천합니다”**. If savings are unverified, show “배송비를 확인하고 있어요”; if separate shipping is cheaper, say so. Customer consent/actual carrier booking must never be implied by demo button click. Do not roll out this test fixture to production checkout.
+
 ## Read order
 
 1. `AGENTS.md`
