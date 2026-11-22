@@ -9,6 +9,7 @@ function plan(overrides: Partial<ConsolidationPlan> = {}): ConsolidationPlan {
     id: 'separate',
     kind: 'SEPARATE',
     recipientKey: 'customer-A:address-1',
+    manifestFingerprint: 'skuA:1,skuB:1',
     customerTotalKrw: 54_000,
     costComponentsVerified: true,
     customsVerified: true,
@@ -43,7 +44,7 @@ describe('cross-border compiler: verified consolidation recommendations', () => 
         recommendedPlanId: 'all',
         estimatedCustomerSavingsKrw: 22_000,
         extraWaitDays: 0,
-        customerConsentRequired: false,
+        customerConsentRequired: true,
       });
   });
 
@@ -141,6 +142,21 @@ describe('cross-border compiler: verified consolidation recommendations', () => 
   it('requires an interpretable verification timestamp', () => {
     expect(compare([plan()], { nowIso: 'not-a-date' }))
       .toEqual({ status: 'REVIEW_REQUIRED', reasons: ['INVALID_AS_OF_TIME'] });
+  });
+
+
+  it('RED: does not compare plans containing different SKUs or quantities', () => {
+    expect(compare([
+      plan(),
+      plan({ id: 'all', kind: 'ALL', manifestFingerprint: 'skuA:1,skuC:1', customerTotalKrw: 10 }),
+    ])).toMatchObject({ status: 'RECOMMENDED', recommendedPlanId: 'separate' });
+  });
+
+  it('RED: all multi-order consolidation needs explicit consent even without delay', () => {
+    expect(compare([
+      plan(),
+      plan({ id: 'all', kind: 'ALL', customerTotalKrw: 32_000, additionalWaitDays: 0 }),
+    ])).toMatchObject({ status: 'RECOMMENDED', recommendedPlanId: 'all', customerConsentRequired: true });
   });
 
   it('cannot choose an unverifiable DDP baseline', () => {
