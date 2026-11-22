@@ -1,5 +1,8 @@
 # Agent implementation playbook — PayNShip 2027
 
+> **<u>최상위 제품/사업 방향은 [역직구 컴파일러 + MD 헌장](PRODUCT_VISION_COMPILER_AND_MD.md)이다.</u>** 이 문서는 컴파일러의 일부 요구사항을 상세화하는 하위 문서다. 신규 API 개발이나 Day 0 목록을 목표로 삼지 말고, URL→상품 증거→국가별 관세/규제→DDP/배송 최적화→고객 총액·주문 상태, 그리고 MD 큐레이션으로 연결한다. 미구현 기능은 미구현으로 표시한다.
+
+
 **Status: SPEC ONLY, implementation not complete.** Read [Integrated SRS](INTEGRATED_SRS.md), [test matrix](TEST_MATRIX.md), and [current-vs-target map](CURRENT_TO_TARGET.md) first. These are the governing V3 **future design**. Existing operating code and historical payments are unchanged until implementation PRs have been reviewed. Review official customs sources and real carrier contracts before enabling any production quote. Do not "fix" an expired customs deadline by moving the date.
 
 ## A. What the owner actually wants (acceptance narrative)
