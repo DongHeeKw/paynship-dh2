@@ -8,6 +8,8 @@
 
 **상태:** 2026-11-22 목표 SRS / 아직 구현 완료 아님. 본 문서가 **물류 허브·합배송·다중 주문 처리의 최우선 요구사항**이다. 관련 문서: [제품 헌장](PRODUCT_VISION_COMPILER_AND_MD.md), [전체 AUTO-ENGINE](AUTO_ENGINE_ALGORITHMS_AND_WORK_PROCESS.md), [국가별 통관 테스트](KOREAN_CUSTOMS_SW_TEST_REQUIREMENTS.md), [제품 현황](../Features/STATUS.md).
 
+**UI 구현 상태(2026-11-22):** 고객·운영자용 흰색/주황색 **개발 전용 화면 시안**과 이익 중심 한국어 문구 순수 함수가 추가되었다. [UI 상세 가이드](UI_WHITE_ORANGE_CONSOLIDATION.md) · [실제 미리보기 컴포넌트](../../components/consolidation/ConsolidationPreview.tsx). 금액과 송장은 가상이며 실사용자 동의·합배송 신청·관세 계약과 연결되지 않았다. 
+
 ## 기술 구현/검증 시작점
 
 - [TDD 학습 계약](TDD_AGENT_DEVELOPMENT_CONTRACT.md) — 사용자의 사전 코드 승인 대신 에이전트 테스트·설명 책임.

@@ -4,6 +4,9 @@ metadata:
   description: "Current PayNShip URL service plus future cross-border compiler/Home Hub and TDD specifications"
   source_of_truth_note: "Registered current docs define scope; archives and old research are historical."
 current:
+  - id: consolidation_orange_ui
+    path: documents/2027/UI_WHITE_ORANGE_CONSOLIDATION.md
+    update_triggers: ["app/dev/consolidation/**", "components/consolidation/**", "lib/compiler/consolidation/presentation.ts"]
   - id: compiler_home_hub
     path: documents/2027/HOME_HUB_AND_CONSOLIDATION_SRS.md
     update_triggers: ["lib/compiler/consolidation/**", "lib/compiler/warehouse/**", "features/tracking/**", "app/admin/**"]
