@@ -15,6 +15,8 @@ export interface ConsolidationPlan {
   id: string;
   kind: PlanKind;
   recipientKey: string;
+  /** Canonical ordered SKU+variant+quantity manifest; all candidate plans must match. */
+  manifestFingerprint: string;
   /** Customer-facing total for identical items, quantities, destination and terms. */
   customerTotalKrw: number | null;
   /** Full comparison must include shipping, handling, tax and clearance differences. */
@@ -66,6 +68,7 @@ function verifiedForComparison(
   const expiryMs = Date.parse(plan.carrierRateExpiresAt);
 
   return plan.recipientKey === input.recipientKey
+    && plan.manifestFingerprint.length > 0
     && isNonnegativeSafeInteger(plan.customerTotalKrw)
     && plan.costComponentsVerified
     && plan.customsVerified
@@ -108,6 +111,7 @@ export function recommendConsolidation(input: ConsolidationInput): Consolidation
   }
 
   const eligible = input.plans
+    .filter((plan) => plan.manifestFingerprint === baseline.manifestFingerprint)
     .filter((plan) => verifiedForComparison(plan, input, nowMs))
     .sort((a, b) =>
       (a.customerTotalKrw! - b.customerTotalKrw!)
@@ -125,7 +129,8 @@ export function recommendConsolidation(input: ConsolidationInput): Consolidation
     selectedCustomerTotalKrw: best.customerTotalKrw!,
     estimatedCustomerSavingsKrw: baseline.customerTotalKrw! - best.customerTotalKrw!,
     extraWaitDays: best.additionalWaitDays,
-    customerConsentRequired: best.id !== baseline.id && best.additionalWaitDays > 0,
+    // Even if delivery is not delayed, combining separate customer orders needs consent.
+    customerConsentRequired: best.id !== baseline.id,
     alternatives: eligible.map((plan) => ({
       planId: plan.id,
       totalKrw: plan.customerTotalKrw!,
