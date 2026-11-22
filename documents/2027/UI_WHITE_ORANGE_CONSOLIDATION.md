@@ -4,6 +4,20 @@
 
 The established PayNShip identity is **white canvas with orange highlights**. The earlier navy/teal imagery was conceptual only, and is superseded by these actual Next.js preview components. No global palette replacement is needed; the preview uses a **scoped CSS Module**, avoiding unrequested changes to checkout and the live storefront.
 
+## 원본 생성 이미지 — 실제 PNG 그대로 보존
+
+이번 대화에서 생성·표시한 **원본 2개를 픽셀 수정·재생성 없이 원본 PNG 파일로 커밋**했다. 기존 SVG 와이어프레임과 혼동하지 말 것.
+
+![PayNShip 고객 합배송 추천 대시보드 원본](assets/images/paynship-consolidation-original.png)
+
+![PayNShip 자택 물류 운영 대시보드 원본](assets/images/paynship-home-hub-original.png)
+
+파일 경로:
+- `documents/2027/assets/images/paynship-consolidation-original.png` — Git blob SHA `e570446abbeacd17abf0beb9fea468281fee4a7d`.
+- `documents/2027/assets/images/paynship-home-hub-original.png` — Git blob SHA `cf22ed00c8bb7b5d2fbda650f6881f5ca7d4396c`.
+
+**디자인 기준은 원본 PNG**이며, React 컴포넌트는 별도의 구현 초안이다. 원본과 구현의 차이는 시각 테스트로 점진적으로 줄이되, 원본 파일을 덮어쓰지 않는다.
+
 ## Where to look
 
 - `app/dev/consolidation/page.tsx` — only serves a mock, local/dev-gated page through existing `devPreviewAllowed`; never available on the public release.
