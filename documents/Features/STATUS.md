@@ -1,6 +1,6 @@
 # 기능 상태
 
-> **2026-11-22 화면 시안 코드:** `/dev/consolidation` 개발자 전용 경로에 실제 React/CSS 기반 고객 합배송·자택 운영자 화면(흰색/주황색), 혜택 중심 한국어 문구·테스트를 추가. 실제 관세·운송사 요금·합배송 자동 승인·결제와는 미연결. 참조: [UI_WHITE_ORANGE_CONSOLIDATION.md](../2027/UI_WHITE_ORANGE_CONSOLIDATION.md). 원본 PNG 생성 이미지 2개는 ChatGPT 파일로 별도 확보했지만 GitHub 리포지터리의 SVG/컴포넌트와 동일 파일이 아니며 아직 업로드되지 않았다.
+> **2026-11-22 화면 시안 코드:** `/dev/consolidation` 개발자 전용 경로에 실제 React/CSS 기반 고객 합배송·자택 운영자 화면(흰색/주황색), 혜택 중심 한국어 문구·테스트를 추가. 실제 관세·운송사 요금·합배송 자동 승인·결제와는 미연결. 참조: [UI_WHITE_ORANGE_CONSOLIDATION.md](../2027/UI_WHITE_ORANGE_CONSOLIDATION.md). 원본 PNG 생성 이미지 2개를 **바이너리 그대로** GitHub에 추가했다: [고객 합배송 이미지](../2027/assets/images/paynship-consolidation-original.png) · [자택 물류 이미지](../2027/assets/images/paynship-home-hub-original.png). SVG/컴포넌트는 별도 편집 가능한 참고 시안이다.
 
 > **2027 V3 요구사항은 별도로 정의되어 있으며 이 표의 구현 상태를 변경하지 않습니다.** [SRS](../2027/INTEGRATED_SRS.md) · [기존과 목표 차이](../2027/CURRENT_TO_TARGET.md) · [Agent 작업 순서](../2027/AGENT_IMPLEMENTATION_PLAN.md) · [테스트 추적](../2027/TEST_MATRIX.md). 현재 고정 MD 8개, 합배송 미구현, 실제 관세/배송사 연결 미완료는 계속 출시 차단 사항입니다. 로그인 후 주문 현황 우선 홈은 신규 목표이지 구현 완료가 아닙니다.
 
