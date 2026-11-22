@@ -11,6 +11,10 @@
 
 **<u>초기에는 별도 3PL이 아니라 사업주 자택 `HOME_HUB`에서 한국 쇼핑몰 택배를 직접 수령·검수·보관·합포장·해외 출고한다.</u>** 고객의 여러 주문이 존재하면 컴파일러가 개별/전체/부분/대기 합배송을 비교하여 **실제 배송비 절감액과 추가 대기일**을 추천하고, 고객 동의와 세관·운송사 검증 후 실행한다. 장래 3PL은 이 허브를 대체하는 선택지이며 최초 MVP의 전제가 아니다. [자택 허브·다중 주문 합배송 SRS / Work Process / TDD](documents/2027/HOME_HUB_AND_CONSOLIDATION_SRS.md). 현재 구현 완료가 아닌 목표다.
 
+## 직접 생성한 PayNShip UI 원본 PNG
+
+**생성했던 사진을 SVG로 대체하지 않고 원본 그대로 GitHub에 저장했다.** [합배송 추천 대시보드 PNG](documents/2027/assets/images/paynship-consolidation-original.png) · [자택 물류 운영 대시보드 PNG](documents/2027/assets/images/paynship-home-hub-original.png). 디자인의 시각적 기준은 두 원본이며, [React 시안 구현](components/consolidation/ConsolidationPreview.tsx)은 아직 실서비스 기능이 아닌 개발용 미리보기다.
+
 ## White + Orange UI 미리보기 (2026-11-22)
 
 고객 합배송과 자택 운영자 화면의 **흰색 배경 + 주황색 포인트** UI를 개발자 전용 `/dev/consolidation`에 추가했다. [고객/운영자 컴포넌트](components/consolidation/ConsolidationPreview.tsx) · [반응형 CSS Module](components/consolidation/ConsolidationPreview.module.css) · [UI 명세](documents/2027/UI_WHITE_ORANGE_CONSOLIDATION.md) · [문구 테스트](lib/compiler/consolidation/__tests__/presentation.test.ts). 고객 표제는 “함께 배송하면 8,000원 아낄 수 있어요”이며 기존 “합배송을 추천합니다”는 사용하지 않는다. **모든 주문번호·가격·선택 동작은 가상 시안**, 실제 배송·DDP·결제/동의 기능이 아니다. `npm run dev` 후 개발환경에서 `http://localhost:3000/dev/consolidation` 확인.
