@@ -1,5 +1,8 @@
 # Agent context playbook
 
+> **2026-11-22 current agent instruction:** [AGENTS.md](../../AGENTS.md) is mandatory; [2027 Product Vision](../2027/PRODUCT_VISION_COMPILER_AND_MD.md) + [HOME_HUB](../2027/HOME_HUB_AND_CONSOLIDATION_SRS.md) + [Autonomous TDD](../2027/TDD_AGENT_DEVELOPMENT_CONTRACT.md) are the future direction. User does not have the expertise for detailed Next.js/Three.js/Prisma code approval. Agents implement and verify in small TDD slices with beginner-facing explanations. Home is the initial hub, third-party 3PL is not the MVP requirement, and compiled plan selection has not been wired to actual purchase, customs or transport.
+
+
 1. Read `AGENTS.md`, this file, `REGISTRY.yaml` and `README.md`.
 2. Load only the current feature and operations documents needed for the change.
 3. A dated plan is working context; it never overrides the current product and security specifications.

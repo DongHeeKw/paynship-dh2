@@ -1,9 +1,18 @@
 version: 2
-updated_at: "2026-11-18"
+updated_at: "2026-11-22"
 metadata:
-  description: "Current URL purchasing service documentation"
+  description: "Current PayNShip URL service plus future cross-border compiler/Home Hub and TDD specifications"
   source_of_truth_note: "Registered current docs define scope; archives and old research are historical."
 current:
+  - id: compiler_home_hub
+    path: documents/2027/HOME_HUB_AND_CONSOLIDATION_SRS.md
+    update_triggers: ["lib/compiler/consolidation/**", "lib/compiler/warehouse/**", "features/tracking/**", "app/admin/**"]
+  - id: compiler_autonomy_tdd
+    path: documents/2027/TDD_AGENT_DEVELOPMENT_CONTRACT.md
+    update_triggers: ["AGENTS.md", "lib/compiler/**", "documents/2027/LEARNING_STEP_01_CONSOLIDATION.md"]
+  - id: compiler_learning_step_01
+    path: documents/2027/LEARNING_STEP_01_CONSOLIDATION.md
+    update_triggers: ["lib/compiler/consolidation/**", "documents/2027/assets/**"]
   - id: welcome
     path: components/home/README.md
     update_triggers: ["components/home/**", "app/page.tsx"]

@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="780" viewBox="0 0 1200 780" role="img" aria-label="PayNShip 고객 합배송 추천 UI 와이어프레임. 티셔츠와 문구 두 주문을 묶으면 예상 8000원 절약하고 3일 대기할 수 있음을 보여줌.">
+<rect width="1200" height="780" fill="#f8f7f2"/>
+<rect x="80" y="48" width="1040" height="680" rx="24" fill="#ffffff" stroke="#d7d9e3" stroke-width="2"/>
+<rect x="80" y="48" width="1040" height="74" rx="24" fill="#152955"/>
+<rect x="80" y="92" width="1040" height="30" fill="#152955"/>
+<text x="122" y="96" fill="#ffffff" font-family="Arial, sans-serif" font-size="30" font-weight="bold">PayNShip</text>
+<text x="670" y="93" fill="#f1f5ff" font-family="Arial, sans-serif" font-size="19">Discover Korea</text>
+<text x="879" y="93" fill="#f1f5ff" font-family="Arial, sans-serif" font-size="19">My Orders</text>
+<text x="122" y="172" fill="#192743" font-family="Arial, sans-serif" font-size="32" font-weight="bold">Your parcels, one smart plan.</text>
+<text x="122" y="209" fill="#5f697b" font-family="Arial, sans-serif" font-size="19">Two Korean purchases can travel together — no warehouse or courier choices.</text>
+<rect x="120" y="246" width="454" height="180" rx="16" fill="#f5f7fc" stroke="#dce2eb"/>
+<rect x="143" y="271" width="94" height="116" rx="12" fill="#d6e1f4"/>
+<path d="M162 292 L181 279 L200 292 L216 290 L226 308 L213 325 L213 376 L164 376 L164 325 L153 308 Z" fill="#284f87"/>
+<text x="260" y="285" font-family="Arial" font-size="16" fill="#637083">ORDER A</text>
+<text x="260" y="323" font-family="Arial" font-size="25" font-weight="bold" fill="#192743">Cotton T-shirt</text>
+<text x="260" y="357" font-family="Arial" font-size="18" fill="#42526e">Arrived at Korea hub</text>
+<text x="260" y="391" font-family="Arial" font-size="16" fill="#607083">Ready to ship today</text>
+<rect x="598" y="246" width="484" height="180" rx="16" fill="#f5f7fc" stroke="#dce2eb"/>
+<rect x="622" y="271" width="92" height="116" rx="12" fill="#ede2cb"/>
+<rect x="642" y="287" width="52" height="80" rx="4" fill="#ffffff" stroke="#c4ac80"/>
+<line x1="653" y1="310" x2="684" y2="310" stroke="#bbac9d" stroke-width="3"/>
+<line x1="653" y1="325" x2="684" y2="325" stroke="#bbac9d" stroke-width="3"/>
+<line x1="653" y1="340" x2="684" y2="340" stroke="#bbac9d" stroke-width="3"/>
+<text x="739" y="285" font-family="Arial" font-size="16" fill="#637083">ORDER B</text>
+<text x="739" y="323" font-family="Arial" font-size="25" font-weight="bold" fill="#192743">Stationery</text>
+<text x="739" y="357" font-family="Arial" font-size="18" fill="#42526e">Expected in 3 days</text>
+<text x="739" y="391" font-family="Arial" font-size="16" fill="#607083">Eligible for consolidation</text>
+<rect x="120" y="450" width="962" height="184" rx="16" fill="#edf3ff" stroke="#b9cbe9" stroke-width="2"/>
+<text x="146" y="492" fill="#1b3970" font-family="Arial" font-size="22" font-weight="bold">Recommended: Ship together</text>
+<text x="146" y="538" fill="#0d3c76" font-family="Arial" font-size="39" font-weight="bold">Save KRW 8,000</text>
+<text x="146" y="568" fill="#3c5a84" font-family="Arial" font-size="18">Wait 3 extra days before dispatch · Based on hypothetical pricing</text>
+<rect x="712" y="506" width="329" height="58" rx="12" fill="#244c9c"/>
+<text x="743" y="542" fill="white" font-family="Arial" font-size="20" font-weight="bold">Accept consolidation</text>
+<text x="810" y="599" fill="#365784" font-family="Arial" font-size="17">Keep separate shipping</text>
+<text x="122" y="679" fill="#687588" font-family="Arial" font-size="16">Wireframe only · Actual tariffs, courier rates and delivery dates require verification.</text>
+</svg>

@@ -11,6 +11,17 @@
 
 **<u>초기에는 별도 3PL이 아니라 사업주 자택 `HOME_HUB`에서 한국 쇼핑몰 택배를 직접 수령·검수·보관·합포장·해외 출고한다.</u>** 고객의 여러 주문이 존재하면 컴파일러가 개별/전체/부분/대기 합배송을 비교하여 **실제 배송비 절감액과 추가 대기일**을 추천하고, 고객 동의와 세관·운송사 검증 후 실행한다. 장래 3PL은 이 허브를 대체하는 선택지이며 최초 MVP의 전제가 아니다. [자택 허브·다중 주문 합배송 SRS / Work Process / TDD](documents/2027/HOME_HUB_AND_CONSOLIDATION_SRS.md). 현재 구현 완료가 아닌 목표다.
 
+## 개발 운영 원칙: Autonomous TDD + 사용자 학습
+
+**<u>사용자는 Three.js/Next.js/DB 코드를 사전 승인할 필요가 없다. 에이전트가 TDD를 통해 구현·회귀 검증하고, 사용자는 결과물과 예제를 실행하며 배운다.</u>** 단, 실제 계약·유료 구매·고객 데이터 공개·통관 신고·실운송/배포 등의 외부 영향은 필요한 법적/사업적 승인과 증빙 없이 실행하지 않는다.
+
+- [TDD 에이전트 개발 헌장](documents/2027/TDD_AGENT_DEVELOPMENT_CONTRACT.md) — 토스 선언적 코드, 네 가지 품질 기준, RED/GREEN/REFACTOR, 기술 선택 책임, 학습 기록.
+- [첫 학습: 합배송 추천 코드·테스트](documents/2027/LEARNING_STEP_01_CONSOLIDATION.md) — 단위 테스트 예시와 실제 소스 읽는 법.
+- [합배송 순수 함수](lib/compiler/consolidation/recommend.ts) · [Vitest 17개 시나리오](lib/compiler/consolidation/__tests__/recommend.test.ts) — **실제 고객 견적/DB/배송사와 아직 미연결**.
+- [고객 합배송 시안](documents/2027/assets/customer-consolidation-wireframe.svg) · [자택 운영자 시안](documents/2027/assets/operator-home-hub-wireframe.svg) — 새로 제작한 SVG 시각 자료; 실제 배포 화면 아님. 기존 상품사진은 `features/storefront/catalog/references.json`에 출처가 기록되어 있다.
+
+**처음 읽기:** [제품 정체성](documents/2027/PRODUCT_VISION_COMPILER_AND_MD.md) → [자택 합배송 요구사항](documents/2027/HOME_HUB_AND_CONSOLIDATION_SRS.md) → [테스트](lib/compiler/consolidation/__tests__/recommend.test.ts) → [구현](lib/compiler/consolidation/recommend.ts).
+
 ## Local app in this checkout
 
 This repository is `DongHeeKw/paynship-dh2`. Run **`npm start app`** with Node 24+ on Linux. Open the printed URL (port **3002**) for the welcome scene and Products tab; use **`/dev/workspace`** for persistent fictional customers, credit, payments, delivery and support. The starter prints the checkout path, preserves sample data and excludes real backend credentials. `npm start` alone remains the production command.
