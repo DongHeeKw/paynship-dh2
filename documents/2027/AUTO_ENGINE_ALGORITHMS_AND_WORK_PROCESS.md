@@ -1,8 +1,10 @@
 # PayNShip AUTO-ENGINE — 1인 사업자를 위한 역직구 컴파일러 결정 알고리즘 및 실행 Work Process
 
-> **<u>핵심 제품은 UI가 아니라 '구매처 → 3PL → 합배송 → 수입 적격성/관세/신고주체 → 운송사/서비스 → DDP/고객 도착비용 → 구매·출고·추적'을 실제 데이터로 결정하고 실행하는 자동화 엔진이다.</u>**
+> **<u>핵심 제품은 UI가 아니라 '구매처 → 자택 HOME_HUB(초기 기본값; 장래 3PL 대체 가능) → 합배송·다중배송 추천 → 수입 적격성/관세/신고주체 → 운송사/서비스 → DDP/고객 도착비용 → 구매·출고·추적'을 실제 데이터로 결정하고 실행하는 자동화 엔진이다.</u>**
 >
 > **<u>PayNShip = 역직구 컴파일러 + MD 성장 엔진. 고객 URL과 MD 상품 모두 동일 AUTO-ENGINE을 통과한다. 중간 선택은 고객에게 강요하지 않는다. 단 고객이 부담할 총액, 추가비용 가능성, ETA, 합배송으로 검증된 절감액, 정품/상품 정보, 취소·환불/통관 조치 사항은 반드시 노출한다.</u>**
+
+**<u>HOME_HUB 초기 운영 원칙과 다중 주문 합배송/분할배송 추천의 세부 알고리즘은 [HOME_HUB_AND_CONSOLIDATION_SRS.md](HOME_HUB_AND_CONSOLIDATION_SRS.md)가 우선한다.</u>** 초기에는 사업주의 집이 한국 배송대행지·입고/검수·보관/포장/출고 허브이며 3PL 계약은 필수가 아니다. 공급처·집 허브·국제 배송 비용을 비교하고, 고객과 운영자 모두에게 절감액과 추가 대기기간을 제공할 것.
 
 **설계·요구사항. 구현 완료 아님.** 2026-11-22. 우선 목적국 US/CN/JP. 최신 법률/운임/계약 근거 없는 상태에서 자동 구매/자동 통관/관세포함 배송을 시작하지 않는다. **이 문서는 에이전트의 첫 구현 우선순위**이며, 다른 MD의 Day 0·API 중심 작업 안내보다 우선한다. [제품 헌장](PRODUCT_VISION_COMPILER_AND_MD.md), [국가별 CUS 요구·20개 테스트](KOREAN_CUSTOMS_SW_TEST_REQUIREMENTS.md), [현행 상태](../Features/STATUS.md).
 
@@ -83,6 +85,8 @@ Action:
 - 판매처 직접 해외배송이 적법하고 총비용이 더 낮다면 3PL을 거치지 않는 **direct ship**도 별도 후보로 평가하되, 검수/증빙/신고주체 책임을 문서화.
 - 창고 상태 \`EXPECTED -> ARRIVED -> INSPECTED -> PACKED -> HANDED_OVER\`, 각 상태에 출처·시간·SKU·수량·사진(적정 권한) 기록.
 - 3PL 선택이 어려우면 한 곳과 먼저 **실제 계약하고 검증 가능한 SKU/노선**으로 출발. 다른 창고를 다수 등록했다고 실제 물류비 절감이 되는 건 아니다.
+
+**초기 적용:** 3PL이 없어도 `HOME_HUB` 계획은 유효해야 한다. E3의 여러 창고 비용평가와 계약 비교는 향후 `CONTRACTED_3PL` 전환 기능이며, 지금은 집의 실제 포장재·노동·보관·집하 비용과 국내배송 정보로 실행한다. [Home Hub 실무](HOME_HUB_AND_CONSOLIDATION_SRS.md)를 먼저 구현한다.
 
 **Action items:** 3PL 계약 비교표, 3PL capability matrix, 창고별 SLA/수수료/픽업 테이블, 입고번호 생성 규칙, 상품 일치/파손 검수, 출고·반품 담당, 3PL 미응답/지연시 fallback, 재고 수량 reconciliation.
 
@@ -217,11 +221,11 @@ if no plan: NOT_QUOTABLE + explicit missing evidence or manual decision
 ### W3 — Warehouse engine
 **코드:** \`lib/compiler/warehouse/\`, 3PL contract/rate/receipt models.
 **작업:** 3PL 서비스 가능성·입고/검수·보관/재포장/픽업/출고요금, 입고 식별자, 재고/손상 처리.
-**인수조건:** 창고가 저렴해도 운송사 픽업 미지원이면 제외. 미계약 3PL 비용으로 최적 후보 확정 불가.
+**인수조건:** 3PL 계약 없이 자택 HOME_HUB로 상품 입고·검수·실측·합배송 가능. 자택 픽업/접수 수단이 실제 제공되지 않는 운송서비스는 제외. 미계약 3PL 비용으로 최적 후보 확정 불가.
 
 ### W4 — Consolidation & packing optimizer
 **코드:** \`lib/compiler/packing/\`, \`ShipmentGroup/PackagePlan/PackageItem\`.
-**작업:** 합/분리 배송 후보, 안전 포장 제약, 부피무게/과금 중량, 총비용 절감/배송기한, 실측 도착 후 재최적화.
+**작업:** 고객의 여러 주문을 한 배송지로 묶는 추천, 입고 예정일 대기/추가 대기일·절감액·고객 동의, 합/분리 배송 후보, 안전 포장 제약, 부피무게/과금 중량, 총비용 절감/배송기한, 실측 도착 후 재최적화.
 **인수조건:** 합배송으로 부피무게가 증가하여 더 비싸면 별도 배송 선택. 절감액을 고객에게 입증 가능하게 표시.
 
 ### W5 — Country customs/DDP compiler
