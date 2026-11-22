@@ -7,6 +7,10 @@
 
 > **2027 제품·개발 목표 (미구현):** [한국어 관세 SW/Test 3국·20개](documents/2027/KOREAN_CUSTOMS_SW_TEST_REQUIREMENTS.md) · [통합 SRS](documents/2027/INTEGRATED_SRS.md) · [화면/MD/서비스 정책](documents/2027/UX_MD_AND_SERVICE_GUIDE.md) · [실제 코드 변경 실행서](documents/2027/AGENT_IMPLEMENTATION_PLAN.md) · [SW/Test 검증표](documents/2027/TEST_MATRIX.md) · [현행/목표 문서 대조](documents/2027/CURRENT_TO_TARGET.md). 본 README의 기능 설명은 현행 동작을 뜻하며 V3의 구현 완료를 의미하지 않습니다. 방문자는 MD 탐색과 URL 미리보기를, 로그인 후 활성 주문자는 주문 현황 우선 홈을 사용하는 것이 목표입니다. 구매처·배대지·택배사 선택은 내부 오케스트레이션으로 추상화하되, 가격·관세 부담·배송 예상·환불 조건은 공개합니다.
 
+## 초기 운영 물류 모델: 집이 한국 배대지
+
+**<u>초기에는 별도 3PL이 아니라 사업주 자택 `HOME_HUB`에서 한국 쇼핑몰 택배를 직접 수령·검수·보관·합포장·해외 출고한다.</u>** 고객의 여러 주문이 존재하면 컴파일러가 개별/전체/부분/대기 합배송을 비교하여 **실제 배송비 절감액과 추가 대기일**을 추천하고, 고객 동의와 세관·운송사 검증 후 실행한다. 장래 3PL은 이 허브를 대체하는 선택지이며 최초 MVP의 전제가 아니다. [자택 허브·다중 주문 합배송 SRS / Work Process / TDD](documents/2027/HOME_HUB_AND_CONSOLIDATION_SRS.md). 현재 구현 완료가 아닌 목표다.
+
 ## Local app in this checkout
 
 This repository is `DongHeeKw/paynship-dh2`. Run **`npm start app`** with Node 24+ on Linux. Open the printed URL (port **3002**) for the welcome scene and Products tab; use **`/dev/workspace`** for persistent fictional customers, credit, payments, delivery and support. The starter prints the checkout path, preserves sample data and excludes real backend credentials. `npm start` alone remains the production command.
