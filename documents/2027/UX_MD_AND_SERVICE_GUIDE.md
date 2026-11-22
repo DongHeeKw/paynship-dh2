@@ -9,7 +9,7 @@ Status: TARGET UX / NOT IMPLEMENTED · As of 2026-11-21
 
 ## 1. Design brief — KRDS discipline + distinct PayNShip identity
 
-Reference: https://www.krds.go.kr/html/site/index.html for accessible design-system discipline only. Preserve PayNShip’s existing cream/cobalt/coral/navy palette and restrained Three.js welcoming scene where it helps discovery. The visual goal is trustworthy, friendly and understandable by a first-time overseas shopper. No government-style affiliation/badge and do not copy proprietary assets.
+Reference: https://www.krds.go.kr/html/site/index.html for accessible design-system discipline only. **Current brand direction is white canvas with orange accents**, not a navy/teal dashboard. See [actual development UI preview](UI_WHITE_ORANGE_CONSOLIDATION.md) and scoped CSS Module. Keep Three.js welcome graphics restrained where discovery benefits, never hide order/tracking details. The visual goal is trustworthy, friendly and understandable by a first-time overseas shopper. No government-style affiliation/badge and do not copy proprietary assets.
 
 **Top nav in all states:** PayNShip logo, Discover Korea, Paste a Link, How It Works, Shipping & Returns, language/currency switcher, account entry. Signed-in state adds Orders with notification count. On mobile keep catalog search and tracking reachable with keyboard/voiceover. The hero must not prevent quick product discovery; 3D cannot block interaction and has reduced-motion/SVG fallback.
 
