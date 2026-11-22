@@ -1,100 +1,98 @@
-# Agent implementation playbook — PayNShip 2027
+# PayNShip — 역직구 컴파일러 + MD 구현 방향서 (Agent용)
 
-> **<u>최상위 제품/사업 방향은 [역직구 컴파일러 + MD 헌장](PRODUCT_VISION_COMPILER_AND_MD.md)이다.</u>** 이 문서는 컴파일러의 일부 요구사항을 상세화하는 하위 문서다. 신규 API 개발이나 Day 0 목록을 목표로 삼지 말고, URL→상품 증거→국가별 관세/규제→DDP/배송 최적화→고객 총액·주문 상태, 그리고 MD 큐레이션으로 연결한다. 미구현 기능은 미구현으로 표시한다.
+**<u>최우선: [제품 헌장](PRODUCT_VISION_COMPILER_AND_MD.md)을 먼저 읽고 비즈니스 목적을 충족하는 기능을 설계할 것. PayNShip은 단순 해외 구매대행이 아니라 국가별 구매/통관/배송 실행계획을 만드는 역직구 컴파일러이며, MD는 컴파일 결과를 활용하는 수익화 엔진이다.</u>**
 
+**상태: 목표 설계이며 아직 구현되지 않은 영역이 많음.** 기존 동작을 파괴하지 않고 화면에서 확인할 수 있는 고객 가치 중심으로 수정할 것. **Day 0 계획·새 REST API 설계 자체는 요구하지 않음.** 기존 Next.js/Prisma/인증/구매/배송 경로를 우선 활용. 법률 규정·DDP 계약·운송사 요금 검증이 없으면 사용 가능한 금액을 꾸며내지 말 것.
 
-**Status: SPEC ONLY, implementation not complete.** Read [Integrated SRS](INTEGRATED_SRS.md), [test matrix](TEST_MATRIX.md), and [current-vs-target map](CURRENT_TO_TARGET.md) first. These are the governing V3 **future design**. Existing operating code and historical payments are unchanged until implementation PRs have been reviewed. Review official customs sources and real carrier contracts before enabling any production quote. Do not "fix" an expired customs deadline by moving the date.
+## 1. 고객이 원하는 하나의 완결된 경험
 
-## A. What the owner actually wants (acceptance narrative)
+**비로그인:** MD 상품 발견 또는 URL 붙여넣기 → 상품명뿐 아니라 옵션·SKU·재질·제조국 등 증거/누락 필드 확인 → 국가/수량 선택 → 수입 가능 여부 + 관세/세금 + 배송/수수료 + DDP 지원 + ETA를 **검증 수준에 맞게** 표시. 완전 검증 안 되었으면 '추가 확인 필요/무료 미확정'을 표시하고 요청/운영자 검토로 연결.
 
-1. A visitor arrives to a memorable Korea-focused shop, sees compelling MD merchandise and can paste a Korean merchant URL **without logging in**.
-2. The service extracts what it can from **permitted** Naver/Musinsa/Daiso/other store sources, shows exact item/size/color/qty, country, indicative cost, and plainly marks missing attributes. It does not pretend HTML reveals US/JP/CN tariffs.
-3. The customer sees a trustworthy **whole-order price** before paying. PayNShip chooses purchasing location, warehouse, consolidation and carrier. The customer isn't required to choose a forwarder or courier; shipping/payment obligations, possible customs charges and delivery window remain explicit.
-4. A returning authenticated customer sees **their live order and action requests first**, but MD content remains available. Never show fabricated delivery data.
-5. Internally, sourcing, customs, warehouse, carrier and refunds are separately testable modules behind a single orchestrator.
-6. Offer exceptional Korean deals (including older-style or clearance Nike/Adidas originals) only when **exact SKU, authentic stock, imported-country local competing price, and true landed cost** substantiate a competitive-price label. Discount rate is not evidence of a profitable arbitrage.
-7. Use Delivered Korea as **public UX/service-guide benchmark** (quote/manual fallback, sourcing, storage, forbidden goods, cancellation/refund and shipping milestones). Avoid copying protected content, private APIs or unverified market-share statements. Use KRDS as **design-system inspiration**, not a government affiliation.
+**로그인:** 첫 화면은 활성 주문이 있으면 배송이 어디에 있는지, 고객 조치가 필요한지, 실제 확인된 예상도착일, 조회한 마지막 시각, 취소/환불 상태. 주문이 없으면 MD/URL 상품 탐색. 어떤 경우든 상품 탐색은 계속 접근 가능.
 
-## B. Day-zero agent checklist (no feature changes until done)
+**운영 내부:** 한국 매입처 선정, 3PL 창고, 합배송, 통관 정보/신고주체, 운송사 선택, 배송사별 요금은 시스템이 결정하며 고객에게 그 **선택 작업**을 요구하지 않는다. 고객에게는 총비용·절감액(입증될 때만)·ETA·정품 증거·세금과 추가비용·취소환불 권리를 보여준다.
 
-1. Read README.md, package.json, prisma/schema.prisma, documents/PRODUCT_SPECIFICATION.md, documents/Features/STATUS.md, documents/Features/Pricing/Spec.md, documents/Features/Order-Checkout/Spec.md, documents/Reference/COUNTRY_CUSTOMS.md, TAX_AND_CUSTOMS.md, OPERATIONS.md, SECURITY.md, features/storefront/README.md, existing tests and migrations.
-2. Obtain clean baseline and latest main SHA; identify DB migration state and production provider configuration without printing secrets. Ensure docs V3 target ≠ implemented facts.
-3. Run **actual** `npm run type-check`, `npm run test:ci`, `npm run docs:check`, `npm run build`, relevant Playwright tests. Report commands, pass/fail, environment, commit. Do not say tests ran merely because earlier STATUS records old results.
-4. Inventory actual routes and server modules before selecting filenames. Where this plan names future modules but they don't exist, create with tests rather than replacing existing working components.
-5. Preserve deployed gates including country evidence expiry, signed Shopify/carrier webhook, immutable historical quotes, MFA, encryption, ownership/RLS, replay protection.
-6. Track each PR by `EXP-/URL-/CUS-/PRC-/ORD-/SHP-` requirements and `TC-` tests. Default to additive backwards-compatible migrations.
-7. Stop if legal trade role, broker rate, carrier API, site scraping permission or data retention decision blocks valid implementation. Build stub interface **that fails closed**; never invent approved tariff rates or fabricate shipping events.
+**MD:** 같은 컴파일러를 통해 미국/중국/일본별 판매 가능한 상품을 사전검증하여 카드로 제공. Nike/Adidas의 진짜 재고할인 제품은 미국/중국 현지 동일 SKU/옵션 가격과 관세/총배송비를 비교해서 가격 우위를 입증할 때만 추천 배지. MD 카탈로그도 고객 URL과 별개의 '우회 통관' 로직을 갖지 않는다.
 
-## C. Explicit file-by-file implementation map
+## 2. 에이전트의 주된 작업 단위: Compiler Stage
 
-Paths below are responsibility targets, **not assertions that each file currently exists**.
+| 단계 | 기존 코드 검토/연계 | 에이전트가 구현해야 할 고객·사업 결과 | 필수 테스트/증거 |
+| --- | --- | --- | --- |
+| **PARSE** | `/purchase`, `features/storefront/`, `lib/product-evidence/`, URL allowlist | URL→판매처 상품번호, 정확한 variant SKU·색상·사이즈·가격·통화·상세정보. **제목만 파싱하면 '부분 분석'** | Naver/Musinsa/Daiso 허용 경로; 정확한 옵션 비교; 차단 시 수동 대체 |
+| **ENRICH** | 기존 `Product` 증거 필드, 운영자 검토 | 제조국·재질/성분·무게·기능·정품 근거를 필드 단위 source/일시/confidence와 연결 | 누락/불일치/낡은 정보는 검토 상태 |
+| **CLASSIFY** | `lib/customs/`, `Product.hsCode` | HS6 후보와 US HTS10/JP9/CN 세칙번호·특별 규정 구분 | 원산지·소재와 국가별 분류 검증; HS6만으로 확정 불가 |
+| **VALIDATE** | 국가별 수취인/출고 gate | 미국 FDA/CPSC/FCC·일본 약기법/PSE·중국 CBEC/해관 등 품목·수입 방식 적격성 | 미확정·금지 품목 결제 차단, 법령 기준일 재검증 |
+| **PRICE** | `lib/purchases/service-fee.ts`, `documents/Features/Pricing/Spec.md` | 상품+15% 수수료(최소 없음)+국내/국제운임+통관/추가관세/VAT/보험/수수료를 실제 규정과 계약 기반으로 계산 | Decimal money, 국가별 Golden Test Vector, unknown != zero |
+| **PLAN** | 구매·창고·배송 상태 및 webhook | 고객에게 운송사 선택을 시키지 않고 배송 기한/비용/제약 내 DDP 노선 및 합배송/분할배송 내부 최적화 | 실제 운임·부피무게·운영비 포함 비교, DDP 미지원시 공개/보류 |
+| **FULFILL** | `PurchaseRequest`, `PurchaseEvent`, 실결제/운송사 서명 게이트 | 구매→입고/검수→송장→통관→배송 추적, 다상품/다박스 확장 | 실제 이벤트만 진행, 중복/역순 및 타계정 접근 차단 |
+| **MERCHANDISE** | `features/storefront/` MD 8개 | 컴파일러가 승인한 국가별 상품을 영어/중국어 큐레이션, 현지 가격 우위 증거/희소성/재방문 유도 | 동일 SKU 근거, 실제 통관비/배송 포함 가격, 허위 할인 금지 |
 
-| Stage | Read/update existing | Create or extend | Exact change | Done when |
-|---|---|---|---|---|
-| P0 source of truth | `README.md`, `documents/PRODUCT_SPECIFICATION.md`, `documents/Reference/OPERATIONS.md` | docs/2027/* | Fix minimum-fee conflict; separate current/target; links and scope; **no feature flag activation** | SRS + code + price spec agree on 15%, no min; old paid quotes untouched |
-| P1 schema/evidence | `prisma/schema.prisma`, current migrations, `lib/product-evidence/` | `lib/merchants/`, `lib/trade/evidence/` | Define merchant, variant, field provenance, immutable quote evidence and origin vs seller-country; candidates != verified | schema migration/backfill/rollback and URL tests pass |
-| P2 country compliance | `lib/customs/`, `lib/purchases/`, `documents/Reference/COUNTRY_CUSTOMS.md` | `lib/trade/classification/`, `lib/trade/rules/{us,jp,cn}/`, `lib/trade/valuation/` | Effective-dated tariff + product-specific import restrictions; payment blocked when missing or expired | Golden fixtures signed and 100% matches for launched routes |
-| P3 landed quote | `lib/purchases/service-fee.ts`, pricing/quote paths, `documents/Features/Pricing/Spec.md` | `lib/pricing/landed-cost/` | Exact-money line breakdown, route valuation, duty/additional tax/fees, FX, DDP/DAP, validity and snapshots | No unknown mandatory charge appears as zero, existing paid quote immutable |
-| P4 public MD and URL | `features/storefront/`, `app/products/`, `app/purchase/` and URL policy | `lib/merchants/adapters/`, MD admin components | Verified, curated card grid; URL explainable extraction/fallback and country preview; exact SKU | Guest and auth behavior tests, allowed-source benchmark |
-| P5 signed-in UX | `app/` auth/home/orders, `lib/purchases/` | dashboard view components in `features/account/` / `features/tracking/` | Active-order summary above MD; no order => discovery first; exception CTA, timestamps and owned events | Cross-account E2E, accessible responsive preview |
-| P6 order aggregates | `PurchaseRequest`, `PurchaseEvent`, `Order` legacy models | `OrderItem`, `DomesticPurchase`, `WarehouseReceipt`, `ShipmentPackage`, adapters | Support one order to many purchases/boxes without breaking old single-item path | Split and consolidation tests, historical data preserved |
-| P7 shipping optimizer | `documents/Reference/OPERATIONS.md`, shipping webhook | `lib/fulfillment/consolidation/`, `lib/fulfillment/carriers/` | Compare full costs incl dimensional weight, packing/storage/customs and carrier service limits; no parcel counterfeiting | Approved carrier quotes and signed tracking events, no inferred delivered |
-| P8 customer protection | checkout/support/refund existing paths | return & refund ledger and ops workflows | Clear cancellation/refund at every fulfillment stage; real provider refunds only; shipping loss/damage paths | Sandbox/live refund evidence, reconciliation |
-| P9 release | deployment docs, E2E, security | country-by-category launch matrix and runbook | Gate individual verified US/JP/CN slices; optional future countries | Provider contract, customs signoff, real tracked test order |
+**핵심 산출물:** 자동컴파일이 안 된 상품에서는 이유를 고객이 이해할 수 있도록 표시하고, 운영자가 보강할 필드와 공식 출처를 안내한다. '성공적으로 파싱'이라는 추상 상태만 표시하면 완료가 아니다.
 
-## D. API contracts (versioned, no browser-side customs authority)
+## 3. 실제 화면 단위 검수
 
-### D1 `POST /api/public/product-preview` — suggested contract (not implemented)
-Input: `{sourceUrl, destinationCountry, options:{sellerSku,color,size}, quantity, currencyPreference?}`. Auth optional. Output: `{previewId, merchant:{id,recognition}, variant:{evidence,fields}, missingFields, publicPrice:{amountMinor,currency,sourceAt}|null, importAssessment:{status,reasonCodes}, quote:{status,chargeBreakdown,expiresAt}|null, nextAction}`. Never expose internal fetching URL response body, authentication tokens, supplier private data or recipient identifiers. This is **preview** only; no order or purchase.
+### A. Guest Home
+- 고객 국가별 MD 상품 + 검색/카테고리/언어 + URL 입력 필드가 첫 화면에서 즉시 보임.
+- URL 입력 → 상품 카드: 판매처 상품 ID, 사진, 브랜드, SKU/옵션/가격, 검증 시각, **제조국·재질·통관 필요정보의 확보 여부**.
+- 고객 목적국과 수량을 바꾸면 그에 따른 국가별 수입요건·비용이 재평가되고 '총 예상 부담액' 또는 '**검토 필요**'가 즉시 반영됨.
+- 지원하지 않는 소스는 적법한 수동 요청으로 유도. 웹사이트 robots/약관을 우회하지 않음.
 
-### D2 `POST /api/orders/quotes` — proposed authenticated verification flow
-Input: server-owned `previewId`, immutable exact variant fingerprint, destination address reference, quantity, idempotency. Server rechecks source freshness, import eligibility, country shipping eligibility, cost and payer. Output: immutable signed/server-persisted `quoteId`, `verifiedStatus`, `expiresAt`, `charges[]`, `importerRole`, `incoterm`, `disclosures[]`. Reject `UNKNOWN` mandatory fees; no client-supplied HS/rate/duty can authorize payment. Existing `/api/purchases/[id]/checkout` must remain compatible until migration.
+### B. Signed-in Home
+- 활성 주문 있으면 첫 영역에 배송 상태, 가장 긴급한 고객 조치, ETA/최종 이벤트 시각. 주문 없으면 MD와 URL 입력 우선.
+- 여러 상품 및 박스의 상태와 환불 처리 상태 개별 조회. 운송사명·송장번호는 상세에 나타나지만 **운송사 선택 강제 없음**.
+- 결제 이전 총비용·관세 부담·DDP/DAP 지원 여부 설명, 배송사 실측/법령 변경시 조건 처리.
+- 영어/중국어(간체), 일본 출시에는 일본어 포함. 배송·환불/세금/오류까지 번역 검증.
 
-### D3 `GET /api/me/order-summary` — proposed
-Return owned `activeOrders[]`, `actionRequired[]`, `lastConfirmedEventAt`, `packages[]`, `estimatedDeliveryWindow` only if supported by verified carrier/source, and MD recommendations separately. Cache only per user, no public DTO reuse.
+### C. MD Product Detail
+- 상품 정확한 SKU/옵션, 현재가격·정품·제조국 증거, 국가별 배송가능/규제 검토 상태, 총 도착가(검증시), 예상 도착, 추천 이유.
+- '미국보다 싸다'는 동일 SKU/색상/사이즈의 미국 현지 실구매 가격·재고·비교시각 및 PayNShip 총 도착비용이 모두 있는 경우만 표시.
+- 중국 역시 CBEC 적용 자격/수입방식/관세 포함 최종가가 검증된 경우만 배송가능/절감 배지.
 
-### D4 Admin / asynchronous provider contracts
-Use existing review/checkout and signed carrier gateways. For new adapters, use typed outputs `EXTRACTED/NEEDS_EVIDENCE/ACCESS_NOT_ALLOWED`; provider rates `VERIFIED/EXPIRED/UNAVAILABLE`; regulation decisions `ALLOWED_VERIFIED/REVIEW_REQUIRED/RESTRICTED/PROHIBITED/UNKNOWN`. Include source, version, expiry, reason and trace ID; never claim approved simply from successful fetch.
+## 4. 연구/데이터 작업: 실제 통관을 가능하게 하는 식별자
 
-## E. Detailed guest and member state transitions
+에이전트는 다음을 **서류 검증 과제**로 수집·형식화해야 한다. 실제 세율, 제품별 번호, 운임 계약을 가정값으로 확정하지 않는다.
 
-Guest: `LANDING -> CATEGORY/MD -> PRODUCT_OR_URL_INPUT -> OPTIONS_AND_DESTINATION -> PREVIEW`. If data missing: `NEEDS_REVIEW -> MANUAL_REQUEST`; login only required on saved address / committed request / payment. Keep 4 KiB / 24h one-tab draft constraint unless deliberately migrated through security review.
+| 대상 | 조사 필드 | 그 결과가 필요한 이유 |
+| --- | --- | --- |
+| 공통 | 판매처 상품ID, 옵션 Variant ID, SKU/브랜드 모델, 원산지, 구성재질·용도, 수량·거래가, HS6 후보 | 정확한 실제 상품 식별 |
+| 미국 | 국가 HTSUS10, 기준시점·추가관세/Section232, FDA/원산지, 수입자와 운송사 수수료, 실제 DDP 지원 | US Landed Cost + 수입적격성 |
+| 일본 | 일본 9자리, 우편/특송/일반화물, 간이세율/소비세, 품목별 규제, DDP 여부 | JP Landed Cost |
+| 중국 | 중국 세칙번호, 개인우편/적격 CBEC/일반무역, 긍정목록/한도/수취인 인증, 통관사 제휴/거래·결제·물류 일치, DDP 가능성 | CN Landed Cost 및 경로 선택 |
+| 물류 | 포장 후 실측 중량/치수, 부피무게, 계약 할증료, 창고 보관·검수·합포장/반품, 보험, ETA | 비용 최적화와 고객 예상일/절감액 |
+| MD | 한국 실매입가·정품 증거, 목적국 현지 동일 SKU 매물·실가·재고·세금/운송 원가 | 수익성 및 고객 가격 차익 검증 |
 
-Authenticated new user: `LANDING -> DISCOVERY_PRIMARY + recent drafts`; no fake empty parcel progress. Signed-in with active purchase: `HOME -> ORDER_SUMMARY -> ORDER_DETAIL` with nested packages and event provenance, and MD below. `ACTION_REQUIRED` overrides cheerful in-transit display for customs/address/price-confirmation issues. Expired auth redirects to login and server rechecks; never assume client cookie claims ownership.
+공식 근거: https://hts.usitc.gov/ ; https://www.cbp.gov/ ; https://www.customs.go.jp/english/tariff/ ; https://online.customs.gov.cn/ . 규정 시행일·품목분류·금액은 승인된 실제 소스로 채운다.
 
-Delivery aggregate state derived from **independently persisted** sources; customer projection shows five phases but exact exception, order paid and each parcel state must remain visible in details. In cases of split shipment, global DELIVERED only after all required parcels have verified delivered events (or an explicit formally reconciled cancellation/partial delivery policy). Never infer delivery from ETA.
+## 5. 구현 순서(작업 결과 기준, 'Day 0' 아님)
 
-## F. Tariff algorithm / evidence requirements
+1. **상품 정보 품질** — URL 입력하자마자 제목 말고 통관에 필요한 데이터/누락을 보이는 화면 + 샘플/실제 증거 저장.
+2. **국별 Compiler와 계산** — 미국/일본/중국의 수입 방식·코드·관세·추가세·DDP 적격성 판단과 이유 코드; Golden Test.
+3. **고객 도착비용** — 옵션/수량/국가별 총액·배송비·관세·통관비·수수료와 '확정/추정/미확정' 상태; 정확한 반올림.
+4. **로그인 여부별 경험** — guest MD/URL 홈과 active-order-first signed-in home, 주문정보 보안 및 실추적.
+5. **배송 최적화** — 3PL, 실측/부피무게, 합배송·분할배송, 실제 운임·DDP 가능 경로 최적화, 고객에게 절감액.
+6. **MD 성장 엔진** — 국가/언어별 편집·품목 및 정품 검증, 정확한 SKU 국제 가격 비교, 승인 상품 자동 큐레이션, 전환·반품·반복구매 분석.
+7. **정책 완성** — Delivered Korea를 벤치마킹한 상품제한/구매단계/환불/배송일/보관/분실·파손 안내, 단 PayNShip 자체 책임/실운영 SLA만 공표.
 
-Pure function boundaries: `classify(productEvidence, destination)`, `checkRegulatoryAdmissibility(variant, country, regime, importer)`, `selectEffectiveRules(country, hsNational, origin, regime, asOf)`, `buildAssessableValue(goods, shipping, insurance, discounts, regime)`, `computeDutiesAndTaxes(value, approvedRules)`, `buildLandedQuote(approvedCharges, fees, terms)`. These return structured Unknown/Review errors, not guessed numbers. Monetary components must specify currency, taxable basis and independently rounded components with rule version.
+각 작업은 독립 코드 변경으로 제출하되 **동일 IR/관세/배송 증빙 체계**를 공유. 스키마 추가 시 현재 Prisma 기존 데이터/유료 주문/서명 이벤트를 파괴하지 않는다.
 
-For legal review:
-- US: HTSUS, origin and 2027 law effective date, additional duties by actual classification, cosmetic FDA rule ≠ food Prior Notice, metal derivatives by actual tariff list, appropriate entry route.
-- JP: Japan 9-digit classification, post/courier/general, personal vs commercial, consumption/local tax and exclusions.
-- CN: individual post/eligible CBEC/general; only verified positive-list/channel & transactions may claim CBEC relief; provider/broker review for data-flow.
-- Cross-border: Korean VAT refund is **never** guaranteed margin; actual export/agent role needs tax advice; origin declaration backed by evidence.
+## 6. 테스트와 완료의 정의
 
-## G. Shipment pricing optimization — exact objective
+- [상세 국가별 SW/CUS/US/JP/CN 규정 테스트 및 Golden Test](TEST_MATRIX.md)와 [통합 요구사항](INTEGRATED_SRS.md)을 따를 것.
+- **TC-CUS-001~020 요구사항을 생략하거나 단순 형식검사로 대체하지 말 것.** 상품 국가 변경, 베트남 제조국, HS 불명, 시행일 경계, FDA Prior Notice 구별, CN CBEC 제한, 세액 계산과 반올림, 금액 위조·결제 중복, 실제 브로커 청구 차이 등을 모두 다룬다.
+- Golden Test에는 각 국가의 실제 관세사/공식 관세표가 승인한 상품+원산지+국별 세번+통관 방식+과세가격+세금·수수료 구성+효력일이 필요. 승인된 라우트에서 100% 일치해야 자동 견적/결제를 허용한다.
+- `npm run type-check`, `npm run test:ci`, `npm run build` 및 변경된 Playwright 시나리오 실제 실행 여부를 PR에 기록. **문서만 수정했으면 테스트 통과라고 쓰지 말 것.**
+- 2027 요건은 아직 확정되지 않은 부분이 많으므로 규정 버전/출처/재검토 기한을 유지하고 미확인 시 차단한다.
 
-For candidate plan `p`: `fullyLoadedCost(p) = sum(carrierRate(parcel,zone,chargeableWeight,payer)) + domesticFreight + inspectionPacking + storage + insurance + brokerage + expectedReturnCost + confirmedCustomsCharges + paymentFXCosts`. Minimize subject to `import legality && carrierAcceptance && recipient consent && package compatibility && promisedEta && accurate declaration`. Carrier rates include fuel/remote surcharges; compare in single FX snapshot. Savings = separate fully-loaded cost - consolidated fully-loaded cost, **not** postage savings only. If rates unavailable, output `NO_VERIFIED_OPTIMUM` and await ops.
+## 7. 현행과 달라지는 사항
 
-## H. Sample user journeys agents MUST demo
+기존 `Product.hsCode` 하나만으로 국가별 승인 불가. `PurchaseRequest` 단일 URL/단일 배송사 모델은 다상품·합배송/분할배송 지원에 부족. 현행 MD 8개는 국가별 실제 수입가능성/총도착액 검증 미완료. Naver URL은 정책상 직접 수집 차단. 로그인 후 주문우선 홈, 실제 운송사, 결제 후 환불, DDP는 계약·실검증 전까지 구현 완료라 표시하지 않는다.
 
-1. Guest opens /products, filter K-pop and browse MD without login, paste permitted merchant URL, select option and US; extraction has no material evidence => explain missing origin and request review, **not fabricated all-in price**.
-2. Guest passes source URL, signs in with email or Google, returns to same draft exactly once; create request after server review.
-3. Logged-in account with no orders sees MD; user with two in-flight parcels sees most relevant status and action-required banner; another user denied access.
-4. Source product marked Korea-sold but Vietnam-origin; US rule selection uses VN origin; updated country tariff requires repricing for new checkout but does not mutate paid history.
-5. China request tries to claim CBEC relief through unapproved postal route => blocked, manually reviewed.
-6. Japan cosmetics personal-use claim vs resale: route distinctions and compliance hold.
-7. Three orders from two merchants consolidate only when cheaper on real carrier cost and before SLA; two tracking numbers show separate parcel status when split.
-8. Product unavailable after verified quote -> hold, informed consent, refund/alternative; no silent substitution.
-9. Carrier sends stale out-of-order event and fake DELIVERED; signed fresh event required.
-10. 2027 rule expiration at payment -> state remains review; no optimistic 0 taxes.
+**주의:** 기존 보안(사용자 소유권, 통관 만료 검증, 결제/운송사 서명, 이력보존, 암호화/PII)은 후퇴시키지 않는다. 새 API 신설이 아니라 고객 결과와 컴파일 과정의 정합성이 완료 기준이다.
 
-## I. Agent output requirement per PR
+## 8. 나머지 상세 문서
 
-Each PR MUST contain: user-facing before/after, files changed, requirement IDs, why existing behavior is retained, schema migrations and rollback, source evidence updates, test IDs and actual logs, screenshots, accessibility results, remaining manual/legal/carrier dependencies. A UI PR should **not** silently activate checkout. Start with an ADR for importer-of-record, charge payer and principal-vs-agent legal model; absent decision, engineering can implement separate safe interfaces and tests without enabling paid orders.
-
-## J. Precedence and versioning
-
-Where old docs state V2 "customer dashboard removed", interpret as **current V2 state**, not permanent V3 product intent. New V3 target reinstates a **useful authenticated order summary** without restoring discarded LLM chat/legacy AI dashboards. Where old docs mention 10,000 KRW minimum, that is historical paid-quote policy, not current new-quote policy. Where earlier plans promised worldwide auto-DDP or live scraping, keep them deprecated. The source of truth for future requirements is SRS; code's present behavior still reflects STATUS until implementation merged and tested.
+- [PRODUCT_VISION_COMPILER_AND_MD.md](PRODUCT_VISION_COMPILER_AND_MD.md) — 제품 정체성과 사업 전략 (최상위)
+- [INTEGRATED_SRS.md](INTEGRATED_SRS.md) — 세부 SW 요구사항
+- [TEST_MATRIX.md](TEST_MATRIX.md) — 검증 시나리오
+- [UX_MD_AND_SERVICE_GUIDE.md](UX_MD_AND_SERVICE_GUIDE.md) — UI/MD/환불
+- [CURRENT_TO_TARGET.md](CURRENT_TO_TARGET.md) — 현행/목표 차이
