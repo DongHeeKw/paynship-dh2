@@ -1,5 +1,7 @@
 # PayNShip
 
+> **<u>핵심 사업 로직: 자동 구매처 선정·3PL/합배송·통관/신고주체·DDP·최저 합법 총운임 의사결정 엔진.</u>** [AUTO-ENGINE 세부 알고리즘 및 1인 운영 Work Process](documents/2027/AUTO_ENGINE_ALGORITHMS_AND_WORK_PROCESS.md) ← 에이전트의 최우선 작업 명세. 고객에게 창고·배송사 선택을 요구하지 않고, 실제 계약 요금/관세·제약 검증으로 실행계획을 계산한다(현재 설계 목표, 미구현).
+
 > **<u>PayNShip = 역직구 컴파일러 + MD 수익화 엔진.</u>** 단순 한국 상품 배송대행이 아니라 URL/상품·옵션·국가 입력을 국가별 수입적격성·관세·DDP/배송 계획·총도착액으로 컴파일하고, 같은 엔진으로 사전 검증한 MD 상품을 추천한다. 최상위 제품 헌장: [PRODUCT_VISION_COMPILER_AND_MD.md](documents/2027/PRODUCT_VISION_COMPILER_AND_MD.md). 이는 **2027 목표, 미구현**이다.
 
 
