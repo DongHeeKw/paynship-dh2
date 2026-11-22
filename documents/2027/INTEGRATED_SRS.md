@@ -1,5 +1,7 @@
 # PayNShip 2027 — Integrated Product & Software Requirements (SRS)
 
+> **<u>업무 로직을 이후 단계로 미루지 말 것.</u>** [AUTO_ENGINE_ALGORITHMS_AND_WORK_PROCESS.md](AUTO_ENGINE_ALGORITHMS_AND_WORK_PROCESS.md)는 실제 구매처·3PL·합배송·통관/신고주체·DDP·운송사 후보를 알고리즘으로 평가하는 핵심 설계다. 해당 문서의 입력·후보 생성·총원가·제약검사·실행/실패복구 및 ENG-01~20 테스트가 이 문서의 추상적 표현보다 우선한다. **현재 제품 기능 구현 완료를 뜻하지 않음.**
+
 > **<u>최상위 제품/사업 방향은 [역직구 컴파일러 + MD 헌장](PRODUCT_VISION_COMPILER_AND_MD.md)이다.</u>** 이 문서는 컴파일러의 일부 요구사항을 상세화하는 하위 문서다. 신규 API 개발이나 Day 0 목록을 목표로 삼지 말고, URL→상품 증거→국가별 관세/규제→DDP/배송 최적화→고객 총액·주문 상태, 그리고 MD 큐레이션으로 연결한다. 미구현 기능은 미구현으로 표시한다.
 
 
