@@ -30,7 +30,7 @@ The established PayNShip identity is **white canvas with orange highlights**. Th
 
 ```bash
 npm ci
-npm run dev
+PAYNSHIP_DEV_PREVIEW=1 npm run dev
 # open http://localhost:3000/dev/consolidation
 npx vitest run lib/compiler/consolidation/__tests__/presentation.test.ts components/consolidation/__tests__/ConsolidationPreview.test.tsx
 npm run type-check
@@ -64,10 +64,16 @@ The customer experience avoids a jargon-first "합배송을 추천합니다"; th
 
 - Login owner scope: show only signed-in customer's own same-destination orders.
 - HOME_HUB inventory/arrival/inspection/packing DB and actual admin authorization.
-- Generate separate/all/partial/wait candidates; current pure compiler selects from already verified candidates only.
+- Connect generated separate/all/partial/wait plans to authenticated real evidence. The bounded local compiler now generates and evaluates candidates; live evidence loading remains unimplemented.
 - Real source rate cards and per-parcel dimensional weight, country customs rule versions, exact products, importer-of-record and DDP eligibility.
 - Quote state transitions, savings baseline proof, customer consent stored securely, signed tracking, customs and refund.
 - Translation for US English / CN simplified Chinese / JP Japanese with correct customs costs.
 - First-party screenshot and Playwright UI tests across mobile/desktop before replacing any real route.
 
 **Agent:** next task is to connect verified server-derived candidate results to UI, not use the synthetic sample booleans in checkout. See [HOME_HUB SRS](HOME_HUB_AND_CONSOLIDATION_SRS.md) and [AGENTS](../../AGENTS.md).
+
+## 계산에 연결된 로컬 화면 (2026-11-22)
+
+[Step 2](LEARNING_STEP_02_PLAN_COMPILER.md): 6개 시나리오에서 같은 순수 계산 결과를 고객/운영 화면에 표시한다. 고정 가격 문구를 제거하고 배송·통관 비교 총액/항목별 비용/기다리는 시간/박스 구성/제외 사유를 렌더링한다. 시나리오 변경 시 이전 시안 선택은 초기화한다. 가격 미확인에는 절감액과 선택 CTA가 없다. 원본 PNG 2개는 수정하지 않았다.
+
+Middleware도 정확한 `/dev/consolidation` 경로에 기존 development + 명시적 flag + loopback host gate를 적용한다. production/flag 없음/외부 host는 404이며 private/no-store이다. Chromium desktop/mobile 시나리오는 `e2e/consolidation.spec.ts`, 격리 실행 설정은 `scripts/ci/consolidation.playwright.config.ts`이다.

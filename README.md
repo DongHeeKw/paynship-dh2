@@ -17,7 +17,7 @@
 
 ## White + Orange UI 미리보기 (2026-11-22)
 
-고객 합배송과 자택 운영자 화면의 **흰색 배경 + 주황색 포인트** UI를 개발자 전용 `/dev/consolidation`에 추가했다. [고객/운영자 컴포넌트](components/consolidation/ConsolidationPreview.tsx) · [반응형 CSS Module](components/consolidation/ConsolidationPreview.module.css) · [UI 명세](documents/2027/UI_WHITE_ORANGE_CONSOLIDATION.md) · [문구 테스트](lib/compiler/consolidation/__tests__/presentation.test.ts). 고객 표제는 “함께 배송하면 8,000원 아낄 수 있어요”이며 기존 “합배송을 추천합니다”는 사용하지 않는다. **모든 주문번호·가격·선택 동작은 가상 시안**, 실제 배송·DDP·결제/동의 기능이 아니다. `npm run dev` 후 개발환경에서 `http://localhost:3000/dev/consolidation` 확인.
+고객 합배송과 자택 운영자 화면의 **흰색 배경 + 주황색 포인트** UI를 개발자 전용 `/dev/consolidation`에 추가했다. [고객/운영자 컴포넌트](components/consolidation/ConsolidationPreview.tsx) · [반응형 CSS Module](components/consolidation/ConsolidationPreview.module.css) · [UI 명세](documents/2027/UI_WHITE_ORANGE_CONSOLIDATION.md) · [문구 테스트](lib/compiler/consolidation/__tests__/presentation.test.ts). 고객 표제는 “함께 배송하면 8,000원 아낄 수 있어요”이며 기존 “합배송을 추천합니다”는 사용하지 않는다. **모든 주문번호·가격·선택 동작은 가상 시안**, 실제 배송·DDP·결제/동의 기능이 아니다. `PAYNSHIP_DEV_PREVIEW=1 npm run dev` 후 개발환경에서 `http://localhost:3000/dev/consolidation` 확인.
 
 ## 개발 운영 원칙: Autonomous TDD + 사용자 학습
 
@@ -111,3 +111,11 @@ npm.cmd run build
 다른 Linux 서버에서 저장소를 clone해 출시하는 절차는 [Linux 출시 실행서](documents/Reference/Deployment/LINUX_RELEASE.md)를 따릅니다. [국가별 수취인 요건](documents/Reference/COUNTRY_CUSTOMS.md)과 [상품 수집 샘플](data/samples/README.md)을 함께 확인하세요.
 
 기존 AI·2-pane·54개국 자동 DDP 계획, 중복 문서 스냅샷과 Docker 개발 안내는 폐기했습니다. 남아 있는 과거 API 소스는 middleware에서 410으로 차단하고 과거 관리 화면은 새 구매 관리 화면으로 이동합니다. 과거 DB 데이터는 보존합니다.
+
+## 주문에서 합배송 계획까지 — 로컬 컴파일러
+
+[Step 2 실행·학습 안내](documents/2027/LEARNING_STEP_02_PLAN_COMPILER.md): 최대 4개 주문의 모든 그룹 조합, 부피무게/실중량·할증·포장·보관·통관 비용, 기한과 근거 만료를 검사한다. `/dev/consolidation`에서 6개 가상 시나리오를 바꾸면 고객 절감/대기와 운영자 계산 근거가 함께 바뀐다. 실제 운임/통관 승인·DB 입고·동의 저장·출고는 미연결이다. 원본 PNG는 보존했다.
+
+## 실제 첫 화면 변경 — 2026-11-24
+
+`npm start app` 후 `http://127.0.0.1:3002/`에서 세 탭을 확인한다: Paste a Link는 목적국 + 고객 URL과 원래 3D welcome, Discover Korea는 URL 입력 없는 MD 검색/카테고리, How It Works는 구매 과정·배송·반품·FAQ 통합 가이드다. 기존 cream/blue/coral 화면 디자인을 유지한다. 로그인 주문 요약은 인증된 본인 데이터에만 접근한다. 실제 3D 장면의 작은 poster가 먼저 보이고 첫 WebGL frame 후 interactive scene으로 전환한다. [Step 3 변경·검증·학습 안내](documents/2027/LEARNING_STEP_03_MAIN_COMMERCE_HOME.md)에 구현과 미완료 범위를 구분했다.

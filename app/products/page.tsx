@@ -3,7 +3,7 @@ import SiteShell from '@/components/site/SiteShell';
 import ProductCatalog from '@/features/storefront/products/ProductCatalog';
 
 export const metadata: Metadata = {
-  title: 'Products | PayNShip',
+  title: 'Discover Korea | PayNShip',
   description: 'Browse beauty, stationery, home, accessories and K-pop finds from Korean seller listings. Choose a product to prepare a purchase request.',
 };
 

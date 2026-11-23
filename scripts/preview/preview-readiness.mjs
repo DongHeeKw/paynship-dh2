@@ -12,9 +12,10 @@ export async function warmPreviewServer(input, { timeoutMs = 90000 } = {}) {
   }
   const deadline = Date.now() + timeoutMs;
   const paths = ['/', '/products', '/dev/preview', '/dev/workspace', '/dev/workspace/data'];
-  async function read(path, limit) {
+  async function read(path, limit, contentType) {
     const response = await fetch(new URL(path, origin), { redirect: 'error', cache: 'no-store', signal: AbortSignal.timeout(Math.max(1, Math.min(10000, deadline - Date.now()))) });
     if (!response.ok || !response.body) throw new Error('Local preview response is not ready.');
+    if (contentType && !response.headers.get('content-type')?.startsWith(contentType)) throw new Error('Local preview asset has the wrong content type.');
     const chunks = []; let size = 0;
     const reader = response.body.getReader();
     try {
@@ -30,6 +31,10 @@ export async function warmPreviewServer(input, { timeoutMs = 90000 } = {}) {
   while (Date.now() < deadline) {
     try {
       const assets = new Set();
+      // Metadata routes compile separately. A working home does not prove its
+      // browser icon route has usable manifests, so warm and verify it as well.
+      const icon = await read('/icon.svg', 64 * 1024, 'image/svg+xml');
+      if (!/<svg[\s>]/.test(icon)) throw new Error('Local preview icon is not ready.');
       for (const path of paths) {
         const body = await read(path, 2 * 1024 * 1024);
         if (path.endsWith('/data')) {

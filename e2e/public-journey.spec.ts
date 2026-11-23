@@ -149,9 +149,9 @@ test('K-pop references prepare a real listing draft and disclose the service fee
   await expect(page.getByRole('button', { name: 'Request BTS Proof' })).toHaveCount(0);
   await expect(page.locator('a[href*="youtube.com"], a[href*="tiktok.com"]')).toHaveCount(0);
   await expect(page.getByText('15% service fee · no minimum', { exact: true })).toBeVisible();
-  await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'Products', exact: true }).click();
+  await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'Discover Korea', exact: true }).click();
   await expect(page).toHaveURL(/\/products$/);
-  await expect(page.getByRole('link', { name: 'Products', exact: true })).toHaveAttribute('aria-current', 'page');
+  await expect(page.getByRole('link', { name: 'Discover Korea', exact: true })).toHaveAttribute('aria-current', 'page');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Find your next favourite.');
   const photos = page.locator('.product-photo img');
   await expect(photos).toHaveCount(4);
@@ -170,7 +170,7 @@ test('the light stick reference and informational links lead to useful next step
   await expect(page.getByRole('button', { name: 'Request BTS Proof' })).toHaveCount(0);
   await page.getByRole('combobox', { name: 'Category', exact: true }).selectOption('kpop');
   await expect(page.getByRole('button', { name: 'Request BTS Proof' })).toBeVisible();
-  await page.getByRole('link', { name: 'Read the buying guide' }).click();
+  await page.getByRole('link', { name: 'Read the K-pop buying guide' }).click();
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('How to buy K-pop albums and merch from Korea');
   await page.goto('/products?category=kpop');
   await page.getByRole('button', { name: 'Request SEVENTEEN light stick' }).click();
@@ -288,7 +288,7 @@ test('classic form preview opens the Products tab without a render error', async
   const errors: string[] = []; page.on('pageerror', error => errors.push(error.message));
   await page.goto('/dev/preview');
   await expect(page.getByLabel('Product link', { exact: true })).toBeVisible();
-  await page.getByRole('link', { name: 'Products', exact: true }).click();
+  await page.getByRole('link', { name: 'Discover Korea', exact: true }).click();
   await expect(page).toHaveURL(/\/products$/);
   await expect(page.locator('.product-card')).toHaveCount(4);
   expect(errors).toEqual([]);

@@ -155,3 +155,24 @@
 @media (prefers-reduced-motion: reduce) {
   .preview * { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
 }
+
+.scenarioBar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 30px; padding-bottom: 22px; border-bottom: 1px solid var(--ui-border); font-size: 14px; }
+.scenarioBar label { font-weight: 700; }
+.scenarioBar select { max-width: 100%; min-height: 44px; padding: 10px 32px 10px 12px; border: 1px solid #c7bfb9; border-radius: 8px; background-color: white; color: var(--ui-ink); font: inherit; }
+.scenarioBar span, .scopeNote { color: #63666b; font-size: 14px; line-height: 1.65; }
+.costList { margin: 20px 0; font-size: 14px; }
+.costList > div { display: flex; justify-content: space-between; gap: 16px; margin: 10px 0; }
+.costList dt { color: #63666b; }
+.costList dd { margin: 0; white-space: nowrap; }
+.traceGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.traceCard { padding: 20px; border: 1px solid var(--ui-border); border-radius: 12px; overflow-wrap: anywhere; font-size: 14px; line-height: 1.65; }
+.traceCard h3 { font-size: 18px; margin: 0 0 8px; }
+.traceCard > strong { color: #b44711; font-size: 23px; }
+.traceCard ul { padding-left: 20px; }
+.traceCard summary { cursor: pointer; min-height: 44px; padding: 12px 0; color: #a34413; font-weight: 700; }
+.parcelTrace { border-top: 1px solid var(--ui-border); padding: 12px 0; }
+.operatorGrid + .suggestionCard, .panel + .suggestionCard { margin-top: 24px; margin-bottom: 24px; }
+.preview :is(select, summary):focus-visible { outline: 3px solid #e55d13; outline-offset: 3px; }
+.itemDetails span, .itemDetails small, .statusGood, .statusWaiting, .timeline strong, .timeline small, .choiceNote, .sampleNotice { font-size: 14px; }
+.itemDetails small, .timeline small { color: #63666b; }
+@media (max-width: 640px) { .traceGrid { grid-template-columns: 1fr; } }

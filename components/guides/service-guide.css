@@ -1,0 +1,19 @@
+.service-guide-page { margin: 62px auto 32px; max-width: 1040px; }
+.service-guide-topics { display: flex; flex-wrap: wrap; gap: 12px 26px; margin: 24px 0 32px; font-size: 13px; }
+.service-guide-topics a { display: inline-flex; align-items: center; min-height: 44px; color: var(--pn-brand-strong); }
+.service-guide-details { max-width: 760px; margin: 34px auto; }
+.service-guide-details section { border-bottom: 1px solid #192c4326; padding: 22px 0; scroll-margin-top: 24px; }
+.service-guide-details h2 { font-size: 22px; font-weight: 700; letter-spacing: -.035em; margin: 0 0 12px; }
+.service-guide-details p { font-size: 14px; line-height: 1.8; color: var(--pn-ink-muted); }
+.service-guide-actions { display: flex; flex-wrap: wrap; gap: 24px; margin-top: 36px; font-size: 13px; color: var(--pn-brand-strong); }
+@media (max-width: 540px) { .service-guide-page { margin-top: 32px; } .service-guide-topics { gap: 6px 22px; } }
+@media (prefers-reduced-motion: reduce) { .service-guide-page .journey-illustration { transition: none; transform: none; } }
+
+.parcel-faq { display: grid; grid-template-columns: .85fr 1.15fr; gap: 65px; margin: 65px 0 15px; }
+.parcel-faq h2 { font-size: 33px; letter-spacing: -.05em; line-height: 1.2; margin: 0 0 14px; font-weight: 700; }
+.parcel-faq-intro { color: #526070; max-width: 310px; font-size: 13px; line-height: 1.8; }
+.parcel-faq details { border-bottom: 1px solid #192c4326; padding: 19px 0; }
+.parcel-faq details:first-child { padding-top: 0; }
+.parcel-faq summary { cursor: pointer; font-size: 14px; font-weight: 600; }
+.parcel-faq details p { margin: 12px 0 0; color: #526070; line-height: 1.8; font-size: 12px; }
+@media (max-width: 760px) { .parcel-faq { grid-template-columns: 1fr; gap: 18px; margin-top: 42px; } .parcel-faq-intro { max-width: none; } }

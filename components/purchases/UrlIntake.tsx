@@ -1,15 +1,16 @@
 'use client';
 import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { EMPTY_INTAKE_DRAFT, getIntakeDraftStorage, loadIntakeDraft, saveIntakeDraft } from '@/lib/purchases/intake-draft';
+import { EMPTY_INTAKE_DRAFT, getIntakeDraftStorage, loadIntakeDraft, saveIntakeDraft, type IntakeDraft } from '@/lib/purchases/intake-draft';
 export { PRODUCT_URL_STORAGE_KEY } from '@/lib/purchases/intake-draft';
 interface Props {
+  destination?: IntakeDraft['destination'];
   onFocusChange?: (focused: boolean) => void;
   onUrlChange?: (url: string) => void;
   onContinue?: () => void;
 }
 
-export default function UrlIntake({ onFocusChange, onUrlChange, onContinue }: Props = {}) {
+export default function UrlIntake({ onFocusChange, onUrlChange, onContinue, destination }: Props = {}) {
   const router = useRouter();
   const [url, setUrl] = useState('');
   const [error, setError] = useState('');
@@ -20,7 +21,7 @@ export default function UrlIntake({ onFocusChange, onUrlChange, onContinue }: Pr
       if (parsed.protocol !== 'https:' || parsed.username || parsed.password) throw new Error();
       const storage = getIntakeDraftStorage();
       const draft = loadIntakeDraft(storage) ?? EMPTY_INTAKE_DRAFT;
-      if (!saveIntakeDraft(storage, { ...draft, sourceUrl: parsed.toString() })) {
+      if (!saveIntakeDraft(storage, { ...draft, sourceUrl: parsed.toString(), destination: destination || draft.destination })) {
         setError('Your browser could not keep this product draft. Enable session storage to continue.');
         return;
       }

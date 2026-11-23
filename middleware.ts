@@ -35,7 +35,7 @@ export async function middleware(request: NextRequest) {
   if (path.startsWith('/admin/') && !/^\/admin\/(?:purchases(?:\/[0-9a-f-]+)?|support|settings|env-health)\/?$/i.test(path)) {
     return respond(NextResponse.redirect(new URL('/admin/purchases', request.url)));
   }
-  if (path === '/dev/preview' || isDeveloperWorkspacePath(path)) {
+  if (path === '/dev/preview' || path === '/dev/consolidation' || isDeveloperWorkspacePath(path)) {
     if (!devPreviewAllowed(process.env.NODE_ENV, process.env.PAYNSHIP_DEV_PREVIEW, request.headers.get('host'))) {
       return respond(new NextResponse('Not found', { status: 404, headers: { 'Content-Type': 'text/plain; charset=utf-8' } }));
     }

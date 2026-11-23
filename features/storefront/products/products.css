@@ -4,7 +4,9 @@
 .products-heading h1 > span { color: var(--coast-blue); position: relative; display: inline-block; }
 .products-heading h1 svg { position: absolute; width: 100%; height: 14px; left: 0; bottom: -9px; color: var(--coast-coral); }
 .products-heading > p:last-child { max-width: 550px; color: #526070; font-size: 15px; line-height: 1.8; }
-.products-toolbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin: 34px 0 26px; padding-bottom: 22px; border-bottom: 1px solid #192c4326; }
+.products-toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; margin: 34px 0 26px; padding-bottom: 22px; border-bottom: 1px solid #192c4326; }
+.products-destination { display: flex; align-items: center; gap: 12px; font-size: 12px; }
+.products-destination select { min-height: 50px; min-width: 0; max-width: 100%; padding: 10px 12px; border: 1px solid #192c4340; border-radius: 9px; background: #fffdf8; color: var(--coast-ink); }
 .products-toolbar > span { color: #526070; font-size: 12px; white-space: nowrap; }
 .products-category { display: flex; align-items: center; gap: 15px; color: var(--coast-ink); font-size: 12px; font-weight: 650; }
 .products-select { position: relative; display: block; }

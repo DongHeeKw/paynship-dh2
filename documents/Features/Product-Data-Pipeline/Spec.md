@@ -73,3 +73,7 @@ JSON-LD의 Product/BreadcrumbList와 제한된 meta 태그만 관측합니다. �
 2026-10-12 KST 실제 다섯 URL 중 Yes24 세 페이지에서 관측값을 얻었습니다. Musinsa는 robots 정책으로 차단됐고 Kyobo 응답은 지원하지 않는 형식으로 기록했습니다. 모든 결과는 `review_required`입니다. [JSON 및 재현 방법](../../../data/samples/README.md), [독립 SQLite 스키마와 검사](../../../data/samples/SAMPLE_DB.md)를 참고하세요. SQLite의 고객·주문·배송·CS 예제는 가상 데이터이며 실제 PostgreSQL·개인정보·결제에 접근하지 않습니다.
 
 같은 날짜에 사용자 제공 Naver Brand 주소는 `https://brand.naver.com/kinox/products/5912828061`로 정규화했습니다. robots.txt 응답은 HTTP 200이었으며 정책 검사 결과는 `robots_blocked`입니다. 상품 페이지는 요청하지 않았고 상품명·가격·통관 필드는 미확인으로 남깁니다. [Naver 수집 시도 기록](../../../data/samples/naver-product-evidence-2026-10-12.json)은 URL 파싱 결과와 구분하며 수집 성공·통관 승인으로 사용하지 않습니다.
+
+## Discovery and URL destination handoff — 2026-11-23
+
+Home MD cards and `/products` share `useProductDraft`; URL intake accepts an optional typed destination from the home selector and otherwise preserves the existing draft destination. Both end at the unchanged purchase validation/evidence flow. Home listing search is editorial discovery, not proof of exact SKU, current price, origin, authenticity, stock or customs eligibility. The UI says those facts still require review; no new extraction source or country tax rule was added.

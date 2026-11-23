@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import HarborScene from './HarborScene';
+import Image from 'next/image';
 import type { ParcelScene, ParcelSceneState } from './parcel-scene';
 import './parcel-world.css';
 
@@ -14,8 +14,8 @@ export default function ParcelWorld(props: ParcelSceneState) {
 
   useEffect(() => {
     let cancelled = false;
-    // Keep WebGL and Three.js out of the initial page bundle. The illustration
-    // is already visible and the product form works while this loads.
+    // The preloaded still of this same scene supplies depth before WebGL is ready.
+    // Keep Three.js outside the initial bundle and reveal it only after rendering.
     import('./parcel-scene').then(({ createParcelScene }) => {
       if (cancelled || !host.current) return;
       scene.current = createParcelScene(host.current, state.current,
@@ -30,7 +30,7 @@ export default function ParcelWorld(props: ParcelSceneState) {
   return <div className={`parcel-world${ready ? ' is-ready' : ''}`}>
     <div className="parcel-world-stage" aria-hidden="true">
       <div className="parcel-world-halo" />
-      <div className="parcel-world-fallback"><HarborScene {...props} /></div>
+      <div className="parcel-world-fallback"><Image src="/images/parcel-studio-poster.webp" alt="" width={848} height={800} priority unoptimized /></div>
       <div className="parcel-world-canvas" ref={host} />
       <div className="parcel-world-origin"><span className="parcel-world-dot" />SEOUL, WITH LOVE<span>YOUR FIND STARTS HERE</span></div>
       <div className="parcel-world-label"><span>ONE LITTLE LINK</span><strong>A world closer.</strong><svg width="35" height="35" viewBox="0 0 24 24" fill="none"><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" strokeWidth="1.7" /></svg></div>

@@ -1,9 +1,18 @@
 version: 2
-updated_at: "2026-11-22"
+updated_at: "2026-11-24"
 metadata:
   description: "Current PayNShip URL service plus future cross-border compiler/Home Hub and TDD specifications"
   source_of_truth_note: "Registered current docs define scope; archives and old research are historical."
 current:
+  - id: main_commerce_home
+    path: documents/2027/LEARNING_STEP_03_MAIN_COMMERCE_HOME.md
+    update_triggers: ["components/home/**", "components/guides/**", "app/guides/how-it-works/**", "app/guides/shipping-and-returns/**", "components/site/SiteHeader.tsx", "components/site/SiteShell.tsx", "lib/purchases/home-*.ts", "features/storefront/**", "e2e/commerce-home.spec.ts"]
+  - id: service_guide
+    path: components/guides/README.md
+    update_triggers: ["components/guides/**", "app/guides/how-it-works/**", "app/guides/shipping-and-returns/**"]
+  - id: consolidation_plan_compiler
+    path: documents/2027/LEARNING_STEP_02_PLAN_COMPILER.md
+    update_triggers: ["lib/compiler/consolidation/**", "components/consolidation/**", "e2e/consolidation.spec.ts", "scripts/ci/**", "vitest.config.ts"]
   - id: consolidation_orange_ui
     path: documents/2027/UI_WHITE_ORANGE_CONSOLIDATION.md
     update_triggers: ["app/dev/consolidation/**", "components/consolidation/**", "lib/compiler/consolidation/presentation.ts"]
@@ -18,7 +27,7 @@ current:
     update_triggers: ["lib/compiler/consolidation/**", "documents/2027/assets/**"]
   - id: welcome
     path: components/home/README.md
-    update_triggers: ["components/home/**", "app/page.tsx"]
+    update_triggers: ["components/home/**", "app/page.tsx", "public/images/parcel-studio-poster.webp", "scripts/preview/capture-parcel-poster.mjs"]
   - id: storefront
     path: features/storefront/README.md
     update_triggers: ["features/storefront/**", "app/products/**", "public/images/products/**"]

@@ -3,10 +3,13 @@ import { z } from 'zod';
 import { purchaseUser } from '@/lib/purchases/auth';
 import { createPurchase } from '@/lib/purchases/create';
 import { listPurchasesForUser } from '@/lib/purchases/read';
+import { getHomeOrdersForUser } from '@/lib/purchases/home-orders';
 import { purchaseApiError, readPurchaseBody } from '@/lib/purchases/api';
 export const runtime = 'nodejs';
 export async function GET(request: NextRequest) {
-  try { const user = await purchaseUser(); const cursor = z.string().uuid().optional().parse(request.nextUrl.searchParams.get('cursor') ?? undefined); return NextResponse.json(await listPurchasesForUser(user.id, cursor)); }
+  try { const user = await purchaseUser();
+    if (request.nextUrl.searchParams.get('view') === 'home') return NextResponse.json(await getHomeOrdersForUser(user.id), { headers: { 'Cache-Control': 'private, no-store' } });
+    const cursor = z.string().uuid().optional().parse(request.nextUrl.searchParams.get('cursor') ?? undefined); return NextResponse.json(await listPurchasesForUser(user.id, cursor)); }
   catch (error) { return purchaseApiError(error); }
 }
 export async function POST(request: Request) {

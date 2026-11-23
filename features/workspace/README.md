@@ -13,3 +13,7 @@ The older `/dev/preview` remains an in-memory form sandbox. Its sample destinati
 Naver URLs are real references; their estimated descriptions/prices are explicitly fictional. Recorded November 15 collection attempts were blocked by robots policy and yielded zero product fields. The customs view separates missing product evidence, broker/recipient evidence, unknown duties and missing actual release records. No policy date is extended by opening the sample.
 
 Validation: `npm run samples:workspace:test`, feature boundary/UI tests and local browser smoke. Full MC/DC and live provider/production DB integration are not established by these tests.
+
+## Preview readiness correction — 2026-11-23
+
+The isolated sample startup now warms and validates `/icon.svg` as well as page scripts. A 500 or non-SVG response keeps readiness pending and is retried. Development output is `.next-dev`, separate from production `.next`; the sample snapshot remains independent and existing fictional SQLite edits are preserved. See [deployment setup](../../documents/Reference/Deployment/DEPLOYMENT.md).

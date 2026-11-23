@@ -85,7 +85,7 @@ function verifiedForComparison(
 
 /**
  * Choose the least expensive VERIFIED legal plan. If costs tie, choose the
- * option with less waiting, then a stable plan id.
+ * option with less waiting, then retain the baseline, then a stable plan id.
  *
  * The separate-shipment baseline is mandatory: without a fair baseline,
  * showing "you saved ..." would be misleading.
@@ -116,6 +116,7 @@ export function recommendConsolidation(input: ConsolidationInput): Consolidation
     .sort((a, b) =>
       (a.customerTotalKrw! - b.customerTotalKrw!)
       || (a.additionalWaitDays - b.additionalWaitDays)
+      || (Number(b.id === baseline.id) - Number(a.id === baseline.id))
       || a.id.localeCompare(b.id),
     );
 

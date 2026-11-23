@@ -200,3 +200,17 @@ production 환경 점검은 `npm.cmd run ops:check -- production`입니다. 실�
 Git/Vercel 연결 저장소는 `DongHeeKw/paynship-dh2`인지 확인합니다. Three.js `three`와 개발용 `@types/three` 의존성을 lockfile에 추가했으며 기존 `prisma generate && next build`를 사용합니다. Vercel 설정·기존 Supabase demo SQL·DB schema를 변경하지 않습니다. 홈 장면은 외부 CDN이나 추가 환경변수를 요구하지 않습니다.
 
 Vercel에서 `/`, `/purchase`, `/orders`, `/settings/delivery`, `/login`, `/signup`을 검토합니다. `/orders`와 배송정보 게스트 화면은 설명만 표시하고 실제 개인 데이터는 인증이 필요합니다. `/demo`는 기존 synthetic Supabase 데이터 페이지이고 `/dev/preview`는 로컬 development 전용이므로 Vercel에서는 사용할 수 없습니다. 로컬 `.env`를 업로드하지 말고 Vercel의 Production/Preview 환경변수를 각각 확인합니다. Email provider·이메일 확인·SMTP·Google·Apple·Naver 및 허용 callback은 실제 프로젝트에서 따로 검증합니다. [입문 안내](../BEGINNER_GUIDE.md)를 참고하세요.
+
+## Consolidation acceptance in CI (2026-11-22)
+
+Existing `scripts/ci/make-pre-purchase-schema.mjs`, PostgreSQL migration/checksum/RLS checks remain unchanged. Vitest now discovers `.test.tsx` as well as `.test.ts`. After build, CI installs Chromium and runs `npx playwright test --config scripts/ci/consolidation.playwright.config.ts`; screenshots/traces are uploaded as `consolidation-browser-evidence`. The runner uses an isolated source snapshot and loopback port 3102, with real backend credentials disabled. It does not reuse an existing server or deploy anything. Local interactive preview: `PAYNSHIP_DEV_PREVIEW=1 npm run dev`, then `/dev/consolidation`. [Implementation limits](../../2027/LEARNING_STEP_02_PLAN_COMPILER.md).
+
+## Main-home UI verification — 2026-11-23
+
+The isolated Chromium config in `scripts/ci/consolidation.playwright.config.ts` now also runs `e2e/commerce-home.spec.ts`: main navigation, guest private-data boundary, product/URL destination handoff, bookmarkable catalog search, shipping guide and responsive screenshots. The original consolidated-plan tests remain. `npm start app` refreshes the isolated local source snapshot at port 3002; an existing source snapshot does not update itself when source files change. No production publication is implied by restarting that local sample app.
+
+## Development/build output isolation — 2026-11-23
+
+`npm run dev` uses `.next-dev`; `npm run build` and production `npm start` use `.next`. `next.config.ts` selects the directory by Next phase so a build cannot overwrite the running source dev server’s manifests. Both output directories are disposable and ignored; application data is separate. Restart an already-running source dev process after this config change. `npm start app` still serves an independent credential-free snapshot on port 3002 and now verifies `/icon.svg` status, SVG content type and body before announcing readiness. It retries the reported metadata-manifest failure instead of declaring a partially working page ready.
+
+The reported `/_app` exception was not reproducible when inspected: both icon query variants returned 200. Another checkout runs on port 3000; this checkout’s sample app is port 3002. Do not change that other checkout to repair this one. The same-checkout dev/build concurrency verification and actual results are recorded in [Step 3](../../2027/LEARNING_STEP_03_MAIN_COMMERCE_HOME.md).

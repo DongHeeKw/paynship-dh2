@@ -90,3 +90,11 @@ Google·Apple은 내장 Supabase OAuth, Naver는 `custom:naver`를 사용합니�
 `GET /auth/naver/userinfo`는 서버 플래그가 켜졌을 때만 Naver Bearer 토큰을 받아 고정 HTTPS 프로필 endpoint에 전달합니다. 임의 fetch·리디렉션·사용자가 지정한 host를 허용하지 않습니다. 토큰/응답 크기·timeout·공유 요청 제한을 적용하고 production Redis 장애는 차단합니다. 반환값은 확인한 Naver ID와 이메일, `email_verified: false`로 한정하고 프로필·토큰의 저장/로그·DB 접근·세션 발급은 수행하지 않습니다. 이 경로는 Supabase의 서버 간 프로필 조회용이며 고객 API 인증을 대체하지 않습니다.
 
 Naver 프로필의 이메일을 자체적으로 검증됐다고 간주하지 않습니다. Supabase Confirm email을 켜고 확인 메일 발송을 구성해야 합니다. `provider_email_needs_verification`은 확인 안내로 처리하고 확인 전 개인 기능은 거절합니다. 주소·계정 연결 권한을 브라우저의 provider 이름이나 이메일 문자열만으로 부여하지 않습니다. 실제 제공자 연결과 확인 메일 검증은 배포 환경에서 별도로 수행합니다.
+
+## Consolidation local compiler boundary (2026-11-22)
+
+`/dev/consolidation` now passes the same development + explicit `PAYNSHIP_DEV_PREVIEW=1` + loopback host gate as the existing preview. Middleware and page both check access; disallowed contexts return 404 and private/no-store. The route has no real account/order/consent/payment/booking persistence. The compiler bounds inputs to four lines/four services, rejects mixed recipient references, and requires whole-plan evidence matched to item, packing and rate inputs. Comparison keys and `INTERNAL_SNAPSHOT` are not authentication or signatures; trusted server evidence adapters remain unimplemented. All outputs have `executionAllowed: false`. Browser CI uses an isolated source snapshot without real environment files or provider credentials. See [scope and evidence](../2027/LEARNING_STEP_02_PLAN_COMPILER.md).
+
+## Owned home orders — 2026-11-23
+
+The existing authenticated purchase endpoint now offers `view=home`, with owner-scoped predicates on both bounded row queries and both count queries. It projects no raw private profile/options/quote/event-message data. Browser state is owner-keyed, cleared on sign-out/account change, and ignores late responses after effect cleanup. Guests and developer-preview personas do not fetch real summaries. Navigation counts are only shown from a loaded owned summary; unknown counts are not presented as zero. Existing server authorization, encryption, payment/carrier signatures and paid quotes are unchanged.

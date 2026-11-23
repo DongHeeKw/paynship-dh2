@@ -193,3 +193,12 @@ Mandatory test nomenclature: `TC-<MODULE>-###`; name maps to a requirement ID, f
 ```
 
 Do not pass a sample fixture whose expected duty is zero unless the official rule and broker expressly approve zero for the specified route.
+
+## Local consolidation compiler evidence — 2026-11-22
+
+[Step 2](LEARNING_STEP_02_PLAN_COMPILER.md) implements deterministic tests for same-recipient partition generation (TC-CON-01/02), lower/higher combined cost (03/04), waiting disclosure (05), partial plans and deadlines (07), incompatible packing rejection (08), stale rate rejection (10), required DDP eligibility (12), and changed measurements/manifest evidence invalidation. These are **bounded synthetic algorithm tests**, not full acceptance of the end-to-end business scenarios. TC-CON-06/13–18 still require real consent, persistence, idempotency and fulfillment integration; UI choice reset is not persisted consent. Country customs Golden Vectors remain unimplemented here. Browser tests cover six local scenarios, desktop/mobile layouts and the public-host gate; unit middleware tests additionally cover production and missing flag denial.
+
+
+## Customer tab boundaries — 2026-11-24
+
+`components/site/__tests__/tab-roles.test.tsx` and `navigation.test.tsx` lock the owner’s three roles: Paste a Link URL/welcome, Discover Korea merchandise without URL input, and the combined How It Works guide. `e2e/commerce-home.spec.ts` verifies both entry paths retain destination in the common purchase review, the old shipping/returns URL redirects, initial studio imagery works without JavaScript, reported icon queries serve SVG, and all three pages fit desktop/mobile widths. These tests establish UI behavior, not verified merchandise, customs, live booking or refunds. [Actual runs and screenshots](LEARNING_STEP_03_MAIN_COMMERCE_HOME.md).

@@ -40,13 +40,13 @@
 ## 3. 실제 화면 단위 검수
 
 ### A. Guest Home
-- 고객 국가별 MD 상품 + 검색/카테고리/언어 + URL 입력 필드가 첫 화면에서 즉시 보임.
+- 사용자 탭 구분(2026-11-24): Paste a Link 첫 화면은 고객 URL 입력·목적국·기존 매력적인 parcel world. Discover Korea는 MD 상품 + 검색/카테고리/목적국이며 URL 입력/URL 시작 유도를 제거. How It Works는 구매 과정과 배송·반품·FAQ를 하나로 합침. 언어 전환과 검증된 국별 MD는 여전히 목표.
 - URL 입력 → 상품 카드: 판매처 상품 ID, 사진, 브랜드, SKU/옵션/가격, 검증 시각, **제조국·재질·통관 필요정보의 확보 여부**.
 - 고객 목적국과 수량을 바꾸면 그에 따른 국가별 수입요건·비용이 재평가되고 '총 예상 부담액' 또는 '**검토 필요**'가 즉시 반영됨.
 - 지원하지 않는 소스는 적법한 수동 요청으로 유도. 웹사이트 robots/약관을 우회하지 않음.
 
 ### B. Signed-in Home
-- 활성 주문 있으면 첫 영역에 배송 상태, 가장 긴급한 고객 조치, ETA/최종 이벤트 시각. 주문 없으면 MD와 URL 입력 우선.
+- 활성 주문 있으면 첫 영역에 배송 상태, 가장 긴급한 고객 조치, ETA/최종 이벤트 시각. 주문 없으면 URL welcome, MD는 Discover Korea에서 접근.
 - 여러 상품 및 박스의 상태와 환불 처리 상태 개별 조회. 운송사명·송장번호는 상세에 나타나지만 **운송사 선택 강제 없음**.
 - 결제 이전 총비용·관세 부담·DDP/DAP 지원 여부 설명, 배송사 실측/법령 변경시 조건 처리.
 - 영어/중국어(간체), 일본 출시에는 일본어 포함. 배송·환불/세금/오류까지 번역 검증.
@@ -108,3 +108,7 @@
 - [TEST_MATRIX.md](TEST_MATRIX.md) — 검증 시나리오
 - [UX_MD_AND_SERVICE_GUIDE.md](UX_MD_AND_SERVICE_GUIDE.md) — UI/MD/환불
 - [CURRENT_TO_TARGET.md](CURRENT_TO_TARGET.md) — 현행/목표 차이
+
+## Main-screen implementation update — updated 2026-11-24
+
+The previous Step 2 delivered a local compiler preview and did not change the main customer journey. [Step 3](LEARNING_STEP_03_MAIN_COMMERCE_HOME.md) corrects that gap: three distinct primary tabs (home URL/welcome, Discover Korea MD without URL entry, combined How It Works/shipping/returns/FAQ), destination-aware URL/MD handoff, signed-in owned active-order summary, Orders & quotes page naming and the original storefront styling restored at the owner’s request. This is a partial implementation of sections 3A/3B: live evidence compilation, national tariff Golden Vectors, translations/currency, complete refund operations and multi-package fulfillment remain outstanding. A tab rename alone is not completion of the compiler requirements.

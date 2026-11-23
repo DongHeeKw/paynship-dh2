@@ -102,3 +102,9 @@ DB 점검 설정은 새 요청·checkout을 중단하고 shopifyEnabled=false �
 CS 생성·운영자 답변은 암호화하며 답변 version 경합을 확인하고 PII 조회를 기록합니다. 실제 환불 API·취소된 미결제 draft 정리·보존/삭제·알림 운영은 별도입니다.
 
 [보안](../../Reference/SECURITY.md) · [실제 운영](../../Reference/OPERATIONS.md)
+
+## Home summary projection — 2026-11-23
+
+`GET /api/purchases?view=home` uses the existing `purchaseUser()` authentication and derives the owner only from that verified session. Caller-supplied owner parameters are not used. It returns activeCount, attentionCount and at most three summaries: ON_HOLD/QUOTED/PAYMENT_PENDING first, then REVIEW_REQUIRED/PAID/PURCHASING/AT_WAREHOUSE/READY_TO_SHIP/SHIPPED, newest updatedAt/id within each group. Terminal DELIVERED/REJECTED/CANCELLED do not count as active. The original paginated GET and POST remain compatible.
+
+The new database selection contains only id/category/destination/quantity/status/updatedAt/quoteExpiresAt and latest event timestamp. Home output includes status/action labels and nullable lastEventAt; it excludes options, address, quote payload, customer identity, event messages and support details. Expired quotes link to validity review rather than prompting payment. Cache-Control is private, no-store. This projection adds no writes, paid-quote changes or shipment events.

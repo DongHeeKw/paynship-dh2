@@ -34,8 +34,8 @@ Status: Documentation-only alignment as of 2026-11-21. **No production implement
 
 ## Product decision record (discussed, not yet implemented)
 
-- Public/non-auth primary experience: curated Korean merchandise discovery + URL input, natural scroll; no forwarder or courier chooser.
-- Authenticated new/returning experience: active order and required actions first; MD continues under order information; users without active orders see discovery.
+- Public/non-auth primary experience (tab split updated 2026-11-24): Paste a Link owns customer URL entry and welcome; Discover Korea owns merchandise without URL input; How It Works combines buying/shipping/returns/FAQ. No forwarder or courier chooser. The current catalog remains eight seller references.
+- Authenticated new/returning experience: active order and required actions first on home, then URL entry; MD remains in Discover Korea. Users without active orders see the welcome.
 - MD should prioritize **evidence-backed** attractive goods including Korean limited goods, K-pop, stationery, books, beauty where legally supported, plus clearance genuine Nike/Adidas only after exact-SKU price matching by destination. No assumption unpopular in Korea implies demanded abroad. Country-specific customs and shipping cost is part of merchandising score.
 - Delivered Korea benchmark: public We Buy & Ship auto-load attempt, manual fallback, human quote, delivery and return policy guide, warehouse/consolidation. Do not copy protected design/data or reverse engineer access-controlled systems. Language support is **not** proof China is their primary buyer.
 - KRDS benchmark: accessible components, design tokens, consistent navigation, forms, progress and helpful error states; existing playful Three.js home can remain as brand character. Don't replace functional shopping with a decorative 3D scene.
@@ -60,3 +60,10 @@ Trade legal role and importer-of-record, 2027 tariff schedules and origin/FTA su
 ## Release gate overview
 
 No live country advertised as fully supported until permitted merchant sourcing, category-specific import clearance, required recipient authorizations, approved customs assessment, contracted shipping, signed tracking, payment/refund, SLA and user-facing policies have a tested end-to-end route. Begin with one country and low-risk SKU slice; expand after evidence.
+## Main-screen delta — updated 2026-11-24
+
+Implemented locally: three distinct tabs, home destination/URL entry with the original parcel welcome, Discover Korea seller-reference search and destination-aware MD draft handoff without URL input, authenticated attention-first active-order summary, and a combined How It Works/shipping/returns/FAQ guide with a legacy-route redirect. The earlier consolidation implementation remains isolated from paid checkout. Country-approved MD, live landed-cost compiler, multilingual/currency UI, real intake/consent/booking and complete refund operation are still targets. [Detailed before/after](LEARNING_STEP_03_MAIN_COMMERCE_HOME.md).
+
+## Owner screen-design correction — 2026-11-23
+
+Keep the implemented UX but restore the earlier screen design: original cream/blue/coral customer shell, large parcel studio, outlined controls and illustrated details. Paste a Link is first and opens `/`; Discover Korea is second. Destination handoff, owned active-order home, guide access, catalog search and the matching 3D poster remain. This supersedes the initial Step 3 global white/orange restyle, not the separate consolidation preview. The icon startup/build-manifest safeguards are documented in [Step 3](LEARNING_STEP_03_MAIN_COMMERCE_HOME.md).

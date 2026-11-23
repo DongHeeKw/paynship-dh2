@@ -256,3 +256,24 @@ a { color: inherit; text-underline-offset: 4px; }
   .page-content { margin: 42px auto; }
   .request-link { flex-direction: column; gap: 12px; }
 }
+
+/* The restored storefront keeps its existing palette and illustration styling. */
+.site-shell-themed .site-brand { flex-shrink: 0; }
+.site-shell-themed .site-nav { flex: 1; gap: 8px 22px; }
+.site-account { display: flex; align-items: center; gap: 18px; flex-shrink: 0; font-size: 13px; font-weight: 600; }
+.site-account > a { display: inline-flex; align-items: center; min-height: 44px; text-decoration: none; }
+.site-account .site-nav-action { padding: 10px 18px; border: 1.5px solid var(--coast-ink); border-radius: 8px; box-shadow: 2px 2px 0 var(--coast-ink); background: #fffdf8; }
+.site-account .site-nav-action:hover { background: #e3edff; }
+.site-account details { position: relative; }
+.site-account summary { cursor: pointer; padding: 12px 0; }
+.account-menu { position: absolute; right: 0; z-index: 10; top: 100%; min-width: 180px; background: #fffdf8; border: 1px solid var(--pn-border); border-radius: 10px; box-shadow: 3px 3px 0 #192c4314; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+.account-menu :is(a, button) { padding: 8px; text-align: left; }
+.order-count { margin-left: 6px; border-radius: 20px; background: var(--coast-blue); color: #fff; min-width: 22px; text-align: center; font-size: 11px; padding: 2px 5px; }
+.site-footer nav { display: flex; flex-wrap: wrap; gap: 16px; }
+.catalog-search { margin: 24px 0 0; max-width: 600px; }
+.catalog-search label { display: block; margin-bottom: 8px; font-size: 13px; }
+.catalog-search > div { display: flex; gap: 10px; }
+.catalog-search input { border: 1px solid var(--pn-border-strong); border-radius: 8px; min-width: 0; flex: 1; padding: 10px; background: #fffdf8; }
+.catalog-evidence-note { font-size: 12px; color: var(--pn-ink-muted); }
+@media (max-width: 1050px) { .site-shell-themed .site-header { flex-wrap: wrap; } .site-shell-themed .site-nav { order: 3; flex-basis: 100%; justify-content: flex-start; } .site-account { margin-left: auto; } }
+@media (max-width: 540px) { .site-account { gap: 12px; font-size: 12px; } .site-account .site-nav-action { padding: 8px 12px; } }

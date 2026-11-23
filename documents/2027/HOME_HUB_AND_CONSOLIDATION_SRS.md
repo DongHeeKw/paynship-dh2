@@ -15,7 +15,9 @@
 - [TDD 학습 계약](TDD_AGENT_DEVELOPMENT_CONTRACT.md) — 사용자의 사전 코드 승인 대신 에이전트 테스트·설명 책임.
 - [테스트 가능한 합배송 계획 선택기](../../lib/compiler/consolidation/recommend.ts) 및 [Vitest 테스트](../../lib/compiler/consolidation/__tests__/recommend.test.ts)는 이미 검증된 후보들 중 추천을 선택하는 **첫 순수 함수 슬라이스**다.
 - [Step 1 공부](LEARNING_STEP_01_CONSOLIDATION.md) · [고객 SVG 시안](assets/customer-consolidation-wireframe.svg) · [운영자 SVG 시안](assets/operator-home-hub-wireframe.svg).
-- **현재 미구현:** 상품 여러 개의 실제 후보 생성, 사업주 자택 입고 DB/운영 화면, 실제 관세/운송사 계약 요금, 사용자 동의 저장/자동 출고. 추상 알고리즘 문서와 순수 함수 테스트를 실제 배송 기능 완료로 혼동하지 말 것.
+- **현재 미구현:** 실제 운영 데이터에서의 후보 생성, 사업주 자택 입고 DB/운영 화면, 실제 관세/운송사 계약 요금, 사용자 동의 저장/자동 출고. 추상 알고리즘 문서와 순수 함수 테스트를 실제 배송 기능 완료로 혼동하지 말 것.
+
+로컬 후속 구현: [Step 2 계획 컴파일러](LEARNING_STEP_02_PLAN_COMPILER.md)는 최대 4개 주문 라인의 별도/전체/부분/대기 조합을 생성하고 제공된 실측·운임·통관 스냅샷으로 평가한다. 고객/운영 화면은 동일한 가상 계산을 사용한다. 실입고 DB·승인 서버 어댑터·실동의·자동 출고는 미구현이다.
 
 ## 1. 용어·업무모델 명확화
 

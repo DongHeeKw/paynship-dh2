@@ -57,3 +57,9 @@ it('offers five lifestyle categories with a minority of fandom references', () =
   expect(new Set(shelves.slice(0, 4)).size).toBe(4);
   for (const item of references.items) expect(PRODUCT_CATEGORIES).toContain(item.category);
 });
+
+it('searches product names and brands before pagination without pretending to verify stock', () => {
+  expect(catalogPage(references.items, { q: '  ICONIC  ' }).items.map((item) => item.id)).toEqual(['iconic-notebook']);
+  expect(catalogPage(references.items, { q: 'not-a-product' }).total).toBe(0);
+  expect(catalogHref('stationery', 1, 'lined notebook')).toBe('/products?category=stationery&q=lined+notebook');
+});

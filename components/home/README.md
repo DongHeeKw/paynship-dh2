@@ -1,6 +1,6 @@
 # Welcome experience
 
-`HomeExperience` owns the public URL entry, fee disclosure, service explanation and FAQ. `ParcelWorld` progressively loads the Three.js scene and keeps the existing SVG available until the first successful frame.
+`HomeExperience` owns the Paste a Link welcome, public URL entry, active-order overview and fee disclosure. Merchandise belongs to [Discover Korea](../../features/storefront/README.md); the illustrated journey, policies and FAQ belong to the [combined guide](../guides/README.md). `ParcelWorld` progressively loads the Three.js scene and keeps a preloaded still of that same studio visible until the first successful frame, then crossfades over 250ms (no transition with reduced motion). WebGL failure or context loss restores the poster. The 848×800 WebP is about 35 KB and appears in server-rendered HTML without JavaScript; this improves visual continuity, not measured GPU startup time.
 
 `parcel-studio.ts` builds a miniature packing studio inspired by the owner's supplied diorama and glossy character references: a thick blue platform, coral arch, rounded parcel with cheeks/mittens/feet, a conveyor and an airplane. Models are real lit geometry, viewed with a perspective camera. Locally generated room reflections, physical materials and shadows establish depth. The user's reference files are not published as site assets.
 
@@ -9,3 +9,13 @@
 The entrance lasts four seconds and settles. Pointer interaction renders for a bounded interval; reduced motion immediately displays the final pose without pointer animation. Hidden/offscreen views stop scheduling frames. Focusing the URL input lifts the lid; no rotation buttons or shipment-tracking claims are present. Forms work with or without WebGL.
 
 Tests cover null/throwing contexts, successful context reuse and bounded motion. Browser journeys check a real canvas, reduced motion, pointer settling, context loss, Chromium with WebGL disabled, responsive layout and console/bundle errors.
+
+## Main commerce home — updated 2026-11-24
+
+The default `/` page puts owned active orders first when signed in, then the original “From Korea to your door” URL-entry hero and full-size parcel studio. The three primary tabs are Paste a Link, Discover Korea and How It Works. The owner explicitly rejected the replacement screen styling on 2026-11-23, so the original cream/blue/coral palette, typography, outline/shadow controls and studio labels remain. On 2026-11-24 the owner separated the tabs: home has URL/destination entry and the engaging welcome; `/products` owns MD search/cards without URL-entry prompts; `/guides/how-it-works` combines the illustrated journey, shipping, returns and FAQ. The chosen destination survives both MD and URL entry into the common purchase review. Unknown price, origin, stock and import eligibility stay explicitly under review.
+
+`HomeOrdersProvider` shares one authenticated `/api/purchases?view=home` result between navigation and home. Guests and fictional preview personas make no home-summary API request. `OrdersOverview` shows at most three attention-first active entries, actual recorded event times and “Delivery estimate pending”. No timestamps or ETA are fabricated. Responses are scoped to the current owner at render time, discarded after account changes/unmount, and never stored in browser persistence. Failures offer retry rather than pretending there are no orders.
+
+[Step 3: before/after and verification](../../documents/2027/LEARNING_STEP_03_MAIN_COMMERCE_HOME.md).
+
+To refresh the poster after changing studio geometry, run `npm start app` and then `node scripts/preview/capture-parcel-poster.mjs`. This captures only the app's own neutral Three.js canvas with reduced motion and a transparent background, then encodes `public/images/parcel-studio-poster.webp`. It never reads or overwrites the two approved consolidation/HOME_HUB PNGs. Refresh the sample app again to serve the new asset. No network/GPU performance benchmark is claimed.

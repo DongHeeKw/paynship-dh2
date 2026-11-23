@@ -2,7 +2,7 @@
 
 > **2026-11-22 화면 시안 코드:** `/dev/consolidation` 개발자 전용 경로에 실제 React/CSS 기반 고객 합배송·자택 운영자 화면(흰색/주황색), 혜택 중심 한국어 문구·테스트를 추가. 실제 관세·운송사 요금·합배송 자동 승인·결제와는 미연결. 참조: [UI_WHITE_ORANGE_CONSOLIDATION.md](../2027/UI_WHITE_ORANGE_CONSOLIDATION.md). 원본 PNG 생성 이미지 2개를 **바이너리 그대로** GitHub에 추가했다: [고객 합배송 이미지](../2027/assets/images/paynship-consolidation-original.png) · [자택 물류 이미지](../2027/assets/images/paynship-home-hub-original.png). SVG/컴포넌트는 별도 편집 가능한 참고 시안이다.
 
-> **2027 V3 요구사항은 별도로 정의되어 있으며 이 표의 구현 상태를 변경하지 않습니다.** [SRS](../2027/INTEGRATED_SRS.md) · [기존과 목표 차이](../2027/CURRENT_TO_TARGET.md) · [Agent 작업 순서](../2027/AGENT_IMPLEMENTATION_PLAN.md) · [테스트 추적](../2027/TEST_MATRIX.md). 현재 고정 MD 8개, 합배송 미구현, 실제 관세/배송사 연결 미완료는 계속 출시 차단 사항입니다. 로그인 후 주문 현황 우선 홈은 신규 목표이지 구현 완료가 아닙니다.
+> **2027 V3 요구사항은 별도로 정의되어 있으며 이 표의 구현 상태를 변경하지 않습니다.** [SRS](../2027/INTEGRATED_SRS.md) · [기존과 목표 차이](../2027/CURRENT_TO_TARGET.md) · [Agent 작업 순서](../2027/AGENT_IMPLEMENTATION_PLAN.md) · [테스트 추적](../2027/TEST_MATRIX.md). 현재 고정 MD 8개, 합배송 미구현, 실제 관세/배송사 연결 미완료는 계속 출시 차단 사항입니다. 본인 활성 주문 요약 홈은 아래 Step 3 범위로 구현했으나 실제 DB/계정 통합 운영 검증은 미완료입니다.
 
 **2026-11-22 신규 코드 범위:** `lib/compiler/consolidation/recommend.ts`와 관련 Vitest 17개 테스트를 **새로운 순수 함수 결정 로직으로 추가**했다. 이는 동일 수취인/정확한 상품 구성/검증된 운임·통관·DDP 상태를 가진 후보 중 합배송 비용과 대기일을 비교하는 첫 단계이며, 아직 국내입고 실무·포장 후보 자동 생성·자택 운영 UI·실운송사·관세/결제와 연결되지 않는다. [학습 문서](../2027/LEARNING_STEP_01_CONSOLIDATION.md). CI/실행 통과 여부는 이 문서 작성 시점에 별도로 확인해야 한다. **신규 실제 운영 기능 완료가 아니다.**
 
@@ -73,3 +73,21 @@ Verification results are recorded below. This integration performs no production
 - Visual review: 1440px home and Products screenshots; a real Three.js canvas with local reflections and physical geometry. The user reference folder remains untracked and unpublished.
 - `npm run ops:check`: **failed, release blocked**. `DATABASE_URL` is invalid; application URL, PII encryption key, Redis configuration, Shopify store/token/webhook secret, shipping webhook secret and a server operator mapping are missing. Values and credentials were not printed. This is configuration validation, not a live DB/provider connection test.
 - No production migration, real payment, carrier action or customer-data rewrite was performed. The old checkout remains unchanged. The generated fictional SQLite data and key remain local and ignored by Git.
+
+## 제한된 HOME_HUB 계획 컴파일러 (2026-11-22)
+
+[Step 2](../2027/LEARNING_STEP_02_PLAN_COMPILER.md)에 구현 범위와 검증을 기록했다. 이미 만든 계획의 선택에서 1~4개 주문 라인의 전체 파티션 생성·서비스별 과금중량/할증·포장/보관·통관 스냅샷 평가로 확장했다. 6개 가상 시나리오의 고객/운영 화면이 같은 결과를 사용하고, 누락/만료/불일치에는 검토 상태를 표시한다. 기존 preview middleware redirect를 수정하고 `.test.tsx`를 CI에 포함했다. 실제 운영 데이터/통관 계산/동의/출고 및 전체 TC-CON-01~18 완료를 뜻하지 않는다.
+
+이번 변경 최종 로컬 검증: Vitest 70개 파일/692개, Chromium desktop/mobile 4개, preview helper 6개, product evidence 18개, type-check/build/docs-check 통과. `ops:check` 실패(출시 설정 누락/DB URL 형식); hosted CI·실제 PostgreSQL/외부 제공자·ZAP은 NOT RUN. 자세한 RED/재실행 기록은 Step 2 참고.
+
+## 실제 고객 홈·내비게이션과 3D 초기 화면 (2026-11-24 갱신)
+
+[Step 3](../2027/LEARNING_STEP_03_MAIN_COMMERCE_HOME.md)는 `/dev/consolidation` 외의 실제 `/` 화면을 변경한다. Paste a Link / Discover Korea / How It Works 세 탭, 로그인 시 Orders + 주의 필요 건수와 Account 메뉴를 제공한다. 홈은 URL 입력·목적국·원래 parcel welcome을 담당하고 MD는 Discover Korea에만 둔다. Discover Korea에는 URL 입력과 URL 시작 유도가 없고 기존 8개 seller reference를 검색하여 목적국과 함께 공통 구매 초안에 전달한다. How It Works는 구매 과정·비용·배송·반품·FAQ를 합쳤고 예전 배송/반품 URL도 새 가이드로 이동한다. 활성 주문 요약은 본인 데이터만 조회하고 최대 3건, 주의 필요 항목 우선, 실제 기록 시각과 미확정 ETA를 표시한다. 상품 증거·국별 배송 가능/가격 검증을 대신하지 않는다.
+
+별도 SVG에서 3D로 바뀌는 현상은 실제 studio geometry로 만든 35 KB WebP를 초기 HTML에 선로딩하여 개선했다. 첫 WebGL frame 이후 fade하고 실패 시 poster로 복귀한다. JS 없는 desktop/mobile 초기 화면도 검사한다. GPU startup 성능 수치를 보장하지 않는다. 사용자 승인 원본 PNG 두 개는 불변이다.
+
+최종 명령별 결과·재실행 이유와 화면 증거는 Step 3에 기록한다. 전체 compiler/통관 Golden Vector, 실제 계정·DB·입고·합배송 동의/출고·환불·번역은 완료 범위가 아니다. production 배포는 수행하지 않았다.
+
+사용자 후속 수정(2026-11-23): UX 변경은 유지하되 기존 cream/blue/coral 화면 디자인·큰 parcel world·일러스트 디테일을 복원했다. Paste a Link가 홈의 첫 nav이고 Discover Korea가 두 번째다. 3D poster 최적화는 유지한다. 개발 `.next-dev`와 production `.next`를 분리하고 preview가 icon의 정상 SVG 응답도 검사하도록 보완했다. 원래 icon 오류는 조회 시 재현되지 않아 확정 원인으로 기록하지 않는다. 복원 후 검증 결과는 Step 3에 추가한다.
+
+복원 후 결과: Vitest 76개 파일/707개, launcher 7개, Chromium 14개+기존 19개(총 33개), build/type-check/docs-check 통과. 같은 checkout의 dev 중 production build도 통과했으며 두 icon URL의 총 98회 요청이 모두 200 SVG이고 development manifest hash가 변하지 않았다. 3002 sample snapshot 갱신 완료. 실제 운영 DB/provider/production 배포 검증을 뜻하지 않는다.

@@ -110,3 +110,17 @@ jobs:
 
       - name: Production build
         run: npm run build
+
+      - name: Install Chromium for customer journey acceptance
+        run: npx playwright install --with-deps chromium
+
+      - name: Main home and consolidation desktop and mobile acceptance (isolated data)
+        run: npx playwright test --config scripts/ci/consolidation.playwright.config.ts
+
+      - name: Keep home and consolidation browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: consolidation-browser-evidence
+          path: test-results/consolidation
+          if-no-files-found: ignore

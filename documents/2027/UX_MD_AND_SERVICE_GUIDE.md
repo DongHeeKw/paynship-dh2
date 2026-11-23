@@ -9,16 +9,19 @@ Status: TARGET UX / NOT IMPLEMENTED · As of 2026-11-21
 
 ## 1. Design brief — KRDS discipline + distinct PayNShip identity
 
-Reference: https://www.krds.go.kr/html/site/index.html for accessible design-system discipline only. **Current brand direction is white canvas with orange accents**, not a navy/teal dashboard. See [actual development UI preview](UI_WHITE_ORANGE_CONSOLIDATION.md) and scoped CSS Module. Keep Three.js welcome graphics restrained where discovery benefits, never hide order/tracking details. The visual goal is trustworthy, friendly and understandable by a first-time overseas shopper. No government-style affiliation/badge and do not copy proprietary assets.
+Reference: https://www.krds.go.kr/html/site/index.html for accessible design-system discipline only. **Owner correction (2026-11-23): retain the original cream/blue/coral customer storefront design.** The separate consolidation/HOME_HUB preview remains white with orange accents. See [actual development UI preview](UI_WHITE_ORANGE_CONSOLIDATION.md) and scoped CSS Module. Keep Three.js welcome graphics restrained where discovery benefits, never hide order/tracking details. The visual goal is trustworthy, friendly and understandable by a first-time overseas shopper. No government-style affiliation/badge and do not copy proprietary assets.
 
-**Top nav in all states:** PayNShip logo, Discover Korea, Paste a Link, How It Works, Shipping & Returns, language/currency switcher, account entry. Signed-in state adds Orders with notification count. On mobile keep catalog search and tracking reachable with keyboard/voiceover. The hero must not prevent quick product discovery; 3D cannot block interaction and has reduced-motion/SVG fallback.
+**Top nav (owner correction 2026-11-24):** PayNShip logo, Paste a Link (home), Discover Korea, How It Works (buying + shipping/returns + FAQ), account entry. Language/currency switching remains a target, not a shipped control. Signed-in state adds Orders with notification count. On mobile keep catalog search and tracking reachable with keyboard/voiceover. The hero must not prevent quick product discovery; 3D cannot block interaction and has reduced-motion support and a matching studio poster fallback.
 
-### Screen A — guest home
-- First viewport: one-sentence promise ("Choose what you love. We handle the rest."), URL field with example supported stores, destination select (or sensible neutral default; do not geo-infer sensitive location), search and verified-curated product cards.
-- Featured collections: Korean exclusives, K-pop, books/stationery, fashion/accessories, clearly marked restricted/eligible availability by destination. Nike/Adidas outlet/older-season wear may be an editorial candidate **only after** genuine stock and same-SKU landed-vs-local pricing validation; do not label "old fashioned" as a demographic fact.
+Implementation note (2026-11-23): the current fallback is now a preloaded still rendered from the actual studio, with reduced-motion-aware crossfade and context-loss recovery. This supersedes the separate SVG for visual continuity; it remains a static image until WebGL is ready. Language/currency switching and country-approved MD remain unimplemented.
+
+### Screen A — guest entry tabs
+- Paste a Link (`/`): original one-sentence promise and engaging parcel world, customer URL field and destination select (neutral default; do not geo-infer location). Keep merchandise cards and the full service guide in their own tabs.
+- Discover Korea (`/products`): MD merchandise, search/categories and destination choice, with no URL field or URL-entry prompt. Current cards are seller references; verified country-specific curation remains a target. Both entry paths feed the same purchase review/compiler.
+- Featured collections in Discover Korea: Korean exclusives, K-pop, books/stationery, fashion/accessories, clearly marked restricted/eligible availability by destination. Nike/Adidas outlet/older-season wear may be an editorial candidate **only after** genuine stock and same-SKU landed-vs-local pricing validation; do not label "old fashioned" as a demographic fact.
 - Empty URL / unsupported host / missing option / access disallowed: human actionable explanation + manual request; never error page that loses draft.
 - Show fees early: product, 15% service, domestic/overseas freight, duties/taxes/clearance and payer; missing charge `Needs review`. Avoid false "free shipping".
-- "How it works": Select → We source and verify → We pack and ship → Track delivery. Expandable actual service terms.
+- How It Works (`/guides/how-it-works`): original illustrated buying steps, costs, shipping, returns, support guidance and expandable FAQ in one guide. `/guides/shipping-and-returns` redirects here. Never describe future compiler/booking capabilities as live.
 
 ### Screen B — product detail
 - Verified product title, original source brand/store, seller/availability, provenance timestamp, variant choices and quantity.
@@ -37,8 +40,8 @@ Reference: https://www.krds.go.kr/html/site/index.html for accessible design-sys
 ### Screen D — guest to account
 - Login/signup via configured providers only. Failed OAuth does not lose non-PII URL draft. Signed callback must not allow open redirect or cross-user draft takeover.
 - Shipping address and necessary recipient customs authorization collected server-side after auth and only when required for the chosen route.
-- Signed-in with no active order: discovery and saved requests first, no faux tracking.
-- Signed-in with active order: actionable current order summary top, MD curated feed below. Most urgent customer action (customs ID, address correction, quote approval) top.
+- Signed-in with no active order: Paste a Link welcome; Discover Korea stays directly reachable, no faux tracking.
+- Signed-in with active order: actionable current order summary above URL entry; MD remains in Discover Korea. Most urgent customer action (customs ID, address correction, quote approval) top.
 - Only verified date windows; if no reliable ETA use "Delivery estimate pending" and last confirmed scan time.
 
 ### Screen E — Order detail
@@ -99,3 +102,7 @@ For merchant site analysis use official APIs/affiliate agreements first, permitt
 ## 6. Owner sign-off checklist
 
 Before marking site launch-ready: test product from US/JP/CN route with verified origin, classification and charges; signed checkout and refund; actual 3PL receipt photos; approved carrier and tracking; ETA disclosures; customer support; country consumer-rights review; user-owned tracking access; incident response and data deletion. Until then call it pilot/preview rather than a fully automated global store.
+
+## Shipped in local source — updated 2026-11-24
+
+The main route `/`, shared navigation and `/orders` now reflect the URL-entry/owned-order journey rather than New request/My requests tabs. Home owns URL entry and loads only authenticated owned active summaries, prioritizing holds and quote actions; no ETA is inferred. Discover Korea owns the existing MD catalog/draft flow with destination handoff and no URL-entry prompt. The single How It Works guide is reachable from navigation and footer, contains the illustrated journey plus shipping/returns/FAQ, and explicitly distinguishes unavailable refund automation/live consolidation. The owner rejected the replacement screen styling; the original storefront palette, full-size studio and illustrated details are restored while guest MD/search/destination and the new navigation remain. Language/currency controls, approved country MD, verified full landed quotes, durable consolidation consent and multi-box tracking are not claimed complete. See [Step 3](LEARNING_STEP_03_MAIN_COMMERCE_HOME.md).

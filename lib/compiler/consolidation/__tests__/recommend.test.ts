@@ -37,6 +37,11 @@ function compare(plans: readonly ConsolidationPlan[], options: {
 }
 
 describe('cross-border compiler: verified consolidation recommendations', () => {
+  it('keeps the existing separate plan when cost and waiting are tied', () => {
+    expect(compare([plan(), plan({ id: 'all', kind: 'ALL' })])).toMatchObject({
+      recommendedPlanId: 'separate', customerConsentRequired: false,
+    });
+  });
   it('TC-CON-03 suggests 22000 KRW savings when verified one-box shipping wins', () => {
     expect(compare([plan(), plan({ id: 'all', kind: 'ALL', customerTotalKrw: 32_000 })]))
       .toMatchObject({

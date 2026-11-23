@@ -18,7 +18,7 @@ export default function PurchaseList({ admin = false }: { admin?: boolean }) {
   }, [admin, requestJson]);
   useEffect(() => { const controller = new AbortController(); void load(undefined, controller.signal); return () => controller.abort(); }, [load]);
   return <>
-    <div className="action-row mb-6"><button className="text-button" onClick={() => void load()} disabled={busy}>Refresh</button>{!admin && <Link href={href('/purchase')} className="text-button">New request</Link>}</div>
+    <div className="action-row mb-6"><button className="text-button" onClick={() => void load()} disabled={busy}>Refresh</button>{!admin && <Link href={href('/purchase')} className="text-button">Paste a Link</Link>}</div>
     {error && <p className="error-message" role="alert">{error}</p>}
     {busy && requests.length === 0 && <p className="muted" role="status">Loading requests…</p>}
     {!busy && !error && requests.length === 0 && <div className="notice">No requests yet. {admin ? 'New customer requests will appear here.' : <Link href={href('/')} >Start with a product link</Link>}</div>}

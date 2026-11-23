@@ -39,7 +39,7 @@ export default function DevPreviewWorkspace() {
         <p>Delivery details and preset requests are fictional. Use sample delivery details only.</p>
       </div>
       <nav className="action-row mb-8" aria-label="Local preview">
-        <Link className="text-button" href={previewHref('/purchase')}>New request</Link>
+        <Link className="text-button" href={previewHref('/purchase')}>Paste a Link</Link>
         <Link className="text-button" href={previewHref('/settings/delivery')}>Delivery details</Link>
         <Link className="text-button" href={previewHref('/orders')}>Requests</Link>
         <PreviewModeLink mode="exit" className="text-button" />
